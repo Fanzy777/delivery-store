@@ -3,10 +3,10 @@
 # ║  Запуск: python main.py                                  ║
 # ╚══════════════════════════════════════════════════════════╝
 
-import random, time, sqlite3, threading, hashlib
+import random, time, sqlite3, threading, hashlib, os
 import telebot
 from telebot import types
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -15,7 +15,8 @@ import uvicorn
 BOT_TOKEN    = "8733525214:AAHDa4BgY93m8XD-AL49PR164fPstXNLzp0"
 ADMIN_ID     = 1387610058
 CHANNEL_LINK = "https://t.me/delivstorenews"
-MINI_APP_URL = "https://web-production-9fdbe.up.railway.app"
+MINI_APP_URL = os.getenv("MINI_APP_URL", "https://web-production-9fdbe.up.railway.app")
+WEBHOOK_URL  = os.getenv("WEBHOOK_URL", "https://web-production-9fdbe.up.railway.app")
 
 def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
@@ -75,16 +76,26 @@ def cmd_help(message):
         "ℹ️ <b>Помощь</b>\n\n• 📢 Наш Телеграмм — новости\n• 🛍 Меню — магазин\n\n/start /help",
         parse_mode="HTML", reply_markup=start_inline())
 
-def run_bot():
-    print("🤖 Бот запущен...")
-    bot.infinity_polling()
-
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 @app.get("/")
 def serve_index():
     return FileResponse("index.html")
+
+@app.post("/webhook")
+async def webhook(request: Request):
+    json_data = await request.json()
+    update = telebot.types.Update.de_json(json_data)
+    bot.process_new_updates([update])
+    return {"ok": True}
+
+@app.on_event("startup")
+def on_startup():
+    bot.remove_webhook()
+    time.sleep(0.5)
+    bot.set_webhook(url=f"{WEBHOOK_URL}/webhook")
+    print(f"🤖 Webhook установлен: {WEBHOOK_URL}/webhook")
 
 class TgReq(BaseModel):
     tg_username: str
@@ -193,6 +204,6 @@ def reset_password(req: ResetReq):
     return {"ok": True}
 
 if __name__ == "__main__":
-    threading.Thread(target=run_bot, daemon=True).start()
-    print("🌐 Сервер: http://localhost:8000")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    print(f"🌐 Сервер: http://0.0.0.0:{port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)
