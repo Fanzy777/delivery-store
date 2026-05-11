@@ -15,7 +15,7 @@ import uvicorn
 BOT_TOKEN    = "8733525214:AAHDa4BgY93m8XD-AL49PR164fPstXNLzp0"
 ADMIN_ID     = 1387610058
 CHANNEL_LINK = "https://t.me/delivstorenews"
-MINI_APP_URL = "https://твой-юзернейм.github.io/delivery-store"
+MINI_APP_URL = "https://web-production-9fdbe.up.railway.app"
 
 def hash_pass(p):
     return hashlib.sha256(p.encode()).hexdigest()
