@@ -2,1066 +2,827 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>Delivery Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg: #0d0d0d;
-  --surface: #161616;
-  --surface2: #1e1e1e;
-  --border: #2a2a2a;
-  --orange: #ff6b00;
-  --orange2: #ff9500;
-  --orangeGlow: rgba(255,107,0,.18);
-  --white: #ffffff;
-  --text: #f0f0f0;
-  --muted: #888;
-  --red: #ff4444;
-  --green: #3ecf8e;
-  --font: 'Unbounded', sans-serif;
-  --body: 'Manrope', sans-serif;
+:root{
+  --bg:#0d0d0d;--surface:#181818;--surface2:#222;--border:#2a2a2a;
+  --accent:#ff7a00;--accent2:#ff5500;
+  --white:#f0f0f0;--muted:#777;--red:#ff4444;--green:#3ecf8e;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+  --nav-h:56px;--bottom-h:60px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);}
-body{overflow-x:hidden;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;touch-action:manipulation;}
+body{background:var(--bg);color:var(--white);font-family:var(--font);
+  -webkit-font-smoothing:antialiased;user-select:none;}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--orange);border-radius:4px;}
-
-/* ── NOISE OVERLAY ── */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:9999;opacity:.4;
-}
-
-/* ── GLOW BG ── */
-.glow-bg{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse 55% 40% at 15% 15%,rgba(255,107,0,.1) 0%,transparent 70%),
-    radial-gradient(ellipse 40% 50% at 85% 85%,rgba(255,149,0,.07) 0%,transparent 70%);
-}
-
-/* ── PAGES ── */
-.page{display:none;position:relative;z-index:1;}
+/* ── Утилиты ── */
+.hidden{display:none!important;}
+.page{display:none;position:absolute;inset:0;overflow-y:auto;
+  padding-top:var(--nav-h);padding-bottom:var(--bottom-h);}
 .page.active{display:block;}
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
-/* ══════════════════════════════
-   AUTH PAGE
-══════════════════════════════ */
-.auth-wrap{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
-}
-.auth-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:24px;
-  padding:44px 40px;width:100%;max-width:420px;
-  box-shadow:0 0 80px rgba(255,107,0,.08),0 32px 80px rgba(0,0,0,.5);
-  animation:cardIn .5s cubic-bezier(.16,1,.3,1) both;
-}
-@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+/* ── Auth ── */
+#auth-screen{position:fixed;inset:0;z-index:999;background:var(--bg);
+  display:flex;flex-direction:column;overflow-y:auto;padding:24px 20px 40px;}
+#auth-screen.hidden{display:none!important;}
 
-.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;}
-.auth-logo-icon{
-  width:44px;height:44px;border-radius:14px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  display:grid;place-items:center;font-size:20px;flex-shrink:0;
-}
-.auth-logo-name{font-family:var(--font);font-size:17px;font-weight:900;letter-spacing:-.5px;}
-.auth-logo-name span{color:var(--orange);}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;margin-top:12px;}
+.auth-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:12px;display:grid;place-items:center;font-size:18px;}
+.auth-logo-name{font-size:18px;font-weight:800;}
+.auth-logo-name span{color:var(--accent);}
 
-.auth-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:14px;padding:4px;margin-bottom:32px;}
-.auth-tab{
-  flex:1;padding:10px;border:none;background:transparent;color:var(--muted);
-  font-family:var(--body);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;transition:.2s;
-}
-.auth-tab.active{background:var(--orange);color:#fff;}
+.auth-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:12px;
+  padding:4px;margin-bottom:24px;}
+.auth-tab{flex:1;padding:9px 4px;border:none;background:none;color:var(--muted);
+  font-family:var(--font);font-size:12px;font-weight:700;border-radius:9px;cursor:pointer;transition:.2s;}
+.auth-tab.active{background:var(--accent);color:#fff;}
 
-.auth-title{font-family:var(--font);font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px;}
-.auth-sub{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:28px;}
+.auth-title{font-size:22px;font-weight:800;margin-bottom:4px;}
+.auth-sub{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:20px;}
 
-.field{margin-bottom:16px;}
-.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
-.field input{
-  width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);
-  border-radius:12px;padding:13px 15px;color:var(--text);font-family:var(--body);font-size:14px;outline:none;transition:.2s;
-}
-.field input:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orangeGlow);}
-.field input::placeholder{color:var(--muted);}
+.field-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;display:block;}
+.field-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:12px;padding:14px 15px;color:var(--white);font-family:var(--mono);
+  font-size:15px;outline:none;transition:.2s;margin-bottom:14px;
+  -webkit-appearance:none;}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,122,0,.15);}
+.field-input::placeholder{color:var(--muted);}
 
-.btn{
-  width:100%;background:linear-gradient(135deg,var(--orange),var(--orange2));
-  border:none;border-radius:12px;padding:14px;color:#fff;
-  font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.03em;
-  cursor:pointer;transition:.2s;position:relative;overflow:hidden;
-}
-.btn:hover{opacity:.9;}
-.btn:active{transform:scale(.98);}
-.btn:disabled{opacity:.45;cursor:not-allowed;}
-.btn.loading .btn-text{display:none;}
-.btn.loading::after{content:'';display:block;width:18px;height:18px;margin:0 auto;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
+.btn-main{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:12px;padding:15px;color:#fff;font-family:var(--font);
+  font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
+.btn-main:active{opacity:.85;}.btn-main:disabled{opacity:.4;cursor:not-allowed;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px;}
+.btn-ghost:active{opacity:.7;}
+.btn-main .sp{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
+.btn-main.loading .bt{display:none;}.btn-main.loading .sp{display:block;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.btn-ghost{
-  width:100%;background:transparent;border:1px solid var(--border);border-radius:12px;padding:12px;
-  color:var(--muted);font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;margin-top:8px;
-}
-.btn-ghost:hover{border-color:var(--orange);color:var(--orange);}
+.msg{font-size:12px;border-radius:9px;padding:9px 13px;margin-bottom:12px;display:none;line-height:1.4;}
+.msg.err{background:rgba(255,68,68,.12);color:var(--red);display:block;}
+.msg.ok{background:rgba(62,207,142,.12);color:var(--green);display:block;}
 
-.msg-box{
-  font-size:13px;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:none;line-height:1.5;
-}
-.msg-box.err{background:rgba(255,68,68,.1);color:var(--red);display:block;}
-.msg-box.ok{background:rgba(62,207,142,.1);color:var(--green);display:block;}
+.auth-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
+.auth-hint a{color:var(--accent);cursor:pointer;}
 
-.auth-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.6;}
-.auth-hint b{color:var(--text);}
+.tab-content{display:none;}.tab-content.active{display:block;}
 
-/* step inside auth */
-.auth-step{display:none;}
-.auth-step.active{display:block;animation:fadeUp .3s cubic-bezier(.16,1,.3,1) both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* ── App shell ── */
+#app-screen{position:fixed;inset:0;display:none;flex-direction:column;}
+#app-screen.active{display:flex;}
 
-/* ══════════════════════════════
-   MAIN APP LAYOUT
-══════════════════════════════ */
-.app-layout{display:flex;min-height:100vh;}
+/* Topbar */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
+  background:rgba(13,13,13,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:12px;}
+.topbar-menu{width:36px;height:36px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
+.topbar-menu span{display:block;width:20px;height:2px;background:var(--white);
+  border-radius:2px;transition:.3s;}
+.topbar-title{flex:1;font-size:16px;font-weight:800;}
+.topbar-title span{color:var(--accent);}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid;place-items:center;font-weight:800;font-size:14px;cursor:pointer;}
 
-/* Sidebar */
-.sidebar{
-  width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;padding:24px 16px;position:sticky;top:0;height:100vh;
-}
-.sb-logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:32px;}
-.sb-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--orange),var(--orange2));display:grid;place-items:center;font-size:16px;flex-shrink:0;}
-.sb-logo-name{font-family:var(--font);font-size:14px;font-weight:900;letter-spacing:-.3px;}
-.sb-logo-name span{color:var(--orange);}
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);z-index:100;
+  background:rgba(13,13,13,.95);backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:6px 0;cursor:pointer;transition:.2s;border:none;background:none;}
+.bnav-btn .icon{font-size:20px;transition:.2s;}
+.bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);transition:.2s;}
+.bnav-btn.active .lbl{color:var(--accent);}
 
-.sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;}
-.sb-item{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
-  color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;border:none;background:transparent;text-align:left;width:100%;
-}
-.sb-item:hover{background:var(--surface2);color:var(--text);}
-.sb-item.active{background:var(--orangeGlow);color:var(--orange);}
-.sb-item .icon{font-size:16px;width:20px;text-align:center;}
+/* Pages container */
+.pages{position:fixed;top:var(--nav-h);bottom:var(--bottom-h);left:0;right:0;}
 
-.sb-bottom{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);}
-.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:.2s;}
-.sb-user:hover{background:var(--surface2);}
-.sb-avatar{
-  width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  display:grid;place-items:center;font-family:var(--font);font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
-}
-.sb-username{font-size:13px;font-weight:600;color:var(--text);}
-.sb-role{font-size:11px;color:var(--muted);}
+/* ── Sidebar ── */
+.sidebar-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;transition:opacity .3s;}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:201;
+  background:var(--surface);border-right:1px solid var(--border);
+  transform:translateX(-100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;padding:0;}
+.sidebar.open{transform:translateX(0);}
+.sidebar-top{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-avatar{width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:12px;}
+.sidebar-name{font-size:16px;font-weight:800;margin-bottom:2px;}
+.sidebar-tg{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:20px;font-size:11px;font-weight:700;}
+.role-user{background:rgba(255,122,0,.12);color:var(--accent);}
+.role-dev{background:rgba(62,207,142,.12);color:var(--green);}
+.role-admin{background:rgba(255,68,68,.12);color:var(--red);}
+.sidebar-nav{padding:12px 0;flex:1;}
+.snav-item{display:flex;align-items:center;gap:12px;padding:14px 20px;
+  cursor:pointer;transition:.15s;font-size:14px;font-weight:600;}
+.snav-item:active{background:rgba(255,122,0,.08);}
+.snav-item .si{font-size:18px;width:24px;text-align:center;}
+.snav-item .st{flex:1;}
+.sidebar-bottom{padding:16px 20px;border-top:1px solid var(--border);}
+.logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);
+  color:var(--red);border-radius:10px;padding:12px;font-family:var(--font);
+  font-size:13px;font-weight:700;cursor:pointer;}
 
-/* Main content */
-.main-content{flex:1;overflow-y:auto;padding:32px;}
+/* ── Home page ── */
+#page-home{padding:16px;}
+.hero{background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(255,85,0,.08));
+  border:1px solid rgba(255,122,0,.25);border-radius:18px;padding:20px;margin-bottom:20px;}
+.hero h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.hero h2 span{color:var(--accent);}
+.hero p{color:var(--muted);font-size:13px;line-height:1.5;}
 
-/* ══════════════════════════════
-   STORE PAGE
-══════════════════════════════ */
-.store-hero{
-  background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(255,149,0,.08));
-  border:1px solid rgba(255,107,0,.2);border-radius:20px;padding:32px;margin-bottom:32px;
-  position:relative;overflow:hidden;
-}
-.store-hero::before{
-  content:'📦';font-size:120px;position:absolute;right:-10px;top:50%;transform:translateY(-50%);
-  opacity:.08;line-height:1;
-}
-.store-hero h1{font-family:var(--font);font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px;}
-.store-hero h1 span{color:var(--orange);}
-.store-hero p{color:var(--muted);font-size:14px;line-height:1.7;max-width:500px;}
+.sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.sec-title span{color:var(--accent);}
 
-.section-title{
-  font-family:var(--font);font-size:15px;font-weight:700;letter-spacing:-.2px;
-  margin-bottom:16px;display:flex;align-items:center;gap:8px;
-}
-.section-title span{color:var(--orange);}
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;
+  scrollbar-width:none;-ms-overflow-style:none;}
+.cats::-webkit-scrollbar{display:none;}
+.cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+  padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;transition:.2s;flex-shrink:0;}
+.cat.active{background:rgba(255,122,0,.15);border-color:var(--accent);color:var(--accent);}
 
-/* Categories */
-.cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
-.cat{
-  padding:8px 16px;border-radius:20px;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);font-size:12px;font-weight:600;
-  cursor:pointer;transition:.2s;
-}
-.cat:hover,.cat.active{background:var(--orange);border-color:var(--orange);color:#fff;}
+.apps-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s;}
+.app-card:active{background:var(--surface2);}
+.app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+  font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;flex-shrink:0;}
+.app-info{flex:1;min-width:0;}
+.app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.app-info .dev{color:var(--muted);font-size:12px;margin-bottom:4px;}
+.app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;}
+.app-info .stars{color:var(--accent);}
+.app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;
+  padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;}
 
-/* App cards */
-.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
-.app-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:18px;
-  padding:20px;cursor:pointer;transition:.25s;position:relative;overflow:hidden;
-}
-.app-card:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,107,0,.12);}
-.app-card-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.app-icon{
-  width:54px;height:54px;border-radius:16px;
-  background:linear-gradient(135deg,#ff6b00,#ff9500);
-  display:grid;place-items:center;font-family:var(--font);font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
-}
-.app-name{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px;}
-.app-dev{font-size:12px;color:var(--muted);}
-.app-stars{display:flex;align-items:center;gap:4px;margin-top:4px;}
-.stars{color:var(--orange);font-size:12px;letter-spacing:1px;}
-.star-count{font-size:11px;color:var(--muted);font-weight:600;}
-.app-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
-.app-tags{display:flex;gap:6px;flex-wrap:wrap;}
-.tag{padding:4px 10px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--muted);font-weight:600;}
-.app-badge{
-  position:absolute;top:14px;right:14px;
-  background:var(--orange);color:#fff;font-size:10px;font-weight:700;
-  padding:3px 8px;border-radius:6px;font-family:var(--font);
-}
+/* ── Top page ── */
+#page-top{padding:16px;}
+.top-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;}
+.top-item:active{background:var(--surface2);}
+.top-num{font-size:18px;font-weight:800;color:var(--accent);width:24px;text-align:center;flex-shrink:0;}
+.top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;flex-shrink:0;}
+.top-info{flex:1;min-width:0;}
+.top-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.top-info span{color:var(--muted);font-size:11px;}
+.top-rating{font-size:13px;font-weight:800;color:var(--accent);}
 
-/* Top list */
-.top-list{display:flex;flex-direction:column;gap:10px;margin-bottom:32px;}
-.top-item{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.2s;
-}
-.top-item:hover{border-color:var(--orange);}
-.top-num{font-family:var(--font);font-size:18px;font-weight:900;color:var(--orange);width:28px;flex-shrink:0;}
-.top-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ff6b00,#ff9500);display:grid;place-items:center;font-family:var(--font);font-size:16px;font-weight:900;color:#fff;flex-shrink:0;}
-.top-info{flex:1;}
-.top-name{font-size:14px;font-weight:700;margin-bottom:2px;}
-.top-meta{font-size:12px;color:var(--muted);}
-.top-rating{font-size:13px;font-weight:700;color:var(--orange);}
+/* ── App detail ── */
+#page-app{padding:16px;}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);
+  color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
+.app-detail-header{display:flex;gap:14px;margin-bottom:16px;}
+.app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;
+  font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;flex-shrink:0;}
+.app-detail-meta{flex:1;}
+.app-detail-meta h2{font-size:18px;font-weight:800;margin-bottom:2px;}
+.app-detail-meta .dev{color:var(--muted);font-size:12px;margin-bottom:6px;}
+.app-detail-meta .rating-row{display:flex;align-items:center;gap:6px;font-size:13px;}
+.install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);
+  font-size:14px;font-weight:700;cursor:pointer;margin:14px 0;}
+.detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:16px;margin-bottom:16px;color:var(--muted);font-size:13px;line-height:1.7;}
+.reviews-title{font-size:15px;font-weight:800;margin-bottom:12px;}
+.review{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:10px;}
+.review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.review-avatar{width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.review-name{font-size:12px;font-weight:700;flex:1;}
+.review-date{color:var(--muted);font-size:10px;}
+.review-stars{color:var(--accent);font-size:11px;margin-bottom:4px;}
+.review-text{color:var(--muted);font-size:12px;line-height:1.5;}
 
-/* ══════════════════════════════
-   APP DETAIL PAGE
-══════════════════════════════ */
-.detail-header{
-  background:var(--surface);border:1px solid var(--border);border-radius:20px;
-  padding:28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px;
-}
-.detail-icon{
-  width:80px;height:80px;border-radius:22px;flex-shrink:0;
-  background:linear-gradient(135deg,#ff6b00,#ff9500);
-  display:grid;place-items:center;font-family:var(--font);font-size:32px;font-weight:900;color:#fff;
-}
-.detail-info{flex:1;}
-.detail-name{font-family:var(--font);font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px;}
-.detail-dev{font-size:13px;color:var(--muted);margin-bottom:10px;}
-.detail-rating{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.detail-stars{color:var(--orange);font-size:16px;}
-.detail-score{font-family:var(--font);font-size:20px;font-weight:900;}
-.detail-count{font-size:13px;color:var(--muted);}
-.detail-tags{display:flex;gap:6px;flex-wrap:wrap;}
-.detail-desc{
-  background:var(--surface);border:1px solid var(--border);border-radius:16px;
-  padding:20px;margin-bottom:24px;font-size:14px;line-height:1.8;color:var(--muted);
-}
-.detail-desc p+p{margin-top:12px;}
+/* ── Profile page ── */
+#page-profile{padding:16px;}
+.profile-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:24px;text-align:center;margin-bottom:14px;}
+.profile-avatar-big{width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;}
+.profile-nick{font-size:18px;font-weight:800;margin-bottom:4px;}
+.profile-tg{color:var(--muted);font-size:13px;margin-bottom:12px;}
+.profile-stats{display:flex;justify-content:center;gap:28px;padding-top:14px;
+  border-top:1px solid var(--border);}
+.pstat .val{font-size:18px;font-weight:800;color:var(--accent);}
+.pstat .lbl{font-size:10px;color:var(--muted);margin-top:2px;}
 
-.reviews-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.review{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;
-}
-.review-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.review-avatar{
-  width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  display:grid;place-items:center;font-family:var(--font);font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
-}
-.review-name{font-size:13px;font-weight:700;}
-.review-date{font-size:11px;color:var(--muted);}
-.review-stars{margin-left:auto;color:var(--orange);font-size:12px;}
-.review-text{font-size:13px;color:var(--muted);line-height:1.7;}
-
-/* ══════════════════════════════
-   PROFILE PAGE
-══════════════════════════════ */
-.profile-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px;
-}
-.profile-top{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
-.profile-avatar{
-  width:64px;height:64px;border-radius:18px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  display:grid;place-items:center;font-family:var(--font);font-size:24px;font-weight:900;color:#fff;
-}
-.profile-name{font-family:var(--font);font-size:20px;font-weight:900;letter-spacing:-.3px;margin-bottom:4px;}
-.profile-tg{font-size:13px;color:var(--muted);}
-.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.stat-box{background:var(--surface2);border-radius:14px;padding:16px;text-align:center;}
-.stat-val{font-family:var(--font);font-size:22px;font-weight:900;color:var(--orange);margin-bottom:4px;}
-.stat-label{font-size:11px;color:var(--muted);font-weight:600;}
-
-.reset-section{
-  background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;
-}
-.reset-section h3{font-family:var(--font);font-size:15px;font-weight:700;margin-bottom:6px;}
-.reset-section p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
-
-/* ══════════════════════════════
-   ADMIN PAGE
-══════════════════════════════ */
-.admin-card{
-  background:var(--surface);border:1px solid rgba(255,107,0,.3);border-radius:20px;padding:24px;margin-bottom:20px;
-}
-.admin-badge{
-  display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,0,.15);
-  border:1px solid rgba(255,107,0,.3);border-radius:8px;padding:4px 12px;
-  font-size:11px;font-weight:700;color:var(--orange);font-family:var(--font);margin-bottom:20px;
-}
-.admin-apps-table{width:100%;border-collapse:collapse;}
-.admin-apps-table th{
-  text-align:left;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--border);
-}
-.admin-apps-table td{padding:14px;border-bottom:1px solid var(--border);font-size:13px;}
-.admin-apps-table tr:last-child td{border-bottom:none;}
-.admin-apps-table tr:hover td{background:var(--surface2);}
-.tbl-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--orange),var(--orange2));display:grid;place-items:center;font-family:var(--font);font-size:14px;font-weight:900;color:#fff;}
-.tbl-app{display:flex;align-items:center;gap:10px;}
-.tbl-name{font-weight:700;}
-.tbl-dev{font-size:11px;color:var(--muted);}
-.tbl-status{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;}
-.tbl-status.pub{background:rgba(62,207,142,.12);color:var(--green);}
-.tbl-status.draft{background:rgba(255,107,0,.12);color:var(--orange);}
-.btn-sm{
-  padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;
-  color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:.2s;
-}
-.btn-sm:hover{border-color:var(--orange);color:var(--orange);}
-.btn-sm.danger:hover{border-color:var(--red);color:var(--red);}
-
-/* ══════════════════════════════
-   BACK BUTTON
-══════════════════════════════ */
-.back-btn{
-  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;
-  border:1px solid var(--border);background:transparent;color:var(--muted);
-  font-size:13px;font-weight:600;cursor:pointer;transition:.2s;margin-bottom:20px;
-}
-.back-btn:hover{border-color:var(--orange);color:var(--orange);}
-
-/* ══════════════════════════════
-   MOBILE
-══════════════════════════════ */
-@media(max-width:700px){
-  .sidebar{display:none;}
-  .main-content{padding:16px;}
-  .store-hero{padding:20px;}
-  .store-hero h1{font-size:20px;}
-  .detail-header{flex-direction:column;}
-  .profile-stats{grid-template-columns:repeat(2,1fr);}
-}
+/* ── Admin page ── */
+#page-admin{padding:16px;}
+.admin-login-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:24px;margin-top:8px;}
+.admin-section{margin-bottom:24px;}
+.admin-section-title{font-size:13px;font-weight:800;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;}
+.admin-app-item{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+  font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;flex-shrink:0;}
+.admin-app-info{flex:1;min-width:0;}
+.admin-app-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.admin-app-info span{color:var(--muted);font-size:11px;}
+.del-btn{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2);
+  color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;
+  cursor:pointer;flex-shrink:0;font-family:var(--font);}
+.user-item{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.user-avatar-sm{width:36px;height:36px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border);
+  display:grid;place-items:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.user-info{flex:1;min-width:0;}
+.user-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.user-info span{color:var(--muted);font-size:11px;}
+.promote-btn{background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.2);
+  color:var(--green);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;
+  cursor:pointer;flex-shrink:0;font-family:var(--font);}
+.demote-btn{background:rgba(255,122,0,.1);border:1px solid rgba(255,122,0,.2);
+  color:var(--accent);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;
+  cursor:pointer;flex-shrink:0;font-family:var(--font);}
 </style>
 </head>
 <body>
-<div class="glow-bg"></div>
 
-<!-- ══ AUTH PAGE ══ -->
-<div class="page active" id="authPage">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo">
-        <div class="auth-logo-icon">📦</div>
-        <div class="auth-logo-name">Delivery<span>Store</span></div>
-      </div>
+<!-- ══ AUTH ══ -->
+<div id="auth-screen">
+  <div class="auth-logo">
+    <div class="auth-logo-icon">📦</div>
+    <div class="auth-logo-name">Delivery<span>Store</span></div>
+  </div>
 
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="switchTab('login')">Войти</button>
-        <button class="auth-tab" onclick="switchTab('register')">Регистрация</button>
-      </div>
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="authTab('login')">Войти</button>
+    <button class="auth-tab" onclick="authTab('register')">Регистрация</button>
+    <button class="auth-tab" onclick="authTab('reset')">Сброс</button>
+  </div>
 
-      <!-- LOGIN -->
-      <div class="auth-step active" id="tabLogin">
-        <div class="auth-title">С возвращением 👋</div>
-        <div class="auth-sub">Войдите в свой аккаунт Delivery Store</div>
-        <div class="msg-box" id="loginMsg"></div>
-        <div class="field"><label>Никнейм</label><input id="loginNick" type="text" placeholder="@nickname"/></div>
-        <div class="field"><label>Пароль</label><input id="loginPass" type="password" placeholder="••••••••"/></div>
-        <button class="btn" id="btnLogin" onclick="doLogin()"><span class="btn-text">Войти →</span></button>
-        <button class="btn-ghost" onclick="switchTab('reset')">Забыл пароль</button>
-      </div>
+  <!-- LOGIN -->
+  <div class="tab-content active" id="tc-login">
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-sub">Войдите в аккаунт</div>
+    <div class="msg" id="msg-login"></div>
+    <label class="field-label">Ник</label>
+    <input class="field-input" id="l-nick" placeholder="ваш никнейм"/>
+    <label class="field-label">Пароль</label>
+    <input class="field-input" id="l-pass" type="password" placeholder="••••••••"/>
+    <button class="btn-main" id="btn-login" onclick="doLogin()">
+      <span class="bt">Войти →</span><div class="sp"></div>
+    </button>
+    <div class="auth-hint"><a onclick="authTab('reset')">Забыли пароль?</a></div>
+  </div>
 
-      <!-- REGISTER steps -->
-      <div class="auth-step" id="tabRegister">
-        <!-- step 1: username (TG) -->
-        <div class="auth-step active" id="regStep1">
-          <div class="auth-title">Регистрация</div>
-          <div class="auth-sub">Шаг 1/3 — Введите ваш Telegram username, бот отправит код.</div>
-          <div class="msg-box" id="regMsg1"></div>
-          <div class="field"><label>Telegram username</label><input id="regTg" type="text" placeholder="@username (без @)"/></div>
-          <button class="btn" id="btnSendCode" onclick="sendCode()"><span class="btn-text">Получить код →</span></button>
-          <div class="auth-hint">Не знаете username? Зайдите в Настройки Telegram.</div>
-        </div>
-        <!-- step 2: code -->
-        <div class="auth-step" id="regStep2">
-          <div class="auth-title">Введите код</div>
-          <div class="auth-sub">Шаг 2/3 — Код отправлен в Telegram.</div>
-          <div class="msg-box" id="regMsg2"></div>
-          <div class="field"><label>Код подтверждения</label><input id="regCode" type="text" inputmode="numeric" maxlength="6" placeholder="— — — — — —" oninput="this.value=this.value.replace(/\D/g,'');if(this.value.length===6)verifyCode()"/></div>
-          <button class="btn" id="btnVerify" onclick="verifyCode()"><span class="btn-text">Подтвердить →</span></button>
-          <button class="btn-ghost" onclick="backToStep1()">← Назад</button>
-        </div>
-        <!-- step 3: set nick + password -->
-        <div class="auth-step" id="regStep3">
-          <div class="auth-title">Последний шаг 🎉</div>
-          <div class="auth-sub">Шаг 3/3 — Придумайте никнейм и пароль для входа.</div>
-          <div class="msg-box" id="regMsg3"></div>
-          <div class="field"><label>Никнейм</label><input id="regNick" type="text" placeholder="Ваш никнейм в сторе"/></div>
-          <div class="field"><label>Пароль</label><input id="regPassword" type="password" placeholder="Минимум 6 символов"/></div>
-          <div class="field"><label>Повторите пароль</label><input id="regPassword2" type="password" placeholder="••••••••"/></div>
-          <button class="btn" id="btnFinish" onclick="finishReg()"><span class="btn-text">Создать аккаунт →</span></button>
-        </div>
-      </div>
+  <!-- REGISTER -->
+  <div class="tab-content" id="tc-register">
+    <div class="auth-title">Регистрация</div>
+    <div class="auth-sub">Сначала напишите <b>/start</b> боту в Telegram</div>
+    <div class="msg" id="msg-reg"></div>
+    <div id="reg-s1">
+      <label class="field-label">Telegram username</label>
+      <input class="field-input" id="r-tg" placeholder="username (без @)"/>
+      <button class="btn-main" id="btn-reg1" onclick="regStep1()">
+        <span class="bt">Получить код →</span><div class="sp"></div>
+      </button>
+    </div>
+    <div id="reg-s2" class="hidden">
+      <label class="field-label">Код из Telegram</label>
+      <input class="field-input" id="r-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="field-label">Придумайте ник</label>
+      <input class="field-input" id="r-nick" placeholder="мин. 3 символа"/>
+      <label class="field-label">Пароль</label>
+      <input class="field-input" id="r-pass" type="password" placeholder="мин. 6 символов"/>
+      <button class="btn-main" id="btn-reg2" onclick="regStep2()">
+        <span class="bt">Зарегистрироваться →</span><div class="sp"></div>
+      </button>
+    </div>
+  </div>
 
-      <!-- RESET PASSWORD -->
-      <div class="auth-step" id="tabReset">
-        <div class="auth-step active" id="resetStep1">
-          <div class="auth-title">Сброс пароля</div>
-          <div class="auth-sub">Введите Telegram username — бот пришлёт код.</div>
-          <div class="msg-box" id="resetMsg1"></div>
-          <div class="field"><label>Telegram username</label><input id="resetTg" type="text" placeholder="username (без @)"/></div>
-          <button class="btn" id="btnResetSend" onclick="sendResetCode()"><span class="btn-text">Получить код →</span></button>
-          <button class="btn-ghost" onclick="switchTab('login')">← Назад</button>
-        </div>
-        <div class="auth-step" id="resetStep2">
-          <div class="auth-title">Новый пароль</div>
-          <div class="auth-sub">Введите код из Telegram и новый пароль.</div>
-          <div class="msg-box" id="resetMsg2"></div>
-          <div class="field"><label>Код</label><input id="resetCode" type="text" inputmode="numeric" maxlength="6" placeholder="— — — — — —"/></div>
-          <div class="field"><label>Новый пароль</label><input id="resetNewPass" type="password" placeholder="Минимум 6 символов"/></div>
-          <button class="btn" id="btnResetConfirm" onclick="confirmReset()"><span class="btn-text">Сохранить →</span></button>
-        </div>
-      </div>
-
+  <!-- RESET -->
+  <div class="tab-content" id="tc-reset">
+    <div class="auth-title">Сброс пароля</div>
+    <div class="auth-sub">Введите Telegram username</div>
+    <div class="msg" id="msg-reset"></div>
+    <div id="reset-s1">
+      <label class="field-label">Telegram username</label>
+      <input class="field-input" id="rs-tg" placeholder="username (без @)"/>
+      <button class="btn-main" id="btn-rs1" onclick="resetStep1()">
+        <span class="bt">Получить код →</span><div class="sp"></div>
+      </button>
+    </div>
+    <div id="reset-s2" class="hidden">
+      <label class="field-label">Код из Telegram</label>
+      <input class="field-input" id="rs-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="field-label">Новый пароль</label>
+      <input class="field-input" id="rs-newpass" type="password" placeholder="мин. 6 символов"/>
+      <button class="btn-main" id="btn-rs2" onclick="resetStep2()">
+        <span class="bt">Сохранить →</span><div class="sp"></div>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ══ MAIN APP ══ -->
-<div class="page" id="appPage">
-  <div class="app-layout">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <div class="sb-logo">
-        <div class="sb-logo-icon">📦</div>
-        <div class="sb-logo-name">Delivery<span>Store</span></div>
-      </div>
-      <div class="sb-nav">
-        <button class="sb-item active" onclick="showSection('store')" id="nav-store">
-          <span class="icon">🏪</span> Магазин
-        </button>
-        <button class="sb-item" onclick="showSection('profile')" id="nav-profile">
-          <span class="icon">👤</span> Профиль
-        </button>
-        <button class="sb-item" onclick="showSection('admin')" id="nav-admin">
-          <span class="icon">⚙️</span> Админ панель
-        </button>
-      </div>
-      <div class="sb-bottom">
-        <div class="sb-user" onclick="showSection('profile')">
-          <div class="sb-avatar" id="sbAvatar">?</div>
-          <div>
-            <div class="sb-username" id="sbUsername">—</div>
-            <div class="sb-role">Пользователь</div>
-          </div>
+<!-- ══ APP ══ -->
+<div id="app-screen">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-menu" onclick="openSidebar()">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="topbar-title">Delivery<span>Store</span></div>
+    <div class="topbar-avatar" id="top-avatar" onclick="openSidebar()">?</div>
+  </div>
+
+  <!-- Pages -->
+  <div class="pages">
+    <!-- HOME -->
+    <div class="page active scroll" id="page-home">
+      <div style="padding:16px;">
+        <div class="hero">
+          <h2>Магазин <span>Mini Apps</span></h2>
+          <p>Лучшие Telegram мини-приложения</p>
         </div>
-      </div>
-    </nav>
-
-    <!-- Content -->
-    <main class="main-content">
-
-      <!-- STORE SECTION -->
-      <section id="sec-store">
-        <div class="store-hero">
-          <h1>Добро пожаловать в <span>Delivery Store</span></h1>
-          <p>Лучший магазин Telegram Mini Apps. Находите, устанавливайте и оценивайте приложения прямо здесь.</p>
-        </div>
-
-        <div class="section-title"><span>▶</span> Категории</div>
+        <div class="sec-title">🗂 <span>Категории</span></div>
         <div class="cats">
           <div class="cat active" onclick="filterCat(this,'all')">Все</div>
           <div class="cat" onclick="filterCat(this,'games')">🎮 Игры</div>
-          <div class="cat" onclick="filterCat(this,'tools')">🔧 Утилиты</div>
-          <div class="cat" onclick="filterCat(this,'social')">💬 Соцсети</div>
+          <div class="cat" onclick="filterCat(this,'tools')">🛠 Инструменты</div>
+          <div class="cat" onclick="filterCat(this,'social')">💬 Социальные</div>
           <div class="cat" onclick="filterCat(this,'finance')">💰 Финансы</div>
-          <div class="cat" onclick="filterCat(this,'edu')">📚 Обучение</div>
         </div>
+        <div class="sec-title">📦 <span>Приложения</span></div>
+        <div class="apps-list" id="apps-list"></div>
+      </div>
+    </div>
 
-        <div class="section-title"><span>🏆</span> Топ приложений</div>
-        <div class="top-list">
-          <div class="top-item" onclick="openApp()">
-            <div class="top-num">#1</div>
-            <div class="top-icon">М</div>
-            <div class="top-info">
-              <div class="top-name">Майнкрафт</div>
-              <div class="top-meta">Майкрасофт · 🎮 Игры · 48K загрузок</div>
-            </div>
-            <div class="top-rating">⭐ 4.9</div>
-          </div>
-          <div class="top-item">
-            <div class="top-num">#2</div>
-            <div class="top-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">W</div>
-            <div class="top-info">
-              <div class="top-name">WeatherBot Pro</div>
-              <div class="top-meta">CloudDev · 🔧 Утилиты · 31K загрузок</div>
-            </div>
-            <div class="top-rating">⭐ 4.7</div>
-          </div>
-          <div class="top-item">
-            <div class="top-num">#3</div>
-            <div class="top-icon" style="background:linear-gradient(135deg,#10b981,#059669)">F</div>
-            <div class="top-info">
-              <div class="top-name">FinTrack</div>
-              <div class="top-meta">MoneyLabs · 💰 Финансы · 22K загрузок</div>
-            </div>
-            <div class="top-rating">⭐ 4.6</div>
-          </div>
-        </div>
+    <!-- TOP -->
+    <div class="page scroll" id="page-top">
+      <div style="padding:16px;">
+        <div class="sec-title">🏆 <span>Топ приложений</span></div>
+        <div id="top-list"></div>
+      </div>
+    </div>
 
-        <div class="section-title"><span>🆕</span> Все приложения</div>
-        <div class="apps-grid">
-          <div class="app-card" onclick="openApp()" data-cat="games">
-            <div class="app-badge">ТОП #1</div>
-            <div class="app-card-top">
-              <div class="app-icon">М</div>
-              <div>
-                <div class="app-name">Майнкрафт</div>
-                <div class="app-dev">Майкрасофт</div>
-                <div class="app-stars"><span class="stars">★★★★★</span><span class="star-count">4.9 (2,341)</span></div>
-              </div>
-            </div>
-            <div class="app-desc">Легендарная песочница прямо в Telegram. Стройте, исследуйте и выживайте в мире из кубиков вместе с друзьями.</div>
-            <div class="app-tags"><span class="tag">🎮 Игры</span><span class="tag">Песочница</span><span class="tag">Мультиплеер</span></div>
-          </div>
-          <div class="app-card" data-cat="tools">
-            <div class="app-card-top">
-              <div class="app-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">W</div>
-              <div>
-                <div class="app-name">WeatherBot Pro</div>
-                <div class="app-dev">CloudDev</div>
-                <div class="app-stars"><span class="stars">★★★★★</span><span class="star-count">4.7 (891)</span></div>
-              </div>
-            </div>
-            <div class="app-desc">Точный прогноз погоды с уведомлениями, картами осадков и почасовым обновлением.</div>
-            <div class="app-tags"><span class="tag">🔧 Утилиты</span><span class="tag">Погода</span></div>
-          </div>
-          <div class="app-card" data-cat="finance">
-            <div class="app-card-top">
-              <div class="app-icon" style="background:linear-gradient(135deg,#10b981,#059669)">F</div>
-              <div>
-                <div class="app-name">FinTrack</div>
-                <div class="app-dev">MoneyLabs</div>
-                <div class="app-stars"><span class="stars">★★★★☆</span><span class="star-count">4.6 (534)</span></div>
-              </div>
-            </div>
-            <div class="app-desc">Трекер расходов с аналитикой, бюджетами и импортом выписок прямо из Telegram.</div>
-            <div class="app-tags"><span class="tag">💰 Финансы</span><span class="tag">Аналитика</span></div>
-          </div>
-        </div>
-      </section>
+    <!-- APP DETAIL -->
+    <div class="page scroll" id="page-app">
+      <div style="padding:16px;">
+        <button class="back-btn" onclick="goBack()">← Назад</button>
+        <div id="app-detail"></div>
+      </div>
+    </div>
 
-      <!-- APP DETAIL SECTION -->
-      <section id="sec-detail" style="display:none;">
-        <button class="back-btn" onclick="closeApp()">← Назад</button>
-        <div class="detail-header">
-          <div class="detail-icon">М</div>
-          <div class="detail-info">
-            <div class="detail-name">Майнкрафт</div>
-            <div class="detail-dev">Разработчик: Майкрасофт</div>
-            <div class="detail-rating">
-              <span class="detail-stars">★★★★★</span>
-              <span class="detail-score">4.9</span>
-              <span class="detail-count">· 2 341 отзыв · 48K загрузок</span>
-            </div>
-            <div class="detail-tags">
-              <span class="tag">🎮 Игры</span><span class="tag">Песочница</span><span class="tag">Мультиплеер</span><span class="tag">12+</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="detail-desc">
-          <p>Майнкрафт — это бесконечная песочница, где вы можете строить что угодно: от уютного домика до огромного замка. Игра теперь доступна прямо внутри Telegram в виде Mini App.</p>
-          <p>Исследуйте процедурно генерируемые миры, добывайте ресурсы, крафтьте инструменты и сражайтесь с мобами. Поддерживается мультиплеер до 8 игроков в одном мире.</p>
-          <p>Регулярные обновления с новым контентом, биомами и механиками. Присоединяйтесь к миллионам игроков по всему миру!</p>
-        </div>
-
-        <div class="section-title"><span>💬</span> Отзывы</div>
-        <div class="reviews-list">
-          <div class="review">
-            <div class="review-top">
-              <div class="review-avatar">А</div>
-              <div><div class="review-name">Алексей_777</div><div class="review-date">2 дня назад</div></div>
-              <div class="review-stars">★★★★★</div>
-            </div>
-            <div class="review-text">Невероятно! Не ожидал что майн можно запустить прямо в телеграмме. Графика конечно попроще, но геймплей тот же. Играю каждый день с друзьями, очень затягивает!</div>
-          </div>
-          <div class="review">
-            <div class="review-top">
-              <div class="review-avatar">М</div>
-              <div><div class="review-name">MinerPro</div><div class="review-date">5 дней назад</div></div>
-              <div class="review-stars">★★★★★</div>
-            </div>
-            <div class="review-text">Топ приложение! Мультиплеер работает отлично, лагов нет. Разрабы молодцы — обновления выходят часто. Советую всем любителям майна.</div>
-          </div>
-          <div class="review">
-            <div class="review-top">
-              <div class="review-avatar">К</div>
-              <div><div class="review-name">Кристина</div><div class="review-date">1 неделю назад</div></div>
-              <div class="review-stars">★★★★☆</div>
-            </div>
-            <div class="review-text">Очень круто что теперь можно играть без скачивания! Единственный минус — иногда вылетает при смене биомов. Надеюсь скоро пофиксят.</div>
-          </div>
-          <div class="review">
-            <div class="review-top">
-              <div class="review-avatar">Д</div>
-              <div><div class="review-name">Dmitry_dev</div><div class="review-date">2 недели назад</div></div>
-              <div class="review-stars">★★★★★</div>
-            </div>
-            <div class="review-text">Как разработчик — поражён насколько хорошо оптимизировано. Майкрасофт знают своё дело. Интерфейс интуитивный, управление удобное даже на маленьком экране.</div>
-          </div>
-          <div class="review">
-            <div class="review-top">
-              <div class="review-avatar">С</div>
-              <div><div class="review-name">SteveCraft</div><div class="review-date">3 недели назад</div></div>
-              <div class="review-stars">★★★★★</div>
-            </div>
-            <div class="review-text">Лучшее что случалось с Telegram Mini Apps. Моя команда строит огромный город уже вторую неделю. Мир не кончается, это важно!</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PROFILE SECTION -->
-      <section id="sec-profile" style="display:none;">
+    <!-- PROFILE -->
+    <div class="page scroll" id="page-profile">
+      <div style="padding:16px;">
+        <div class="sec-title">👤 <span>Профиль</span></div>
         <div class="profile-card">
-          <div class="profile-top">
-            <div class="profile-avatar" id="profileAvatar">?</div>
-            <div>
-              <div class="profile-name" id="profileName">—</div>
-              <div class="profile-tg" id="profileTg">@—</div>
-            </div>
+          <div class="profile-avatar-big" id="prof-av">?</div>
+          <div class="profile-nick" id="prof-nick">—</div>
+          <div class="profile-tg" id="prof-tg">—</div>
+          <div style="margin-bottom:12px;" id="prof-role-wrap">
+            <span class="role-badge role-user">👤 Пользователь</span>
           </div>
           <div class="profile-stats">
-            <div class="stat-box"><div class="stat-val">0</div><div class="stat-label">Установок</div></div>
-            <div class="stat-box"><div class="stat-val">0</div><div class="stat-label">Отзывов</div></div>
-            <div class="stat-box"><div class="stat-val">0</div><div class="stat-label">Дней</div></div>
+            <div class="pstat"><div class="val">0</div><div class="lbl">Приложений</div></div>
+            <div class="pstat"><div class="val">0</div><div class="lbl">Отзывов</div></div>
           </div>
         </div>
-        <div class="reset-section">
-          <h3>🔐 Сменить пароль</h3>
-          <p>Введите Telegram username — получите код и смените пароль.</p>
-          <div class="msg-box" id="profileResetMsg"></div>
-          <div class="auth-step active" id="profileResetStep1">
-            <button class="btn" style="max-width:260px" onclick="sendProfileReset()"><span class="btn-text">Получить код в Telegram →</span></button>
-          </div>
-          <div class="auth-step" id="profileResetStep2">
-            <div class="field"><label>Код из Telegram</label><input id="profileResetCode" type="text" inputmode="numeric" maxlength="6" placeholder="— — — — — —"/></div>
-            <div class="field"><label>Новый пароль</label><input id="profileNewPass" type="password" placeholder="Минимум 6 символов"/></div>
-            <button class="btn" style="max-width:260px" onclick="confirmProfileReset()"><span class="btn-text">Сохранить →</span></button>
-          </div>
-        </div>
-        <div style="margin-top:16px;">
-          <button class="btn-ghost" style="max-width:200px" onclick="logout()">Выйти из аккаунта</button>
-        </div>
-      </section>
+        <button class="btn-main btn-ghost" style="width:100%;color:var(--red);border-color:rgba(255,68,68,.3);" onclick="logout()">Выйти</button>
+      </div>
+    </div>
 
-      <!-- ADMIN SECTION -->
-      <section id="sec-admin" style="display:none;">
-        <!-- Admin login -->
-        <div id="adminLogin">
-          <div class="auth-card" style="max-width:420px;">
-            <div class="auth-title">⚙️ Админ панель</div>
-            <div class="auth-sub">Введите пароль для доступа к панели управления.</div>
-            <div class="msg-box" id="adminMsg"></div>
-            <div class="field"><label>Пароль</label><input id="adminPass" type="password" placeholder="••••••••"/></div>
-            <button class="btn" onclick="adminLogin()"><span class="btn-text">Войти →</span></button>
+    <!-- ADMIN -->
+    <div class="page scroll" id="page-admin">
+      <div style="padding:16px;">
+        <div class="sec-title">⚙️ <span>Админ панель</span></div>
+        <div id="admin-login-block">
+          <div class="admin-login-card">
+            <div class="msg" id="msg-admin"></div>
+            <label class="field-label">Пароль администратора</label>
+            <input class="field-input" id="admin-pass" type="password" placeholder="••••••••"/>
+            <button class="btn-main" onclick="adminLogin()">
+              <span class="bt">Войти →</span><div class="sp"></div>
+            </button>
           </div>
         </div>
-
-        <!-- Admin panel -->
-        <div id="adminPanel" style="display:none;">
-          <div class="admin-badge">⚙️ РЕЖИМ АДМИНИСТРАТОРА</div>
-          <div class="admin-card">
-            <div class="section-title"><span>📦</span> Управление приложениями</div>
-            <table class="admin-apps-table">
-              <thead>
-                <tr>
-                  <th>Приложение</th>
-                  <th>Категория</th>
-                  <th>Рейтинг</th>
-                  <th>Статус</th>
-                  <th>Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="tbl-app">
-                      <div class="tbl-icon">М</div>
-                      <div><div class="tbl-name">Майнкрафт</div><div class="tbl-dev">Майкрасофт</div></div>
-                    </div>
-                  </td>
-                  <td>🎮 Игры</td>
-                  <td>⭐ 4.9</td>
-                  <td><span class="tbl-status pub">Опубликовано</span></td>
-                  <td style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <button class="btn-sm">Редактировать</button>
-                    <button class="btn-sm danger">Удалить</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="tbl-app">
-                      <div class="tbl-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">W</div>
-                      <div><div class="tbl-name">WeatherBot Pro</div><div class="tbl-dev">CloudDev</div></div>
-                    </div>
-                  </td>
-                  <td>🔧 Утилиты</td>
-                  <td>⭐ 4.7</td>
-                  <td><span class="tbl-status pub">Опубликовано</span></td>
-                  <td style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <button class="btn-sm">Редактировать</button>
-                    <button class="btn-sm danger">Удалить</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="tbl-app">
-                      <div class="tbl-icon" style="background:linear-gradient(135deg,#10b981,#059669)">F</div>
-                      <div><div class="tbl-name">FinTrack</div><div class="tbl-dev">MoneyLabs</div></div>
-                    </div>
-                  </td>
-                  <td>💰 Финансы</td>
-                  <td>⭐ 4.6</td>
-                  <td><span class="tbl-status draft">Черновик</span></td>
-                  <td style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <button class="btn-sm">Редактировать</button>
-                    <button class="btn-sm danger">Удалить</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div id="admin-panel" class="hidden">
+          <div class="admin-section">
+            <div class="admin-section-title">📦 Приложения</div>
+            <div id="admin-apps-list"></div>
           </div>
-          <button class="btn-ghost" style="max-width:200px" onclick="adminLogout()">Выйти из панели</button>
+          <div class="admin-section">
+            <div class="admin-section-title">👥 Пользователи</div>
+            <div id="admin-users-list"></div>
+          </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
 
-    </main>
+  <!-- Bottom nav -->
+  <div class="bottom-nav">
+    <button class="bnav-btn active" onclick="showPage('home',this)">
+      <div class="icon">🏠</div><div class="lbl">Главная</div>
+    </button>
+    <button class="bnav-btn" onclick="showPage('top',this)">
+      <div class="icon">🏆</div><div class="lbl">Топы</div>
+    </button>
+    <button class="bnav-btn" onclick="showPage('profile',this)">
+      <div class="icon">👤</div><div class="lbl">Профиль</div>
+    </button>
+    <button class="bnav-btn" onclick="showPage('admin',this)">
+      <div class="icon">⚙️</div><div class="lbl">Админ</div>
+    </button>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-avatar" id="sb-avatar">?</div>
+    <div class="sidebar-name" id="sb-name">—</div>
+    <div class="sidebar-tg" id="sb-tg">—</div>
+    <div id="sb-role-wrap"><span class="role-badge role-user">👤 Пользователь</span></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="snav-item" onclick="sidebarGo('home')">
+      <span class="si">🏠</span><span class="st">Главная</span>
+    </div>
+    <div class="snav-item" onclick="sidebarGo('top')">
+      <span class="si">🏆</span><span class="st">Топы</span>
+    </div>
+    <div class="snav-item" onclick="sidebarGo('profile')">
+      <span class="si">👤</span><span class="st">Мой профиль</span>
+    </div>
+    <div class="snav-item" onclick="sidebarGo('admin')">
+      <span class="si">⚙️</span><span class="st">Админ панель</span>
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    <button class="logout-btn" onclick="logout()">Выйти из аккаунта</button>
   </div>
 </div>
 
 <script>
 const API = "https://web-production-9fdbe.up.railway.app";
+const ADMIN_PASSWORD = "123123";
 
-// ── SESSION ──
-let session = JSON.parse(localStorage.getItem('ds_session') || 'null');
-let regTgUsername = '';
-let resetTgUsername = '';
+// ── Data ────────────────────────────────────
+let APPS = [
+  {id:1,name:"Minecraft",dev:"Microsoft",cat:"games",rating:4.8,reviews:1247,tag:"🎮 Игры",
+   desc:"Легендарная песочница теперь в Telegram! Стройте, исследуйте и выживайте в бесконечном мире вместе с друзьями.",
+   reviews_data:[
+    {name:"Alex_gamer",date:"12 мая",stars:5,text:"Невероятно! Никогда не думал что Minecraft будет в Telegram."},
+    {name:"Masha_dev",date:"8 мая",stars:5,text:"Играю каждый день! Хочется больше биомов. 10/10"},
+    {name:"Petr_123",date:"3 мая",stars:4,text:"Хорошо, иногда подтормаживает. Разработчикам зачёт!"},
+    {name:"Ulyana_K",date:"1 мая",stars:5,text:"Лучший мини-апп. Провела за ним всё воскресенье 😄"},
+    {name:"Denis_pro",date:"28 апр",stars:3,text:"Неплохо для мини-приложения."},
+  ]}
+];
 
+// Локальные роли пользователей (в реальности надо хранить в БД)
+let userRoles = JSON.parse(localStorage.getItem("ds_roles") || "{}");
+
+let currentUser = JSON.parse(localStorage.getItem("ds_user") || "null");
+let regTg = "", resetTg = "", prevPage = "home";
+
+// ── Init ────────────────────────────────────
 window.onload = () => {
-  if (session) enterApp();
+  if(currentUser){ showApp(); }
+  renderApps(APPS);
+  renderTop(APPS);
 };
 
-// ── AUTH TABS ──
-function switchTab(tab) {
-  ['login','register','reset'].forEach(t => {
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('active');
+// ── Auth tabs ────────────────────────────────
+function authTab(t){
+  document.querySelectorAll(".auth-tab").forEach((el,i)=>{
+    el.classList.toggle("active",["login","register","reset"][i]===t);
   });
-  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
-
-  if (tab === 'login') {
-    document.getElementById('tabLogin').classList.add('active');
-    document.querySelectorAll('.auth-tab')[0].classList.add('active');
-  } else if (tab === 'register') {
-    document.getElementById('tabRegister').classList.add('active');
-    document.querySelectorAll('.auth-tab')[1].classList.add('active');
-    showRegStep(1);
-  } else {
-    document.getElementById('tabReset').classList.add('active');
-    showResetStep(1);
-  }
+  document.querySelectorAll(".tab-content").forEach(el=>el.classList.remove("active"));
+  document.getElementById("tc-"+t).classList.add("active");
 }
 
-// ── SHOW MSG ──
-function showMsg(id, text, type) {
-  const el = document.getElementById(id);
-  el.textContent = text; el.className = 'msg-box ' + type;
-}
-function clearMsg(id) { document.getElementById(id).className = 'msg-box'; }
-
-function setLoading(id, on) {
-  const b = document.getElementById(id);
-  if (!b) return;
-  b.classList.toggle('loading', on);
-  b.disabled = on;
-}
-
-// ── LOGIN ──
-async function doLogin() {
-  clearMsg('loginMsg');
-  const nick = document.getElementById('loginNick').value.trim();
-  const pass = document.getElementById('loginPass').value.trim();
-  if (!nick || !pass) { showMsg('loginMsg','Заполните все поля','err'); return; }
-
-  setLoading('btnLogin', true);
-  try {
-    const r = await fetch(API + '/login', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({nick, password: pass})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {wrong_password:'Неверный пароль',not_found:'Пользователь не найден'};
-      showMsg('loginMsg', errs[d.detail] || 'Ошибка входа', 'err'); return;
+// ── Login ────────────────────────────────────
+async function doLogin(){
+  const nick=v("l-nick"), pass=v("l-pass");
+  const msg=document.getElementById("msg-login");
+  clearMsg(msg);
+  if(!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-login");
+  load(btn,1);
+  try{
+    const r=await post("/login",{nick,password:pass});
+    if(!r.ok){
+      const e={not_found:"Пользователь не найден",wrong_password:"Неверный пароль"};
+      showMsg(msg,e[r.detail]||"Ошибка входа","err");return;
     }
-    session = d;
-    localStorage.setItem('ds_session', JSON.stringify(d));
-    enterApp();
-  } catch { showMsg('loginMsg','Нет соединения с сервером','err'); }
-  finally { setLoading('btnLogin', false); }
+    currentUser={nick:r.nick,tg_username:r.tg_username};
+    localStorage.setItem("ds_user",JSON.stringify(currentUser));
+    showApp();
+  }catch{showMsg(msg,"Нет соединения с сервером","err");}
+  finally{load(btn,0);}
 }
 
-// ── REGISTER: STEP 1 send code ──
-async function sendCode() {
-  clearMsg('regMsg1');
-  let tg = document.getElementById('regTg').value.trim().replace(/^@/,'');
-  if (!tg) { showMsg('regMsg1','Введите username','err'); return; }
-  regTgUsername = tg;
-  setLoading('btnSendCode', true);
-  try {
-    const r = await fetch(API + '/send-code', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: tg})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {
-        already_registered:'Этот Telegram уже зарегистрирован',
-        user_not_found:'Пользователь не найден. Сначала напишите боту /start',
-        send_error:'Не удалось отправить сообщение. Убедитесь что вы написали боту /start'
-      };
-      showMsg('regMsg1', errs[d.detail] || 'Ошибка: ' + d.detail, 'err'); return;
+// ── Register ─────────────────────────────────
+async function regStep1(){
+  const tg=v("r-tg").replace("@","");
+  const msg=document.getElementById("msg-reg");
+  clearMsg(msg);
+  if(!tg){showMsg(msg,"Введите username","err");return;}
+  regTg=tg;
+  const btn=document.getElementById("btn-reg1");
+  load(btn,1);
+  try{
+    const r=await post("/send-code",{tg_username:tg,purpose:"register"});
+    if(!r.ok){
+      const e={already_registered:"Уже зарегистрирован",
+        user_not_found:"Сначала напишите /start боту!"};
+      showMsg(msg,e[r.detail]||"Ошибка отправки","err");return;
     }
-    showRegStep(2);
-  } catch { showMsg('regMsg1','Нет соединения с сервером','err'); }
-  finally { setLoading('btnSendCode', false); }
+    showMsg(msg,"Код отправлен в Telegram!","ok");
+    document.getElementById("reg-s1").classList.add("hidden");
+    document.getElementById("reg-s2").classList.remove("hidden");
+  }catch{showMsg(msg,"Нет соединения с сервером","err");}
+  finally{load(btn,0);}
 }
 
-// ── REGISTER: STEP 2 verify code ──
-async function verifyCode() {
-  clearMsg('regMsg2');
-  const code = document.getElementById('regCode').value.trim();
-  if (code.length !== 6) { showMsg('regMsg2','Введите 6-значный код','err'); return; }
-  setLoading('btnVerify', true);
-  try {
-    const r = await fetch(API + '/verify-code', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: regTgUsername, code})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {wrong_code:'Неверный код',expired:'Код истёк, запросите новый',no_code:'Сначала запросите код'};
-      showMsg('regMsg2', errs[d.detail] || 'Ошибка', 'err'); return;
+async function regStep2(){
+  const code=v("r-code"),nick=v("r-nick"),pass=v("r-pass");
+  const msg=document.getElementById("msg-reg");
+  clearMsg(msg);
+  if(!code||!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-reg2");
+  load(btn,1);
+  try{
+    const r=await post("/finish-register",{tg_username:regTg,nick,password:pass,code});
+    if(!r.ok){
+      const e={wrong_code:"Неверный код",expired:"Код истёк",
+        nick_taken:"Ник занят",not_verified:"Сначала подтвердите код"};
+      showMsg(msg,e[r.detail]||"Ошибка","err");return;
     }
-    showRegStep(3);
-  } catch { showMsg('regMsg2','Нет соединения с сервером','err'); }
-  finally { setLoading('btnVerify', false); }
+    currentUser={nick:r.nick,tg_username:regTg};
+    localStorage.setItem("ds_user",JSON.stringify(currentUser));
+    showApp();
+  }catch{showMsg(msg,"Нет соединения с сервером","err");}
+  finally{load(btn,0);}
 }
 
-// ── REGISTER: STEP 3 set nick + password ──
-async function finishReg() {
-  clearMsg('regMsg3');
-  const nick = document.getElementById('regNick').value.trim();
-  const pass = document.getElementById('regPassword').value.trim();
-  const pass2 = document.getElementById('regPassword2').value.trim();
-  if (!nick) { showMsg('regMsg3','Введите никнейм','err'); return; }
-  if (pass.length < 6) { showMsg('regMsg3','Пароль минимум 6 символов','err'); return; }
-  if (pass !== pass2) { showMsg('regMsg3','Пароли не совпадают','err'); return; }
-  setLoading('btnFinish', true);
-  try {
-    const r = await fetch(API + '/finish-register', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: regTgUsername, nick, password: pass})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {nick_taken:'Никнейм уже занят',not_verified:'Сначала подтвердите код'};
-      showMsg('regMsg3', errs[d.detail] || 'Ошибка', 'err'); return;
-    }
-    session = d;
-    localStorage.setItem('ds_session', JSON.stringify(d));
-    enterApp();
-  } catch { showMsg('regMsg3','Нет соединения с сервером','err'); }
-  finally { setLoading('btnFinish', false); }
+// ── Reset ─────────────────────────────────────
+async function resetStep1(){
+  const tg=v("rs-tg").replace("@","");
+  const msg=document.getElementById("msg-reset");
+  clearMsg(msg);
+  if(!tg){showMsg(msg,"Введите username","err");return;}
+  resetTg=tg;
+  const btn=document.getElementById("btn-rs1");
+  load(btn,1);
+  try{
+    const r=await post("/send-reset-code",{tg_username:tg});
+    if(!r.ok){showMsg(msg,"Пользователь не найден или не писал боту","err");return;}
+    showMsg(msg,"Код отправлен!","ok");
+    document.getElementById("reset-s1").classList.add("hidden");
+    document.getElementById("reset-s2").classList.remove("hidden");
+  }catch{showMsg(msg,"Нет соединения","err");}
+  finally{load(btn,0);}
 }
 
-function showRegStep(n) {
-  [1,2,3].forEach(i => document.getElementById('regStep'+i).classList.remove('active'));
-  document.getElementById('regStep'+n).classList.add('active');
-}
-function backToStep1() { showRegStep(1); clearMsg('regMsg2'); }
-
-// ── RESET PASSWORD ──
-async function sendResetCode() {
-  clearMsg('resetMsg1');
-  let tg = document.getElementById('resetTg').value.trim().replace(/^@/,'');
-  if (!tg) { showMsg('resetMsg1','Введите username','err'); return; }
-  resetTgUsername = tg;
-  setLoading('btnResetSend', true);
-  try {
-    const r = await fetch(API + '/send-reset-code', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: tg})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {not_found:'Пользователь не найден',send_error:'Не удалось отправить. Напишите боту /start'};
-      showMsg('resetMsg1', errs[d.detail] || 'Ошибка', 'err'); return;
-    }
-    document.getElementById('resetStep1').classList.remove('active');
-    document.getElementById('resetStep2').classList.add('active');
-  } catch { showMsg('resetMsg1','Нет соединения с сервером','err'); }
-  finally { setLoading('btnResetSend', false); }
+async function resetStep2(){
+  const code=v("rs-code"),np=v("rs-newpass");
+  const msg=document.getElementById("msg-reset");
+  clearMsg(msg);
+  if(!code||!np){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-rs2");
+  load(btn,1);
+  try{
+    const r=await post("/reset-password",{tg_username:resetTg,code,new_password:np});
+    if(!r.ok){showMsg(msg,"Неверный или истёкший код","err");return;}
+    showMsg(msg,"Пароль изменён! Войдите.","ok");
+    setTimeout(()=>authTab("login"),1500);
+  }catch{showMsg(msg,"Нет соединения","err");}
+  finally{load(btn,0);}
 }
 
-async function confirmReset() {
-  clearMsg('resetMsg2');
-  const code = document.getElementById('resetCode').value.trim();
-  const pass = document.getElementById('resetNewPass').value.trim();
-  if (code.length !== 6) { showMsg('resetMsg2','Введите 6-значный код','err'); return; }
-  if (pass.length < 6) { showMsg('resetMsg2','Пароль минимум 6 символов','err'); return; }
-  setLoading('btnResetConfirm', true);
-  try {
-    const r = await fetch(API + '/reset-password', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: resetTgUsername, code, new_password: pass})
-    });
-    const d = await r.json();
-    if (!r.ok) {
-      const errs = {wrong_code:'Неверный код',expired:'Код истёк'};
-      showMsg('resetMsg2', errs[d.detail] || 'Ошибка', 'err'); return;
-    }
-    showMsg('resetMsg2','✅ Пароль успешно изменён! Войдите с новым паролем.','ok');
-    setTimeout(() => switchTab('login'), 2000);
-  } catch { showMsg('resetMsg2','Нет соединения с сервером','err'); }
-  finally { setLoading('btnResetConfirm', false); }
+// ── Show app ─────────────────────────────────
+function showApp(){
+  document.getElementById("auth-screen").classList.add("hidden");
+  document.getElementById("app-screen").classList.add("active");
+  const letter=(currentUser.nick||"?")[0].toUpperCase();
+  document.getElementById("top-avatar").textContent=letter;
+  document.getElementById("sb-avatar").textContent=letter;
+  document.getElementById("prof-av").textContent=letter;
+  document.getElementById("sb-name").textContent=currentUser.nick;
+  document.getElementById("prof-nick").textContent=currentUser.nick;
+  document.getElementById("sb-tg").textContent="@"+currentUser.tg_username;
+  document.getElementById("prof-tg").textContent="@"+currentUser.tg_username;
+  updateRoleBadges();
 }
 
-// ── PROFILE RESET ──
-async function sendProfileReset() {
-  clearMsg('profileResetMsg');
-  if (!session) return;
-  try {
-    const r = await fetch(API + '/send-reset-code', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: session.tg_username})
-    });
-    if (!r.ok) { showMsg('profileResetMsg','Ошибка отправки','err'); return; }
-    document.getElementById('profileResetStep1').classList.remove('active');
-    document.getElementById('profileResetStep2').classList.add('active');
-    showMsg('profileResetMsg','Код отправлен в Telegram!','ok');
-  } catch { showMsg('profileResetMsg','Нет соединения с сервером','err'); }
+function updateRoleBadges(){
+  const role = userRoles[currentUser.nick] || "user";
+  const badgeMap = {
+    user: '<span class="role-badge role-user">👤 Пользователь</span>',
+    dev:  '<span class="role-badge role-dev">💻 Разработчик</span>',
+    admin:'<span class="role-badge role-admin">⚡ Администратор</span>',
+  };
+  const badge = badgeMap[role] || badgeMap.user;
+  document.getElementById("prof-role-wrap").innerHTML = badge;
+  document.getElementById("sb-role-wrap").innerHTML = badge;
 }
 
-async function confirmProfileReset() {
-  clearMsg('profileResetMsg');
-  const code = document.getElementById('profileResetCode').value.trim();
-  const pass = document.getElementById('profileNewPass').value.trim();
-  if (code.length !== 6) { showMsg('profileResetMsg','Введите 6-значный код','err'); return; }
-  if (pass.length < 6) { showMsg('profileResetMsg','Пароль минимум 6 символов','err'); return; }
-  try {
-    const r = await fetch(API + '/reset-password', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({tg_username: session.tg_username, code, new_password: pass})
-    });
-    if (!r.ok) { showMsg('profileResetMsg','Неверный код или истёк','err'); return; }
-    showMsg('profileResetMsg','✅ Пароль изменён!','ok');
-    document.getElementById('profileResetStep2').classList.remove('active');
-    document.getElementById('profileResetStep1').classList.add('active');
-  } catch { showMsg('profileResetMsg','Нет соединения с сервером','err'); }
+function logout(){
+  localStorage.removeItem("ds_user");
+  location.reload();
 }
 
-// ── APP ENTER / LOGOUT ──
-function enterApp() {
-  document.getElementById('authPage').classList.remove('active');
-  document.getElementById('appPage').classList.add('active');
-  const letter = (session.nick || '?')[0].toUpperCase();
-  document.getElementById('sbAvatar').textContent = letter;
-  document.getElementById('sbUsername').textContent = session.nick;
-  document.getElementById('profileAvatar').textContent = letter;
-  document.getElementById('profileName').textContent = session.nick;
-  document.getElementById('profileTg').textContent = '@' + (session.tg_username || '—');
-  showSection('store');
+// ── Pages ─────────────────────────────────────
+function showPage(p, btn){
+  document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+  document.getElementById("page-"+p).classList.add("active");
+  document.querySelectorAll(".bnav-btn").forEach(el=>el.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  prevPage=p;
 }
 
-function logout() {
-  session = null;
-  localStorage.removeItem('ds_session');
-  document.getElementById('appPage').classList.remove('active');
-  document.getElementById('authPage').classList.add('active');
-  switchTab('login');
+function goBack(){
+  showPage(prevPage==="app"?"home":prevPage,
+    document.querySelector(".bnav-btn"));
+  document.querySelectorAll(".bnav-btn")[0].classList.add("active");
 }
 
-// ── SECTIONS ──
-function showSection(name) {
-  ['store','profile','admin'].forEach(s => {
-    document.getElementById('sec-'+s).style.display = 'none';
-    const nav = document.getElementById('nav-'+s);
-    if (nav) nav.classList.remove('active');
-  });
-  document.getElementById('sec-'+name).style.display = 'block';
-  const nav = document.getElementById('nav-'+name);
-  if (nav) nav.classList.add('active');
-  document.getElementById('sec-detail').style.display = 'none';
+// ── Sidebar ───────────────────────────────────
+function openSidebar(){
+  document.getElementById("sidebar").classList.add("open");
+  document.getElementById("sidebar-overlay").classList.add("open");
+}
+function closeSidebar(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebar-overlay").classList.remove("open");
+}
+function sidebarGo(p){
+  closeSidebar();
+  showPage(p, document.querySelectorAll(".bnav-btn")[["home","top","profile","admin"].indexOf(p)]);
 }
 
-// ── STORE ──
-function filterCat(el, cat) {
-  document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.app-card').forEach(card => {
-    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
-  });
+// ── Render apps ───────────────────────────────
+function renderApps(apps){
+  document.getElementById("apps-list").innerHTML=apps.map(a=>`
+    <div class="app-card" onclick="openApp(${a.id})">
+      <div class="app-icon">${a.name[0]}</div>
+      <div class="app-info">
+        <h3>${a.name}</h3>
+        <div class="dev">${a.dev}</div>
+        <div class="rating">
+          <span class="stars">${"★".repeat(Math.round(a.rating))}</span>
+          <span style="font-weight:700;margin-left:4px">${a.rating}</span>
+          <span style="color:var(--muted);margin-left:4px">(${a.reviews.toLocaleString()})</span>
+        </div>
+      </div>
+      <span class="app-tag">${a.tag}</span>
+    </div>
+  `).join("");
 }
 
-function openApp() {
-  document.getElementById('sec-store').style.display = 'none';
-  document.getElementById('sec-detail').style.display = 'block';
-}
-function closeApp() {
-  document.getElementById('sec-detail').style.display = 'none';
-  document.getElementById('sec-store').style.display = 'block';
-}
-
-// ── ADMIN ──
-function adminLogin() {
-  const pass = document.getElementById('adminPass').value;
-  if (pass === '123123') {
-    document.getElementById('adminLogin').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-    clearMsg('adminMsg');
-  } else {
-    showMsg('adminMsg','Неверный пароль','err');
-  }
-}
-function adminLogout() {
-  document.getElementById('adminLogin').style.display = 'block';
-  document.getElementById('adminPanel').style.display = 'none';
-  document.getElementById('adminPass').value = '';
+function renderTop(apps){
+  document.getElementById("top-list").innerHTML=[...apps].sort((a,b)=>b.rating-a.rating).map((a,i)=>`
+    <div class="top-item" onclick="openApp(${a.id})">
+      <div class="top-num">${i+1}</div>
+      <div class="top-icon">${a.name[0]}</div>
+      <div class="top-info"><h4>${a.name}</h4><span>${a.dev} · ${a.tag}</span></div>
+      <div class="top-rating">★ ${a.rating}</div>
+    </div>
+  `).join("");
 }
 
-// Enter key
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Enter') return;
-  if (document.getElementById('tabLogin').classList.contains('active')) doLogin();
-  if (document.getElementById('regStep1').classList.contains('active') && document.getElementById('tabRegister').classList.contains('active')) sendCode();
-  if (document.getElementById('regStep3').classList.contains('active')) finishReg();
-  if (document.getElementById('adminLogin').style.display !== 'none' && document.getElementById('sec-admin').style.display === 'block') adminLogin();
-});
+function filterCat(el,cat){
+  document.querySelectorAll(".cat").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+  renderApps(cat==="all"?APPS:APPS.filter(a=>a.cat===cat));
+}
+
+function openApp(id){
+  const a=APPS.find(x=>x.id===id); if(!a)return;
+  prevPage="home";
+  document.getElementById("app-detail").innerHTML=`
+    <div class="app-detail-header">
+      <div class="app-detail-icon">${a.name[0]}</div>
+      <div class="app-detail-meta">
+        <h2>${a.name}</h2>
+        <div class="dev">${a.dev}</div>
+        <div class="rating-row">
+          <span style="color:var(--accent)">${"★".repeat(Math.round(a.rating))}</span>
+          <strong style="margin-left:6px">${a.rating}</strong>
+          <span style="color:var(--muted);font-size:12px;margin-left:6px">(${a.reviews.toLocaleString()})</span>
+        </div>
+      </div>
+    </div>
+    <button class="install-btn">📥 Установить</button>
+    <div class="detail-desc">${a.desc}</div>
+    <div class="reviews-title">💬 Отзывы</div>
+    ${a.reviews_data.map(r=>`
+      <div class="review">
+        <div class="review-header">
+          <div class="review-avatar">${r.name[0]}</div>
+          <div class="review-name">${r.name}</div>
+          <div class="review-date">${r.date}</div>
+        </div>
+        <div class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
+        <div class="review-text">${r.text}</div>
+      </div>
+    `).join("")}
+  `;
+  showPage("app", null);
+}
+
+// ── Admin ─────────────────────────────────────
+function adminLogin(){
+  const p=v("admin-pass");
+  const msg=document.getElementById("msg-admin");
+  clearMsg(msg);
+  if(p!==ADMIN_PASSWORD){showMsg(msg,"Неверный пароль","err");return;}
+  document.getElementById("admin-login-block").classList.add("hidden");
+  document.getElementById("admin-panel").classList.remove("hidden");
+  renderAdminApps();
+  renderAdminUsers();
+}
+
+function renderAdminApps(){
+  document.getElementById("admin-apps-list").innerHTML=APPS.map(a=>`
+    <div class="admin-app-item" id="admin-app-${a.id}">
+      <div class="admin-app-icon">${a.name[0]}</div>
+      <div class="admin-app-info"><h4>${a.name}</h4><span>${a.dev} · ★${a.rating}</span></div>
+      <button class="del-btn" onclick="adminDeleteApp(${a.id})">🗑</button>
+    </div>
+  `).join("") || '<div style="color:var(--muted);font-size:13px;padding:8px">Нет приложений</div>';
+}
+
+function adminDeleteApp(id){
+  APPS=APPS.filter(a=>a.id!==id);
+  renderApps(APPS); renderTop(APPS); renderAdminApps();
+}
+
+function renderAdminUsers(){
+  // Показываем текущего пользователя как пример (в реальности — запрос к API)
+  const users = [{nick: currentUser.nick, tg: currentUser.tg_username}];
+  document.getElementById("admin-users-list").innerHTML=users.map(u=>{
+    const role = userRoles[u.nick] || "user";
+    const isDev = role === "dev";
+    return `
+    <div class="user-item">
+      <div class="user-avatar-sm">${u.nick[0].toUpperCase()}</div>
+      <div class="user-info">
+        <h4>${u.nick}</h4>
+        <span>@${u.tg} · ${isDev?"💻 Разработчик":"👤 Пользователь"}</span>
+      </div>
+      ${isDev
+        ? `<button class="demote-btn" onclick="setRole('${u.nick}','user')">Убрать</button>`
+        : `<button class="promote-btn" onclick="setRole('${u.nick}','dev')">Сделать разработчиком</button>`
+      }
+    </div>`;
+  }).join("");
+}
+
+function setRole(nick, role){
+  userRoles[nick]=role;
+  localStorage.setItem("ds_roles",JSON.stringify(userRoles));
+  if(currentUser && currentUser.nick===nick) updateRoleBadges();
+  renderAdminUsers();
+}
+
+// ── Helpers ───────────────────────────────────
+const v = id => document.getElementById(id).value.trim();
+function showMsg(el,t,type){el.textContent=t;el.className="msg "+type;}
+function clearMsg(el){el.className="msg";}
+function load(btn,on){btn.classList.toggle("loading",on);btn.disabled=!!on;}
+
+async function post(path, data){
+  const r=await fetch(API+path,{method:"POST",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+  const d=await r.json();
+  return{...d,ok:r.ok,status:r.status,detail:d.detail};
+}
 </script>
 </body>
 </html>
