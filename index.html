@@ -16,254 +16,196 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;touch-action:manipulation;}
-body{background:var(--bg);color:var(--white);font-family:var(--font);
-  -webkit-font-smoothing:antialiased;user-select:none;}
+body{background:var(--bg);color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased;user-select:none;}
 
-/* ── Утилиты ── */
 .hidden{display:none!important;}
-.page{display:none;position:absolute;inset:0;overflow-y:auto;
-  padding-top:var(--nav-h);padding-bottom:var(--bottom-h);}
+.page{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:var(--nav-h);padding-bottom:var(--bottom-h);}
 .page.active{display:block;}
-.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 /* ── Auth ── */
-#auth-screen{position:fixed;inset:0;z-index:999;background:var(--bg);
-  display:flex;flex-direction:column;overflow-y:auto;padding:24px 20px 40px;}
+#auth-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;overflow-y:auto;padding:24px 20px 40px;}
 #auth-screen.hidden{display:none!important;}
-
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;margin-top:12px;}
-.auth-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border-radius:12px;display:grid;place-items:center;font-size:18px;}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;margin-top:8px;}
+.auth-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:grid;place-items:center;font-size:18px;}
 .auth-logo-name{font-size:18px;font-weight:800;}
 .auth-logo-name span{color:var(--accent);}
-
-.auth-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:12px;
-  padding:4px;margin-bottom:24px;}
-.auth-tab{flex:1;padding:9px 4px;border:none;background:none;color:var(--muted);
-  font-family:var(--font);font-size:12px;font-weight:700;border-radius:9px;cursor:pointer;transition:.2s;}
+.auth-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:22px;}
+.auth-tab{flex:1;padding:9px 4px;border:none;background:none;color:var(--muted);font-family:var(--font);font-size:12px;font-weight:700;border-radius:9px;cursor:pointer;transition:.2s;}
 .auth-tab.active{background:var(--accent);color:#fff;}
-
 .auth-title{font-size:22px;font-weight:800;margin-bottom:4px;}
-.auth-sub{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:20px;}
+.auth-sub{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:18px;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+.auth-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;}
+.auth-hint a{color:var(--accent);cursor:pointer;}
 
-.field-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:6px;display:block;}
-.field-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);
-  border-radius:12px;padding:14px 15px;color:var(--white);font-family:var(--mono);
-  font-size:15px;outline:none;transition:.2s;margin-bottom:14px;
-  -webkit-appearance:none;}
-.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,122,0,.15);}
-.field-input::placeholder{color:var(--muted);}
+/* ── Fields ── */
+.fl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.fi{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--white);font-family:var(--mono);font-size:14px;outline:none;transition:.2s;margin-bottom:13px;-webkit-appearance:none;}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,122,0,.15);}
+.fi::placeholder{color:var(--muted);}
+textarea.fi{resize:none;min-height:80px;font-size:13px;}
+select.fi{cursor:pointer;}
 
-.btn-main{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;border-radius:12px;padding:15px;color:#fff;font-family:var(--font);
-  font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
-.btn-main:active{opacity:.85;}.btn-main:disabled{opacity:.4;cursor:not-allowed;}
+/* ── Buttons ── */
+.btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
+.btn:active{opacity:.85;}.btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px;}
-.btn-ghost:active{opacity:.7;}
-.btn-main .sp{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
-.btn-main.loading .bt{display:none;}.btn-main.loading .sp{display:block;}
+.btn-sm{width:auto;padding:7px 12px;font-size:12px;border-radius:9px;}
+.btn-green{background:linear-gradient(135deg,#2ecc71,#27ae60);}
+.btn-red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.25);color:var(--red);}
+.btn .sp{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
+.btn.loading .bt{display:none;}.btn.loading .sp{display:block;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── Messages ── */
 .msg{font-size:12px;border-radius:9px;padding:9px 13px;margin-bottom:12px;display:none;line-height:1.4;}
 .msg.err{background:rgba(255,68,68,.12);color:var(--red);display:block;}
 .msg.ok{background:rgba(62,207,142,.12);color:var(--green);display:block;}
 
-.auth-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
-.auth-hint a{color:var(--accent);cursor:pointer;}
-
-.tab-content{display:none;}.tab-content.active{display:block;}
-
 /* ── App shell ── */
 #app-screen{position:fixed;inset:0;display:none;flex-direction:column;}
 #app-screen.active{display:flex;}
-
-/* Topbar */
-.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
-  background:rgba(13,13,13,.95);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 16px;gap:12px;}
-.topbar-menu{width:36px;height:36px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
-.topbar-menu span{display:block;width:20px;height:2px;background:var(--white);
-  border-radius:2px;transition:.3s;}
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;background:rgba(13,13,13,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;}
+.topbar-menu{width:36px;height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;flex-shrink:0;}
+.topbar-menu span{display:block;width:20px;height:2px;background:var(--white);border-radius:2px;}
 .topbar-title{flex:1;font-size:16px;font-weight:800;}
 .topbar-title span{color:var(--accent);}
-.topbar-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid;place-items:center;font-weight:800;font-size:14px;cursor:pointer;}
-
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);z-index:100;
-  background:rgba(13,13,13,.95);backdrop-filter:blur(10px);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;}
-.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;padding:6px 0;cursor:pointer;transition:.2s;border:none;background:none;}
-.bnav-btn .icon{font-size:20px;transition:.2s;}
-.bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);transition:.2s;}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:14px;cursor:pointer;}
+.pages{position:fixed;top:var(--nav-h);bottom:var(--bottom-h);left:0;right:0;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);z-index:100;background:rgba(13,13,13,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;align-items:center;}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 0;cursor:pointer;border:none;background:none;}
+.bnav-btn .icon{font-size:20px;}
+.bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);}
 .bnav-btn.active .lbl{color:var(--accent);}
 
-/* Pages container */
-.pages{position:fixed;top:var(--nav-h);bottom:var(--bottom-h);left:0;right:0;}
-.page{padding-top:0!important;} /* сброс конфликта */
-
 /* ── Sidebar ── */
-.sidebar-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);
-  opacity:0;pointer-events:none;transition:opacity .3s;}
+.sidebar-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:300;
-  background:var(--surface);border-right:1px solid var(--border);
-  transform:translateX(-100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
-  display:flex;flex-direction:column;padding:0;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:300;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
 .sidebar.open{transform:translateX(0);}
-.sidebar-top{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
-.sidebar-avatar{width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:12px;}
+.sidebar-top{padding:20px;border-bottom:1px solid var(--border);}
+.sidebar-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:10px;}
 .sidebar-name{font-size:16px;font-weight:800;margin-bottom:2px;}
 .sidebar-tg{font-size:12px;color:var(--muted);margin-bottom:8px;}
-.role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
-  border-radius:20px;font-size:11px;font-weight:700;}
+.role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .role-user{background:rgba(255,122,0,.12);color:var(--accent);}
 .role-dev{background:rgba(62,207,142,.12);color:var(--green);}
 .role-admin{background:rgba(255,68,68,.12);color:var(--red);}
-.sidebar-nav{padding:12px 0;flex:1;}
-.snav-item{display:flex;align-items:center;gap:12px;padding:14px 20px;
-  cursor:pointer;transition:.15s;font-size:14px;font-weight:600;}
+.sidebar-nav{padding:10px 0;flex:1;}
+.snav-item{display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;font-size:14px;font-weight:600;}
 .snav-item:active{background:rgba(255,122,0,.08);}
 .snav-item .si{font-size:18px;width:24px;text-align:center;}
-.snav-item .st{flex:1;}
 .sidebar-bottom{padding:16px 20px;border-top:1px solid var(--border);}
-.logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);
-  color:var(--red);border-radius:10px;padding:12px;font-family:var(--font);
-  font-size:13px;font-weight:700;cursor:pointer;}
+.logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);color:var(--red);border-radius:10px;padding:12px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
 
-/* ── Home page ── */
-#page-home{padding:16px;}
-.hero{background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(255,85,0,.08));
-  border:1px solid rgba(255,122,0,.25);border-radius:18px;padding:20px;margin-bottom:20px;}
+/* ── Common page styles ── */
+.pad{padding:16px;}
+.sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.sec-title span{color:var(--accent);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(255,85,0,.08));border:1px solid rgba(255,122,0,.25);border-radius:18px;padding:20px;margin-bottom:20px;}
 .hero h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
 .hero h2 span{color:var(--accent);}
 .hero p{color:var(--muted);font-size:13px;line-height:1.5;}
 
-.sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-.sec-title span{color:var(--accent);}
-
-.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;
-  scrollbar-width:none;-ms-overflow-style:none;}
+/* ── Categories ── */
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none;}
 .cats::-webkit-scrollbar{display:none;}
-.cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;
-  padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;transition:.2s;flex-shrink:0;}
+.cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 .cat.active{background:rgba(255,122,0,.15);border-color:var(--accent);color:var(--accent);}
 
+/* ── App cards ── */
 .apps-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
-  padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s;}
+.app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;}
 .app-card:active{background:var(--surface2);}
-.app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
-  font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;flex-shrink:0;}
+.app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
 .app-info{flex:1;min-width:0;}
-.app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;}
+.app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .app-info .dev{color:var(--muted);font-size:12px;margin-bottom:4px;}
-.app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;}
-.app-info .stars{color:var(--accent);}
-.app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;
-  padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;}
+.app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);}
+.app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;}
 
-/* ── Top page ── */
-#page-top{padding:16px;}
-.top-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;}
+/* ── Empty state ── */
+.empty{text-align:center;padding:48px 20px;}
+.empty .ei{font-size:48px;margin-bottom:12px;}
+.empty h3{font-size:16px;font-weight:800;margin-bottom:6px;}
+.empty p{color:var(--muted);font-size:13px;line-height:1.5;}
+
+/* ── Top ── */
+.top-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;}
 .top-item:active{background:var(--surface2);}
 .top-num{font-size:18px;font-weight:800;color:var(--accent);width:24px;text-align:center;flex-shrink:0;}
-.top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-  font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;flex-shrink:0;}
+.top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
 .top-info{flex:1;min-width:0;}
 .top-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .top-info span{color:var(--muted);font-size:11px;}
 .top-rating{font-size:13px;font-weight:800;color:var(--accent);}
 
 /* ── App detail ── */
-#page-app{padding:16px;}
-.back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);
-  color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;
-  padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
-.app-detail-header{display:flex;gap:14px;margin-bottom:16px;}
-.app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;
-  font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;flex-shrink:0;}
-.app-detail-meta{flex:1;}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
+.app-detail-header{display:flex;gap:14px;margin-bottom:14px;}
+.app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
 .app-detail-meta h2{font-size:18px;font-weight:800;margin-bottom:2px;}
 .app-detail-meta .dev{color:var(--muted);font-size:12px;margin-bottom:6px;}
-.app-detail-meta .rating-row{display:flex;align-items:center;gap:6px;font-size:13px;}
-.install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);
-  font-size:14px;font-weight:700;cursor:pointer;margin:14px 0;}
-.detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:16px;margin-bottom:16px;color:var(--muted);font-size:13px;line-height:1.7;}
-.reviews-title{font-size:15px;font-weight:800;margin-bottom:12px;}
-.review{background:var(--surface);border:1px solid var(--border);border-radius:12px;
-  padding:14px;margin-bottom:10px;}
+.install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin:12px 0;}
+.detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;color:var(--muted);font-size:13px;line-height:1.7;}
+
+/* ── Reviews ── */
+.review{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
 .review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.review-avatar{width:28px;height:28px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.review-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
 .review-name{font-size:12px;font-weight:700;flex:1;}
 .review-date{color:var(--muted);font-size:10px;}
 .review-stars{color:var(--accent);font-size:11px;margin-bottom:4px;}
 .review-text{color:var(--muted);font-size:12px;line-height:1.5;}
+.star-select{display:flex;gap:6px;margin-bottom:12px;}
+.star-btn{font-size:22px;background:none;border:none;cursor:pointer;opacity:.3;transition:.2s;padding:0;}
+.star-btn.active{opacity:1;}
 
-/* ── Profile page ── */
-#page-profile{padding:16px;}
-.profile-card{background:var(--surface);border:1px solid var(--border);
-  border-radius:18px;padding:24px;text-align:center;margin-bottom:14px;}
-.profile-avatar-big{width:68px;height:68px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;}
+/* ── Profile ── */
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px;}
+.profile-avatar-big{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;}
 .profile-nick{font-size:18px;font-weight:800;margin-bottom:4px;}
 .profile-tg{color:var(--muted);font-size:13px;margin-bottom:12px;}
-.profile-stats{display:flex;justify-content:center;gap:28px;padding-top:14px;
-  border-top:1px solid var(--border);}
+.profile-stats{display:flex;justify-content:center;gap:28px;padding-top:14px;border-top:1px solid var(--border);}
 .pstat .val{font-size:18px;font-weight:800;color:var(--accent);}
 .pstat .lbl{font-size:10px;color:var(--muted);margin-top:2px;}
 
-/* ── Admin page ── */
-#page-admin{padding:16px;}
-.admin-login-card{background:var(--surface);border:1px solid var(--border);
-  border-radius:18px;padding:24px;margin-top:8px;}
-.admin-section{margin-bottom:24px;}
-.admin-section-title{font-size:13px;font-weight:800;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;}
-.admin-app-item{background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
-  font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;flex-shrink:0;}
+/* ── Dev panel ── */
+.dev-section{margin-bottom:20px;}
+.sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
+.sub-item h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.sub-item p{color:var(--muted);font-size:12px;margin-bottom:8px;}
+.sub-status{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;}
+.status-pending{background:rgba(255,179,0,.15);color:#ffb300;}
+.status-approved{background:rgba(62,207,142,.15);color:var(--green);}
+.status-rejected{background:rgba(255,68,68,.15);color:var(--red);}
+.file-upload{width:100%;background:rgba(255,255,255,.03);border:1.5px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-bottom:13px;transition:.2s;}
+.file-upload:active{border-color:var(--accent);}
+.file-upload .fu-icon{font-size:28px;margin-bottom:6px;}
+.file-upload .fu-text{font-size:12px;color:var(--muted);}
+.file-upload .fu-name{font-size:12px;color:var(--green);margin-top:4px;word-break:break-all;}
+
+/* ── Admin ── */
+.admin-login-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-top:8px;}
+.admin-section-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.admin-sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
+.admin-sub-item h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.admin-sub-item p{color:var(--muted);font-size:11px;margin-bottom:10px;line-height:1.4;}
+.admin-sub-actions{display:flex;gap:8px;}
+.admin-app-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
 .admin-app-info{flex:1;min-width:0;}
 .admin-app-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .admin-app-info span{color:var(--muted);font-size:11px;}
-.del-btn{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2);
-  color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;
-  cursor:pointer;flex-shrink:0;font-family:var(--font);}
-.user-item{background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.user-avatar-sm{width:36px;height:36px;border-radius:50%;
-  background:var(--surface2);border:1px solid var(--border);
-  display:grid;place-items:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.user-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.user-av{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0;}
 .user-info{flex:1;min-width:0;}
 .user-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .user-info span{color:var(--muted);font-size:11px;}
-.promote-btn{background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.2);
-  color:var(--green);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;
-  cursor:pointer;flex-shrink:0;font-family:var(--font);}
-.demote-btn{background:rgba(255,122,0,.1);border:1px solid rgba(255,122,0,.2);
-  color:var(--accent);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;
-  cursor:pointer;flex-shrink:0;font-family:var(--font);}
+.role-select{background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:11px;font-weight:700;border-radius:8px;padding:5px 8px;cursor:pointer;outline:none;}
 </style>
 </head>
 <body>
@@ -274,7 +216,6 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
     <div class="auth-logo-icon">📦</div>
     <div class="auth-logo-name">Delivery<span>Store</span></div>
   </div>
-
   <div class="auth-tabs">
     <button class="auth-tab active" onclick="authTab('login')">Войти</button>
     <button class="auth-tab" onclick="authTab('register')">Регистрация</button>
@@ -286,13 +227,11 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-sub">Войдите в аккаунт</div>
     <div class="msg" id="msg-login"></div>
-    <label class="field-label">Ник</label>
-    <input class="field-input" id="l-nick" placeholder="ваш никнейм"/>
-    <label class="field-label">Пароль</label>
-    <input class="field-input" id="l-pass" type="password" placeholder="••••••••"/>
-    <button class="btn-main" id="btn-login" onclick="doLogin()">
-      <span class="bt">Войти →</span><div class="sp"></div>
-    </button>
+    <label class="fl">Ник</label>
+    <input class="fi" id="l-nick" placeholder="ваш никнейм"/>
+    <label class="fl">Пароль</label>
+    <input class="fi" id="l-pass" type="password" placeholder="••••••••"/>
+    <button class="btn" id="btn-login" onclick="doLogin()"><span class="bt">Войти →</span><div class="sp"></div></button>
     <div class="auth-hint"><a onclick="authTab('reset')">Забыли пароль?</a></div>
   </div>
 
@@ -302,22 +241,18 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
     <div class="auth-sub">Сначала напишите <b>/start</b> боту в Telegram</div>
     <div class="msg" id="msg-reg"></div>
     <div id="reg-s1">
-      <label class="field-label">Telegram username</label>
-      <input class="field-input" id="r-tg" placeholder="username (без @)"/>
-      <button class="btn-main" id="btn-reg1" onclick="regStep1()">
-        <span class="bt">Получить код →</span><div class="sp"></div>
-      </button>
+      <label class="fl">Telegram username</label>
+      <input class="fi" id="r-tg" placeholder="username (без @)"/>
+      <button class="btn" id="btn-reg1" onclick="regStep1()"><span class="bt">Получить код →</span><div class="sp"></div></button>
     </div>
     <div id="reg-s2" class="hidden">
-      <label class="field-label">Код из Telegram</label>
-      <input class="field-input" id="r-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
-      <label class="field-label">Придумайте ник</label>
-      <input class="field-input" id="r-nick" placeholder="мин. 3 символа"/>
-      <label class="field-label">Пароль</label>
-      <input class="field-input" id="r-pass" type="password" placeholder="мин. 6 символов"/>
-      <button class="btn-main" id="btn-reg2" onclick="regStep2()">
-        <span class="bt">Зарегистрироваться →</span><div class="sp"></div>
-      </button>
+      <label class="fl">Код из Telegram</label>
+      <input class="fi" id="r-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="fl">Придумайте ник</label>
+      <input class="fi" id="r-nick" placeholder="мин. 3 символа"/>
+      <label class="fl">Пароль</label>
+      <input class="fi" id="r-pass" type="password" placeholder="мин. 6 символов"/>
+      <button class="btn" id="btn-reg2" onclick="regStep2()"><span class="bt">Зарегистрироваться →</span><div class="sp"></div></button>
     </div>
   </div>
 
@@ -327,44 +262,33 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
     <div class="auth-sub">Введите Telegram username</div>
     <div class="msg" id="msg-reset"></div>
     <div id="reset-s1">
-      <label class="field-label">Telegram username</label>
-      <input class="field-input" id="rs-tg" placeholder="username (без @)"/>
-      <button class="btn-main" id="btn-rs1" onclick="resetStep1()">
-        <span class="bt">Получить код →</span><div class="sp"></div>
-      </button>
+      <label class="fl">Telegram username</label>
+      <input class="fi" id="rs-tg" placeholder="username (без @)"/>
+      <button class="btn" id="btn-rs1" onclick="resetStep1()"><span class="bt">Получить код →</span><div class="sp"></div></button>
     </div>
     <div id="reset-s2" class="hidden">
-      <label class="field-label">Код из Telegram</label>
-      <input class="field-input" id="rs-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
-      <label class="field-label">Новый пароль</label>
-      <input class="field-input" id="rs-newpass" type="password" placeholder="мин. 6 символов"/>
-      <button class="btn-main" id="btn-rs2" onclick="resetStep2()">
-        <span class="bt">Сохранить →</span><div class="sp"></div>
-      </button>
+      <label class="fl">Код из Telegram</label>
+      <input class="fi" id="rs-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="fl">Новый пароль</label>
+      <input class="fi" id="rs-newpass" type="password" placeholder="мин. 6 символов"/>
+      <button class="btn" id="btn-rs2" onclick="resetStep2()"><span class="bt">Сохранить →</span><div class="sp"></div></button>
     </div>
   </div>
 </div>
 
 <!-- ══ APP ══ -->
 <div id="app-screen">
-  <!-- Topbar -->
   <div class="topbar">
-    <div class="topbar-menu" onclick="openSidebar()">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="topbar-menu" onclick="openSidebar()"><span></span><span></span><span></span></div>
     <div class="topbar-title">Delivery<span>Store</span></div>
     <div class="topbar-avatar" id="top-avatar" onclick="openSidebar()">?</div>
   </div>
 
-  <!-- Pages -->
   <div class="pages">
     <!-- HOME -->
-    <div class="page active scroll" id="page-home">
-      <div style="padding:16px;">
-        <div class="hero">
-          <h2>Магазин <span>Mini Apps</span></h2>
-          <p>Лучшие Telegram мини-приложения</p>
-        </div>
+    <div class="page active" id="page-home">
+      <div class="pad">
+        <div class="hero"><h2>Магазин <span>Mini Apps</span></h2><p>Лучшие Telegram мини-приложения</p></div>
         <div class="sec-title">🗂 <span>Категории</span></div>
         <div class="cats">
           <div class="cat active" onclick="filterCat(this,'all')">Все</div>
@@ -372,68 +296,110 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
           <div class="cat" onclick="filterCat(this,'tools')">🛠 Инструменты</div>
           <div class="cat" onclick="filterCat(this,'social')">💬 Социальные</div>
           <div class="cat" onclick="filterCat(this,'finance')">💰 Финансы</div>
+          <div class="cat" onclick="filterCat(this,'other')">📦 Другое</div>
         </div>
         <div class="sec-title">📦 <span>Приложения</span></div>
-        <div class="apps-list" id="apps-list"></div>
+        <div id="apps-list"></div>
       </div>
     </div>
 
     <!-- TOP -->
-    <div class="page scroll" id="page-top">
-      <div style="padding:16px;">
+    <div class="page" id="page-top">
+      <div class="pad">
         <div class="sec-title">🏆 <span>Топ приложений</span></div>
         <div id="top-list"></div>
       </div>
     </div>
 
     <!-- APP DETAIL -->
-    <div class="page scroll" id="page-app">
-      <div style="padding:16px;">
+    <div class="page" id="page-app">
+      <div class="pad">
         <button class="back-btn" onclick="goBack()">← Назад</button>
         <div id="app-detail"></div>
       </div>
     </div>
 
     <!-- PROFILE -->
-    <div class="page scroll" id="page-profile">
-      <div style="padding:16px;">
+    <div class="page" id="page-profile">
+      <div class="pad">
         <div class="sec-title">👤 <span>Профиль</span></div>
         <div class="profile-card">
           <div class="profile-avatar-big" id="prof-av">?</div>
           <div class="profile-nick" id="prof-nick">—</div>
           <div class="profile-tg" id="prof-tg">—</div>
-          <div style="margin-bottom:12px;" id="prof-role-wrap">
-            <span class="role-badge role-user">👤 Пользователь</span>
-          </div>
+          <div style="margin-bottom:14px" id="prof-role-wrap"><span class="role-badge role-user">👤 Пользователь</span></div>
           <div class="profile-stats">
-            <div class="pstat"><div class="val">0</div><div class="lbl">Приложений</div></div>
-            <div class="pstat"><div class="val">0</div><div class="lbl">Отзывов</div></div>
+            <div class="pstat"><div class="val" id="prof-apps">0</div><div class="lbl">Приложений</div></div>
+            <div class="pstat"><div class="val" id="prof-reviews">0</div><div class="lbl">Отзывов</div></div>
           </div>
         </div>
-        <button class="btn-main btn-ghost" style="width:100%;color:var(--red);border-color:rgba(255,68,68,.3);" onclick="logout()">Выйти</button>
+        <button class="btn btn-ghost" style="color:var(--red);border-color:rgba(255,68,68,.3);" onclick="logout()">Выйти из аккаунта</button>
+      </div>
+    </div>
+
+    <!-- DEV PANEL -->
+    <div class="page" id="page-dev">
+      <div class="pad">
+        <div class="sec-title">💻 <span>Панель разработчика</span></div>
+
+        <!-- Submit form -->
+        <div class="card dev-section">
+          <div style="font-size:14px;font-weight:800;margin-bottom:14px;">📤 Опубликовать приложение</div>
+          <div class="msg" id="msg-dev"></div>
+          <label class="fl">Название приложения</label>
+          <input class="fi" id="dev-name" placeholder="Моё крутое приложение"/>
+          <label class="fl">Описание</label>
+          <textarea class="fi" id="dev-desc" placeholder="Расскажите о вашем приложении..."></textarea>
+          <label class="fl">Версия</label>
+          <input class="fi" id="dev-ver" placeholder="1.0.0"/>
+          <label class="fl">Категория</label>
+          <select class="fi" id="dev-cat">
+            <option value="games">🎮 Игры</option>
+            <option value="tools">🛠 Инструменты</option>
+            <option value="social">💬 Социальные</option>
+            <option value="finance">💰 Финансы</option>
+            <option value="other">📦 Другое</option>
+          </select>
+          <label class="fl">APK файл</label>
+          <div class="file-upload" onclick="document.getElementById('dev-apk').click()">
+            <div class="fu-icon">📁</div>
+            <div class="fu-text">Нажмите чтобы выбрать APK файл</div>
+            <div class="fu-name" id="apk-name"></div>
+          </div>
+          <input type="file" id="dev-apk" accept=".apk" style="display:none" onchange="onApkSelect(this)"/>
+          <button class="btn" id="btn-submit-app" onclick="submitApp()"><span class="bt">Отправить на рассмотрение →</span><div class="sp"></div></button>
+        </div>
+
+        <!-- My submissions -->
+        <div class="dev-section">
+          <div class="admin-section-title">Мои заявки</div>
+          <div id="my-submissions"></div>
+        </div>
       </div>
     </div>
 
     <!-- ADMIN -->
-    <div class="page scroll" id="page-admin">
-      <div style="padding:16px;">
+    <div class="page" id="page-admin">
+      <div class="pad">
         <div class="sec-title">⚙️ <span>Админ панель</span></div>
         <div id="admin-login-block">
           <div class="admin-login-card">
             <div class="msg" id="msg-admin"></div>
-            <label class="field-label">Пароль администратора</label>
-            <input class="field-input" id="admin-pass" type="password" placeholder="••••••••"/>
-            <button class="btn-main" onclick="adminLogin()">
-              <span class="bt">Войти →</span><div class="sp"></div>
-            </button>
+            <label class="fl">Пароль администратора</label>
+            <input class="fi" id="admin-pass" type="password" placeholder="••••••••"/>
+            <button class="btn" onclick="adminLogin()"><span class="bt">Войти →</span><div class="sp"></div></button>
           </div>
         </div>
         <div id="admin-panel" class="hidden">
-          <div class="admin-section">
-            <div class="admin-section-title">📦 Приложения</div>
+          <div style="margin-bottom:20px;">
+            <div class="admin-section-title">📬 Заявки на рассмотрении</div>
+            <div id="admin-submissions"></div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <div class="admin-section-title">📦 Опубликованные приложения</div>
             <div id="admin-apps-list"></div>
           </div>
-          <div class="admin-section">
+          <div>
             <div class="admin-section-title">👥 Пользователи</div>
             <div id="admin-users-list"></div>
           </div>
@@ -444,18 +410,11 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
 
   <!-- Bottom nav -->
   <div class="bottom-nav">
-    <button class="bnav-btn active" onclick="showPage('home',this)">
-      <div class="icon">🏠</div><div class="lbl">Главная</div>
-    </button>
-    <button class="bnav-btn" onclick="showPage('top',this)">
-      <div class="icon">🏆</div><div class="lbl">Топы</div>
-    </button>
-    <button class="bnav-btn" onclick="showPage('profile',this)">
-      <div class="icon">👤</div><div class="lbl">Профиль</div>
-    </button>
-    <button class="bnav-btn" onclick="showPage('admin',this)">
-      <div class="icon">⚙️</div><div class="lbl">Админ</div>
-    </button>
+    <button class="bnav-btn active" onclick="showPage('home',this)"><div class="icon">🏠</div><div class="lbl">Главная</div></button>
+    <button class="bnav-btn" onclick="showPage('top',this)"><div class="icon">🏆</div><div class="lbl">Топы</div></button>
+    <button class="bnav-btn" onclick="showPage('profile',this)"><div class="icon">👤</div><div class="lbl">Профиль</div></button>
+    <button class="bnav-btn" id="bnav-dev" onclick="showPage('dev',this)" style="display:none"><div class="icon">💻</div><div class="lbl">Разработчик</div></button>
+    <button class="bnav-btn" id="bnav-admin" onclick="showPage('admin',this)" style="display:none"><div class="icon">⚙️</div><div class="lbl">Админ</div></button>
   </div>
 </div>
 
@@ -469,57 +428,35 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);
     <div id="sb-role-wrap"><span class="role-badge role-user">👤 Пользователь</span></div>
   </div>
   <div class="sidebar-nav">
-    <div class="snav-item" onclick="sidebarGo('home')">
-      <span class="si">🏠</span><span class="st">Главная</span>
-    </div>
-    <div class="snav-item" onclick="sidebarGo('top')">
-      <span class="si">🏆</span><span class="st">Топы</span>
-    </div>
-    <div class="snav-item" onclick="sidebarGo('profile')">
-      <span class="si">👤</span><span class="st">Мой профиль</span>
-    </div>
-    <div class="snav-item" onclick="sidebarGo('admin')">
-      <span class="si">⚙️</span><span class="st">Админ панель</span>
-    </div>
+    <div class="snav-item" onclick="sidebarGo('home')"><span class="si">🏠</span><span>Главная</span></div>
+    <div class="snav-item" onclick="sidebarGo('top')"><span class="si">🏆</span><span>Топы</span></div>
+    <div class="snav-item" onclick="sidebarGo('profile')"><span class="si">👤</span><span>Профиль</span></div>
+    <div class="snav-item" id="snav-dev" style="display:none" onclick="sidebarGo('dev')"><span class="si">💻</span><span>Панель разработчика</span></div>
+    <div class="snav-item" id="snav-admin" style="display:none" onclick="sidebarGo('admin')"><span class="si">⚙️</span><span>Админ панель</span></div>
   </div>
   <div class="sidebar-bottom">
     <button class="logout-btn" onclick="logout()">Выйти из аккаунта</button>
   </div>
 </div>
 
-</div><!-- /app-screen -->
-
 <script>
 const API = "https://web-production-9fdbe.up.railway.app";
 const ADMIN_PASSWORD = "123123";
 
-// ── Data ────────────────────────────────────
-let APPS = [
-  {id:1,name:"Minecraft",dev:"Microsoft",cat:"games",rating:4.8,reviews:1247,tag:"🎮 Игры",
-   desc:"Легендарная песочница теперь в Telegram! Стройте, исследуйте и выживайте в бесконечном мире вместе с друзьями.",
-   reviews_data:[
-    {name:"Alex_gamer",date:"12 мая",stars:5,text:"Невероятно! Никогда не думал что Minecraft будет в Telegram."},
-    {name:"Masha_dev",date:"8 мая",stars:5,text:"Играю каждый день! Хочется больше биомов. 10/10"},
-    {name:"Petr_123",date:"3 мая",stars:4,text:"Хорошо, иногда подтормаживает. Разработчикам зачёт!"},
-    {name:"Ulyana_K",date:"1 мая",stars:5,text:"Лучший мини-апп. Провела за ним всё воскресенье 😄"},
-    {name:"Denis_pro",date:"28 апр",stars:3,text:"Неплохо для мини-приложения."},
-  ]}
-];
-
-// Локальные роли пользователей (в реальности надо хранить в БД)
-let userRoles = JSON.parse(localStorage.getItem("ds_roles") || "{}");
-
 let currentUser = JSON.parse(localStorage.getItem("ds_user") || "null");
+let allApps = [];
+let currentFilter = "all";
+let currentAppId = null;
+let selectedStars = 0;
+let apkBase64 = null;
 let regTg = "", resetTg = "", prevPage = "home";
 
-// ── Init ────────────────────────────────────
-window.onload = () => {
-  if(currentUser){ showApp(); }
-  renderApps(APPS);
-  renderTop(APPS);
+// ── Init ────────────────────────────────────────
+window.onload = async () => {
+  if(currentUser){ showApp(); await loadApps(); }
 };
 
-// ── Auth tabs ────────────────────────────────
+// ── Auth tabs ────────────────────────────────────
 function authTab(t){
   document.querySelectorAll(".auth-tab").forEach((el,i)=>{
     el.classList.toggle("active",["login","register","reset"][i]===t);
@@ -528,41 +465,38 @@ function authTab(t){
   document.getElementById("tc-"+t).classList.add("active");
 }
 
-// ── Login ────────────────────────────────────
+// ── Login ────────────────────────────────────────
 async function doLogin(){
   const nick=v("l-nick"), pass=v("l-pass");
   const msg=document.getElementById("msg-login");
   clearMsg(msg);
   if(!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-login");
-  load(btn,1);
+  const btn=document.getElementById("btn-login"); load(btn,1);
   try{
-    const r=await post("/login",{nickname:nick,password:pass});
+    const r=await post("/login",{nick,password:pass});
     if(!r.ok){
-      const e={wrong_credentials:"Неверный ник или пароль"};
+      const e={not_found:"Пользователь не найден",wrong_password:"Неверный пароль"};
       showMsg(msg,e[r.detail]||"Ошибка входа","err");return;
     }
-    currentUser={nick:r.nick,tg_username:r.tg_username};
+    currentUser={nick:r.nick,tg_username:r.tg_username,role:r.role};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
-    showApp();
+    showApp(); await loadApps();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
   finally{load(btn,0);}
 }
 
-// ── Register ─────────────────────────────────
+// ── Register ──────────────────────────────────────
 async function regStep1(){
   const tg=v("r-tg").replace("@","");
   const msg=document.getElementById("msg-reg");
   clearMsg(msg);
   if(!tg){showMsg(msg,"Введите username","err");return;}
   regTg=tg;
-  const btn=document.getElementById("btn-reg1");
-  load(btn,1);
+  const btn=document.getElementById("btn-reg1"); load(btn,1);
   try{
-    const r=await post("/send-code",{tg_username:tg,purpose:"register"});
+    const r=await post("/send-code",{tg_username:tg});
     if(!r.ok){
-      const e={already_registered:"Уже зарегистрирован",
-        user_not_found:"Сначала напишите /start боту!"};
+      const e={already_registered:"Уже зарегистрирован",user_not_found:"Сначала напишите /start боту!"};
       showMsg(msg,e[r.detail]||"Ошибка отправки","err");return;
     }
     showMsg(msg,"Код отправлен в Telegram!","ok");
@@ -577,37 +511,32 @@ async function regStep2(){
   const msg=document.getElementById("msg-reg");
   clearMsg(msg);
   if(!code||!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-reg2");
-  load(btn,1);
+  const btn=document.getElementById("btn-reg2"); load(btn,1);
   try{
-    // Шаг 1: проверяем код
     const r1=await post("/verify-code",{tg_username:regTg,code});
     if(!r1.ok){
-      const e={wrong_code:"Неверный код",expired:"Код истёк, запросите новый",no_code:"Сначала запросите код"};
+      const e={wrong_code:"Неверный код",expired:"Код истёк",no_code:"Сначала запросите код"};
       showMsg(msg,e[r1.detail]||"Ошибка кода","err");return;
     }
-    // Шаг 2: создаём аккаунт
     const r2=await post("/finish-register",{tg_username:regTg,nick,password:pass});
     if(!r2.ok){
-      const e={nick_taken:"Этот ник уже занят",not_verified:"Ошибка подтверждения"};
+      const e={nick_taken:"Ник уже занят",not_verified:"Ошибка подтверждения",nick_too_short:"Ник слишком короткий",pass_too_short:"Пароль слишком короткий"};
       showMsg(msg,e[r2.detail]||"Ошибка регистрации","err");return;
     }
-    currentUser={nick:r2.nick,tg_username:regTg};
+    currentUser={nick:r2.nick,tg_username:regTg,role:r2.role};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
-    showApp();
+    showApp(); await loadApps();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
   finally{load(btn,0);}
 }
 
-// ── Reset ─────────────────────────────────────
+// ── Reset ─────────────────────────────────────────
 async function resetStep1(){
   const tg=v("rs-tg").replace("@","");
   const msg=document.getElementById("msg-reset");
-  clearMsg(msg);
-  if(!tg){showMsg(msg,"Введите username","err");return;}
+  clearMsg(msg); if(!tg){showMsg(msg,"Введите username","err");return;}
   resetTg=tg;
-  const btn=document.getElementById("btn-rs1");
-  load(btn,1);
+  const btn=document.getElementById("btn-rs1"); load(btn,1);
   try{
     const r=await post("/send-reset-code",{tg_username:tg});
     if(!r.ok){showMsg(msg,"Пользователь не найден или не писал боту","err");return;}
@@ -621,10 +550,8 @@ async function resetStep1(){
 async function resetStep2(){
   const code=v("rs-code"),np=v("rs-newpass");
   const msg=document.getElementById("msg-reset");
-  clearMsg(msg);
-  if(!code||!np){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-rs2");
-  load(btn,1);
+  clearMsg(msg); if(!code||!np){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-rs2"); load(btn,1);
   try{
     const r=await post("/reset-password",{tg_username:resetTg,code,new_password:np});
     if(!r.ok){showMsg(msg,"Неверный или истёкший код","err");return;}
@@ -634,31 +561,36 @@ async function resetStep2(){
   finally{load(btn,0);}
 }
 
-// ── Show app ─────────────────────────────────
+// ── Show app ──────────────────────────────────────
 function showApp(){
   document.getElementById("auth-screen").classList.add("hidden");
   document.getElementById("app-screen").classList.add("active");
   const letter=(currentUser.nick||"?")[0].toUpperCase();
-  document.getElementById("top-avatar").textContent=letter;
-  document.getElementById("sb-avatar").textContent=letter;
-  document.getElementById("prof-av").textContent=letter;
+  ["top-avatar","sb-avatar","prof-av"].forEach(id=>document.getElementById(id).textContent=letter);
   document.getElementById("sb-name").textContent=currentUser.nick;
   document.getElementById("prof-nick").textContent=currentUser.nick;
   document.getElementById("sb-tg").textContent="@"+currentUser.tg_username;
   document.getElementById("prof-tg").textContent="@"+currentUser.tg_username;
-  updateRoleBadges();
+  updateRoleUI();
 }
 
-function updateRoleBadges(){
-  const role = userRoles[currentUser.nick] || "user";
-  const badgeMap = {
-    user: '<span class="role-badge role-user">👤 Пользователь</span>',
-    dev:  '<span class="role-badge role-dev">💻 Разработчик</span>',
+function updateRoleUI(){
+  const role=currentUser.role||"user";
+  const badges={
+    user:'<span class="role-badge role-user">👤 Пользователь</span>',
+    dev:'<span class="role-badge role-dev">💻 Разработчик</span>',
     admin:'<span class="role-badge role-admin">⚡ Администратор</span>',
   };
-  const badge = badgeMap[role] || badgeMap.user;
-  document.getElementById("prof-role-wrap").innerHTML = badge;
-  document.getElementById("sb-role-wrap").innerHTML = badge;
+  const badge=badges[role]||badges.user;
+  document.getElementById("prof-role-wrap").innerHTML=badge;
+  document.getElementById("sb-role-wrap").innerHTML=badge;
+  // Показываем нужные кнопки в nav
+  const isDev=role==="dev"||role==="admin";
+  const isAdmin=role==="admin";
+  document.getElementById("bnav-dev").style.display=isDev?"flex":"none";
+  document.getElementById("bnav-admin").style.display=isAdmin?"flex":"none";
+  document.getElementById("snav-dev").style.display=isDev?"flex":"none";
+  document.getElementById("snav-admin").style.display=isAdmin?"flex":"none";
 }
 
 function logout(){
@@ -666,22 +598,23 @@ function logout(){
   location.reload();
 }
 
-// ── Pages ─────────────────────────────────────
-function showPage(p, btn){
+// ── Pages ─────────────────────────────────────────
+function showPage(p,btn){
   document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
   document.getElementById("page-"+p).classList.add("active");
   document.querySelectorAll(".bnav-btn").forEach(el=>el.classList.remove("active"));
-  if(btn) btn.classList.add("active");
+  if(btn)btn.classList.add("active");
   prevPage=p;
+  if(p==="dev")loadMySubmissions();
+  if(p==="profile")loadProfileStats();
 }
 
 function goBack(){
-  showPage(prevPage==="app"?"home":prevPage,
-    document.querySelector(".bnav-btn"));
-  document.querySelectorAll(".bnav-btn")[0].classList.add("active");
+  const back=prevPage==="app"?"home":prevPage;
+  showPage(back,document.querySelectorAll(".bnav-btn")[0]);
 }
 
-// ── Sidebar ───────────────────────────────────
+// ── Sidebar ───────────────────────────────────────
 function openSidebar(){
   document.getElementById("sidebar").classList.add("open");
   document.getElementById("sidebar-overlay").classList.add("open");
@@ -692,80 +625,211 @@ function closeSidebar(){
 }
 function sidebarGo(p){
   closeSidebar();
-  showPage(p, document.querySelectorAll(".bnav-btn")[["home","top","profile","admin"].indexOf(p)]);
+  const idx=["home","top","profile"].indexOf(p);
+  const btn=idx>=0?document.querySelectorAll(".bnav-btn")[idx]:null;
+  showPage(p,btn);
 }
 
-// ── Render apps ───────────────────────────────
+// ── Load apps ─────────────────────────────────────
+async function loadApps(){
+  try{
+    const r=await fetch(API+"/apps");
+    const d=await r.json();
+    allApps=d.apps||[];
+    renderApps(allApps);
+    renderTop(allApps);
+  }catch{
+    allApps=[];
+    renderApps([]);
+    renderTop([]);
+  }
+}
+
 function renderApps(apps){
-  document.getElementById("apps-list").innerHTML=apps.map(a=>`
+  const filtered=currentFilter==="all"?apps:apps.filter(a=>a.category===currentFilter);
+  if(!filtered.length){
+    document.getElementById("apps-list").innerHTML=`
+      <div class="empty">
+        <div class="ei">📭</div>
+        <h3>Приложений пока нет</h3>
+        <p>Будьте первым разработчиком!<br/>Опубликуйте своё приложение.</p>
+      </div>`;
+    return;
+  }
+  document.getElementById("apps-list").innerHTML=filtered.map(a=>`
     <div class="app-card" onclick="openApp(${a.id})">
-      <div class="app-icon">${a.name[0]}</div>
+      <div class="app-icon">${a.name[0].toUpperCase()}</div>
       <div class="app-info">
         <h3>${a.name}</h3>
-        <div class="dev">${a.dev}</div>
-        <div class="rating">
-          <span class="stars">${"★".repeat(Math.round(a.rating))}</span>
-          <span style="font-weight:700;margin-left:4px">${a.rating}</span>
-          <span style="color:var(--muted);margin-left:4px">(${a.reviews.toLocaleString()})</span>
-        </div>
+        <div class="dev">${a.developer}</div>
+        <div class="rating">⭐ ${a.rating||"Нет оценок"} · 📥 ${a.installs}</div>
       </div>
-      <span class="app-tag">${a.tag}</span>
-    </div>
-  `).join("");
+      <span class="app-tag">${catLabel(a.category)}</span>
+    </div>`).join("");
 }
 
 function renderTop(apps){
-  document.getElementById("top-list").innerHTML=[...apps].sort((a,b)=>b.rating-a.rating).map((a,i)=>`
+  if(!apps.length){
+    document.getElementById("top-list").innerHTML=`<div class="empty"><div class="ei">🏆</div><h3>Топ пока пуст</h3><p>Здесь появятся лучшие приложения</p></div>`;
+    return;
+  }
+  document.getElementById("top-list").innerHTML=[...apps].sort((a,b)=>(b.rating||0)-(a.rating||0)).map((a,i)=>`
     <div class="top-item" onclick="openApp(${a.id})">
       <div class="top-num">${i+1}</div>
-      <div class="top-icon">${a.name[0]}</div>
-      <div class="top-info"><h4>${a.name}</h4><span>${a.dev} · ${a.tag}</span></div>
-      <div class="top-rating">★ ${a.rating}</div>
-    </div>
-  `).join("");
+      <div class="top-icon">${a.name[0].toUpperCase()}</div>
+      <div class="top-info"><h4>${a.name}</h4><span>${a.developer} · ${catLabel(a.category)}</span></div>
+      <div class="top-rating">★ ${a.rating||"—"}</div>
+    </div>`).join("");
 }
 
 function filterCat(el,cat){
   document.querySelectorAll(".cat").forEach(c=>c.classList.remove("active"));
   el.classList.add("active");
-  renderApps(cat==="all"?APPS:APPS.filter(a=>a.cat===cat));
+  currentFilter=cat;
+  renderApps(allApps);
 }
 
-function openApp(id){
-  const a=APPS.find(x=>x.id===id); if(!a)return;
+function catLabel(cat){
+  const m={games:"🎮 Игры",tools:"🛠 Инструменты",social:"💬 Социальные",finance:"💰 Финансы",other:"📦 Другое"};
+  return m[cat]||"📦 Другое";
+}
+
+// ── App detail ────────────────────────────────────
+async function openApp(id){
+  currentAppId=id;
+  const a=allApps.find(x=>x.id===id); if(!a)return;
   prevPage="home";
+  // Загружаем отзывы
+  let reviews=[];
+  try{const r=await fetch(API+"/apps/"+id+"/reviews");const d=await r.json();reviews=d.reviews||[];}catch{}
+
+  const avgRating=reviews.length?(reviews.reduce((s,r)=>s+r.stars,0)/reviews.length).toFixed(1):"—";
   document.getElementById("app-detail").innerHTML=`
     <div class="app-detail-header">
-      <div class="app-detail-icon">${a.name[0]}</div>
+      <div class="app-detail-icon">${a.name[0].toUpperCase()}</div>
       <div class="app-detail-meta">
         <h2>${a.name}</h2>
-        <div class="dev">${a.dev}</div>
-        <div class="rating-row">
-          <span style="color:var(--accent)">${"★".repeat(Math.round(a.rating))}</span>
-          <strong style="margin-left:6px">${a.rating}</strong>
-          <span style="color:var(--muted);font-size:12px;margin-left:6px">(${a.reviews.toLocaleString()})</span>
+        <div class="dev">${a.developer}</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px;">
+          <span style="color:var(--accent)">⭐ ${avgRating}</span>
+          <span style="color:var(--muted)">(${reviews.length} отзывов)</span>
+          <span style="color:var(--muted)">· 📥 ${a.installs}</span>
         </div>
+        <div style="color:var(--muted);font-size:11px;margin-top:4px;">v${a.version}</div>
       </div>
     </div>
-    <button class="install-btn">📥 Установить</button>
-    <div class="detail-desc">${a.desc}</div>
-    <div class="reviews-title">💬 Отзывы</div>
-    ${a.reviews_data.map(r=>`
+    ${a.apk_data?`<button class="install-btn" onclick="installApp(${a.id})">📥 Скачать APK</button>`:`<button class="install-btn" style="opacity:.5;cursor:default">APK не загружен</button>`}
+    <div class="detail-desc">${a.description}</div>
+    <div class="sec-title" style="margin-bottom:10px">💬 <span>Отзывы</span></div>
+    ${reviews.map(r=>`
       <div class="review">
         <div class="review-header">
-          <div class="review-avatar">${r.name[0]}</div>
-          <div class="review-name">${r.name}</div>
-          <div class="review-date">${r.date}</div>
+          <div class="review-avatar">${r.nick[0].toUpperCase()}</div>
+          <div class="review-name">${r.nick}</div>
+          <div class="review-date">${new Date(r.created_at*1000).toLocaleDateString('ru')}</div>
         </div>
         <div class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
         <div class="review-text">${r.text}</div>
+      </div>`).join("")}
+    ${reviews.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px">Отзывов пока нет</div>':""}
+    <div class="card" style="margin-top:12px">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">Оставить отзыв</div>
+      <div class="msg" id="msg-review"></div>
+      <div class="star-select" id="star-select">
+        ${[1,2,3,4,5].map(i=>`<button class="star-btn" onclick="setStar(${i})">★</button>`).join("")}
       </div>
-    `).join("")}
-  `;
-  showPage("app", null);
+      <textarea class="fi" id="review-text" placeholder="Напишите отзыв..." style="min-height:70px"></textarea>
+      <button class="btn btn-sm" onclick="submitReview(${a.id})"><span class="bt">Отправить</span><div class="sp"></div></button>
+    </div>`;
+  selectedStars=0;
+  showPage("app",null);
 }
 
-// ── Admin ─────────────────────────────────────
+function setStar(n){
+  selectedStars=n;
+  document.querySelectorAll(".star-btn").forEach((b,i)=>b.classList.toggle("active",i<n));
+}
+
+async function submitReview(appId){
+  const text=v("review-text");
+  const msg=document.getElementById("msg-review");
+  clearMsg(msg);
+  if(!selectedStars){showMsg(msg,"Выберите оценку","err");return;}
+  if(!text){showMsg(msg,"Напишите отзыв","err");return;}
+  try{
+    const r=await post("/apps/review",{app_id:appId,nick:currentUser.nick,stars:selectedStars,text});
+    if(!r.ok){showMsg(msg,"Ошибка","err");return;}
+    showMsg(msg,"Отзыв добавлен!","ok");
+    await loadApps();
+    setTimeout(()=>openApp(appId),800);
+  }catch{showMsg(msg,"Нет соединения","err");}
+}
+
+function installApp(id){
+  const a=allApps.find(x=>x.id===id); if(!a||!a.apk_data)return;
+  const link=document.createElement("a");
+  link.href="data:application/vnd.android.package-archive;base64,"+a.apk_data;
+  link.download=a.name+".apk";
+  link.click();
+}
+
+// ── Dev panel ─────────────────────────────────────
+function onApkSelect(input){
+  const file=input.files[0]; if(!file)return;
+  document.getElementById("apk-name").textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{ apkBase64=e.target.result.split(",")[1]; };
+  reader.readAsDataURL(file);
+}
+
+async function submitApp(){
+  const name=v("dev-name"),desc=v("dev-desc"),ver=v("dev-ver"),cat=document.getElementById("dev-cat").value;
+  const msg=document.getElementById("msg-dev");
+  clearMsg(msg);
+  if(!name||!desc||!ver){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-submit-app"); load(btn,1);
+  try{
+    const r=await post("/apps/submit",{nick:currentUser.nick,name,description:desc,version:ver,category:cat,apk_data:apkBase64});
+    if(!r.ok){
+      const e={not_developer:"У вас нет прав разработчика",missing_fields:"Заполните все поля"};
+      showMsg(msg,e[r.detail]||"Ошибка","err");return;
+    }
+    showMsg(msg,"Заявка отправлена на рассмотрение!","ok");
+    document.getElementById("dev-name").value="";
+    document.getElementById("dev-desc").value="";
+    document.getElementById("dev-ver").value="";
+    document.getElementById("apk-name").textContent="";
+    apkBase64=null;
+    loadMySubmissions();
+  }catch{showMsg(msg,"Нет соединения","err");}
+  finally{load(btn,0);}
+}
+
+async function loadMySubmissions(){
+  try{
+    const r=await fetch(API+"/apps/submissions");
+    const d=await r.json();
+    const mine=(d.submissions||[]).filter(s=>s.developer===currentUser.nick);
+    document.getElementById("my-submissions").innerHTML=mine.length?mine.map(s=>`
+      <div class="sub-item">
+        <h4>${s.name} <span style="font-size:11px;color:var(--muted)">v${s.version}</span></h4>
+        <p>${s.description.slice(0,80)}...</p>
+        <span class="sub-status status-${s.status}">${{pending:"⏳ На рассмотрении",approved:"✅ Одобрено",rejected:"❌ Отклонено"}[s.status]}</span>
+      </div>`).join("")
+      :'<div style="color:var(--muted);font-size:13px;padding:8px">Заявок пока нет</div>';
+  }catch{}
+}
+
+async function loadProfileStats(){
+  try{
+    const r=await fetch(API+"/apps/submissions");
+    const d=await r.json();
+    const myApps=(d.submissions||[]).filter(s=>s.developer===currentUser.nick&&s.status==="approved").length;
+    document.getElementById("prof-apps").textContent=myApps;
+  }catch{}
+}
+
+// ── Admin ─────────────────────────────────────────
 function adminLogin(){
   const p=v("admin-pass");
   const msg=document.getElementById("msg-admin");
@@ -773,64 +837,88 @@ function adminLogin(){
   if(p!==ADMIN_PASSWORD){showMsg(msg,"Неверный пароль","err");return;}
   document.getElementById("admin-login-block").classList.add("hidden");
   document.getElementById("admin-panel").classList.remove("hidden");
-  renderAdminApps();
-  renderAdminUsers();
+  loadAdminData();
 }
 
-function renderAdminApps(){
-  document.getElementById("admin-apps-list").innerHTML=APPS.map(a=>`
-    <div class="admin-app-item" id="admin-app-${a.id}">
-      <div class="admin-app-icon">${a.name[0]}</div>
-      <div class="admin-app-info"><h4>${a.name}</h4><span>${a.dev} · ★${a.rating}</span></div>
-      <button class="del-btn" onclick="adminDeleteApp(${a.id})">🗑</button>
-    </div>
-  `).join("") || '<div style="color:var(--muted);font-size:13px;padding:8px">Нет приложений</div>';
+async function loadAdminData(){
+  // Заявки
+  try{
+    const r=await fetch(API+"/apps/submissions");
+    const d=await r.json();
+    const pending=(d.submissions||[]).filter(s=>s.status==="pending");
+    document.getElementById("admin-submissions").innerHTML=pending.length?pending.map(s=>`
+      <div class="admin-sub-item">
+        <h4>${s.name} <span style="font-weight:400;color:var(--muted)">v${s.version}</span></h4>
+        <p>👤 ${s.developer} · ${catLabel(s.category)}<br/>${s.description.slice(0,100)}...</p>
+        <div class="admin-sub-actions">
+          <button class="btn btn-sm btn-green" onclick="approveApp(${s.id})">✅ Одобрить</button>
+          <button class="btn btn-sm btn-red" onclick="rejectApp(${s.id})">❌ Отклонить</button>
+        </div>
+      </div>`).join("")
+      :'<div style="color:var(--muted);font-size:13px;padding:8px">Новых заявок нет</div>';
+  }catch{}
+
+  // Приложения
+  try{
+    const r=await fetch(API+"/apps");
+    const d=await r.json();
+    document.getElementById("admin-apps-list").innerHTML=(d.apps||[]).length?(d.apps||[]).map(a=>`
+      <div class="admin-app-item">
+        <div class="admin-app-icon">${a.name[0].toUpperCase()}</div>
+        <div class="admin-app-info"><h4>${a.name}</h4><span>${a.developer} · ★${a.rating||0} · 📥${a.installs}</span></div>
+        <button class="btn btn-sm btn-red" onclick="deleteApp(${a.id})">🗑</button>
+      </div>`).join("")
+      :'<div style="color:var(--muted);font-size:13px;padding:8px">Нет приложений</div>';
+  }catch{}
+
+  // Пользователи
+  try{
+    const r=await fetch(API+"/admin/users");
+    const d=await r.json();
+    document.getElementById("admin-users-list").innerHTML=(d.users||[]).map(u=>`
+      <div class="user-item">
+        <div class="user-av">${u.nick[0].toUpperCase()}</div>
+        <div class="user-info"><h4>${u.nick}</h4><span>@${u.tg_username}</span></div>
+        <select class="role-select" onchange="setUserRole('${u.nick}',this.value)">
+          <option value="user" ${u.role==="user"?"selected":""}>👤 Юзер</option>
+          <option value="dev" ${u.role==="dev"?"selected":""}>💻 Дев</option>
+          <option value="admin" ${u.role==="admin"?"selected":""}>⚡ Админ</option>
+        </select>
+      </div>`).join("");
+  }catch{}
 }
 
-function adminDeleteApp(id){
-  APPS=APPS.filter(a=>a.id!==id);
-  renderApps(APPS); renderTop(APPS); renderAdminApps();
+async function approveApp(id){
+  await post("/apps/approve",{submission_id:id});
+  await loadApps(); loadAdminData();
+}
+async function rejectApp(id){
+  await post("/apps/reject",{submission_id:id});
+  loadAdminData();
+}
+async function deleteApp(id){
+  await fetch(API+"/apps/"+id,{method:"DELETE"});
+  await loadApps(); loadAdminData();
+}
+async function setUserRole(nick,role){
+  await post("/admin/set-role",{nick,role});
+  // Если поменяли роль текущему пользователю — обновляем
+  if(currentUser.nick===nick){
+    currentUser.role=role;
+    localStorage.setItem("ds_user",JSON.stringify(currentUser));
+    updateRoleUI();
+  }
 }
 
-function renderAdminUsers(){
-  // Показываем текущего пользователя как пример (в реальности — запрос к API)
-  const users = [{nick: currentUser.nick, tg: currentUser.tg_username}];
-  document.getElementById("admin-users-list").innerHTML=users.map(u=>{
-    const role = userRoles[u.nick] || "user";
-    const isDev = role === "dev";
-    return `
-    <div class="user-item">
-      <div class="user-avatar-sm">${u.nick[0].toUpperCase()}</div>
-      <div class="user-info">
-        <h4>${u.nick}</h4>
-        <span>@${u.tg} · ${isDev?"💻 Разработчик":"👤 Пользователь"}</span>
-      </div>
-      ${isDev
-        ? `<button class="demote-btn" onclick="setRole('${u.nick}','user')">Убрать</button>`
-        : `<button class="promote-btn" onclick="setRole('${u.nick}','dev')">Сделать разработчиком</button>`
-      }
-    </div>`;
-  }).join("");
-}
-
-function setRole(nick, role){
-  userRoles[nick]=role;
-  localStorage.setItem("ds_roles",JSON.stringify(userRoles));
-  if(currentUser && currentUser.nick===nick) updateRoleBadges();
-  renderAdminUsers();
-}
-
-// ── Helpers ───────────────────────────────────
-const v = id => document.getElementById(id).value.trim();
+// ── Helpers ───────────────────────────────────────
+const v=id=>document.getElementById(id).value.trim();
 function showMsg(el,t,type){el.textContent=t;el.className="msg "+type;}
 function clearMsg(el){el.className="msg";}
 function load(btn,on){btn.classList.toggle("loading",on);btn.disabled=!!on;}
-
-async function post(path, data){
-  const r=await fetch(API+path,{method:"POST",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+async function post(path,data){
+  const r=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
   const d=await r.json();
-  return{...d,ok:r.ok,status:r.status,detail:d.detail};
+  return{...d,ok:r.ok,detail:d.detail};
 }
 </script>
 </body>
