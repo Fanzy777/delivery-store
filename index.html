@@ -537,12 +537,12 @@ async function doLogin(){
   const btn=document.getElementById("btn-login");
   load(btn,1);
   try{
-    const r=await post("/login",{nick,password:pass});
+    const r=await post("/login",{nickname:nick,password:pass});
     if(!r.ok){
-      const e={not_found:"Пользователь не найден",wrong_password:"Неверный пароль"};
+      const e={wrong_credentials:"Неверный ник или пароль"};
       showMsg(msg,e[r.detail]||"Ошибка входа","err");return;
     }
-    currentUser={nick:r.nick,tg_username:r.tg_username};
+    currentUser={nick:r.nickname,tg_username:r.tg_username};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
     showApp();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
@@ -580,13 +580,13 @@ async function regStep2(){
   const btn=document.getElementById("btn-reg2");
   load(btn,1);
   try{
-    const r=await post("/finish-register",{tg_username:regTg,nick,password:pass,code});
+    const r=await post("/register",{tg_username:regTg,nickname:nick,password:pass,code});
     if(!r.ok){
       const e={wrong_code:"Неверный код",expired:"Код истёк",
         nick_taken:"Ник занят",not_verified:"Сначала подтвердите код"};
       showMsg(msg,e[r.detail]||"Ошибка","err");return;
     }
-    currentUser={nick:r.nick,tg_username:regTg};
+    currentUser={nick:r.nickname,tg_username:regTg};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
     showApp();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
