@@ -542,7 +542,7 @@ async function doLogin(){
       const e={wrong_credentials:"Неверный ник или пароль"};
       showMsg(msg,e[r.detail]||"Ошибка входа","err");return;
     }
-    currentUser={nick:r.nickname,tg_username:r.tg_username};
+    currentUser={nick:r.nick,tg_username:r.tg_username};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
     showApp();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
@@ -580,13 +580,19 @@ async function regStep2(){
   const btn=document.getElementById("btn-reg2");
   load(btn,1);
   try{
-    const r=await post("/register",{tg_username:regTg,nickname:nick,password:pass,code});
-    if(!r.ok){
-      const e={wrong_code:"Неверный код",expired:"Код истёк",
-        nick_taken:"Ник занят",not_verified:"Сначала подтвердите код"};
-      showMsg(msg,e[r.detail]||"Ошибка","err");return;
+    // Шаг 1: проверяем код
+    const r1=await post("/verify-code",{tg_username:regTg,code});
+    if(!r1.ok){
+      const e={wrong_code:"Неверный код",expired:"Код истёк, запросите новый",no_code:"Сначала запросите код"};
+      showMsg(msg,e[r1.detail]||"Ошибка кода","err");return;
     }
-    currentUser={nick:r.nickname,tg_username:regTg};
+    // Шаг 2: создаём аккаунт
+    const r2=await post("/finish-register",{tg_username:regTg,nick,password:pass});
+    if(!r2.ok){
+      const e={nick_taken:"Этот ник уже занят",not_verified:"Ошибка подтверждения"};
+      showMsg(msg,e[r2.detail]||"Ошибка регистрации","err");return;
+    }
+    currentUser={nick:r2.nick,tg_username:regTg};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
     showApp();
   }catch{showMsg(msg,"Нет соединения с сервером","err");}
