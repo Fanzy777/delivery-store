@@ -217,18 +217,42 @@ def verify_code(req: VerifyReq):
 def finish_register(req: FinishReq):
     tg = req.tg_username.lower().replace("@","")
     db = get_db()
+
     if not db.execute("SELECT 1 FROM verified_pending WHERE tg_username=?", (tg,)).fetchone():
-        db.close(); raise HTTPException(400, "not_verified")
+        db.close()
+        raise HTTPException(400, "not_verified")
+
     if db.execute("SELECT 1 FROM users WHERE nick=?", (req.nick,)).fetchone():
-        db.close(); raise HTTPException(400, "nick_taken")
-    if len(req.nick) < 3: raise HTTPException(422, "nick_too_short")
-    if len(req.password) < 6: raise HTTPException(422, "pass_too_short")
-    db.execute("INSERT INTO users (tg_username,nick,password,role,created_at) VALUES (?,?,?,?,?)",
-               (tg, req.nick, hash_pass(req.password), "user", int(time.time())))
+        db.close()
+        raise HTTPException(400, "nick_taken")
+
+    if len(req.nick) < 3:
+        db.close()
+        raise HTTPException(422, "nick_too_short")
+
+    if len(req.password) < 6:
+        db.close()
+        raise HTTPException(422, "pass_too_short")
+
+    # Первый зарегистрированный пользователь становится admin
+    count = db.execute("SELECT COUNT(*) as c FROM users").fetchone()["c"]
+    role = "admin" if count == 0 else "user"
+
+    db.execute(
+        "INSERT INTO users (tg_username,nick,password,role,created_at) VALUES (?,?,?,?,?)",
+        (tg, req.nick, hash_pass(req.password), role, int(time.time()))
+    )
+
     db.execute("DELETE FROM verified_pending WHERE tg_username=?", (tg,))
-    db.commit(); db.close()
-    bot_send(tg, "✅ <b>Регистрация успешна!</b>\n\nДобро пожаловать в <b>Delivery Store</b>! 🚀")
-    return {"ok": True, "nick": req.nick, "tg_username": tg, "role": "user"}
+    db.commit()
+    db.close()
+
+    bot_send(
+        tg,
+        "✅ <b>Регистрация успешна!</b>\n\nДобро пожаловать в <b>Delivery Store</b>! 🚀"
+    )
+
+    return {"ok": True,"nick": req.nick,"tg_username": tg,"role": role}
 
 @app.post("/login")
 def login(req: LoginReq):
