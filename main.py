@@ -3,7 +3,7 @@
 # ║  Запуск: python main.py                                  ║
 # ╚══════════════════════════════════════════════════════════╝
 
-import random, time, sqlite3, hashlib, os, base64
+import random, time, sqlite3, hashlib, os
 import telebot
 from telebot import types
 from fastapi import FastAPI, HTTPException, Request
@@ -18,6 +18,7 @@ ADMIN_ID     = 1387610058
 CHANNEL_LINK = "https://t.me/delivstorenews"
 MINI_APP_URL = os.getenv("MINI_APP_URL", "https://web-production-9fdbe.up.railway.app")
 WEBHOOK_URL  = os.getenv("WEBHOOK_URL",  "https://web-production-9fdbe.up.railway.app")
+START_IMAGE  = "https://i.ibb.co/dNm5rh3/image.jpg"
 
 def hash_pass(p): return hashlib.sha256(p.encode()).hexdigest()
 
@@ -28,66 +29,80 @@ def get_db():
 
 def init_db():
     db = get_db()
-    # Пользователи telegram (chat_id)
     db.execute("""CREATE TABLE IF NOT EXISTS tg_users (
-        username TEXT PRIMARY KEY,
-        chat_id  TEXT NOT NULL)""")
-    # Аккаунты
+        username TEXT PRIMARY KEY, chat_id TEXT NOT NULL)""")
     db.execute("""CREATE TABLE IF NOT EXISTS users (
-        id           INTEGER PRIMARY KEY AUTOINCREMENT,
-        tg_username  TEXT UNIQUE NOT NULL,
-        nick         TEXT UNIQUE NOT NULL,
-        password     TEXT NOT NULL,
-        role         TEXT NOT NULL DEFAULT 'user',
-        created_at   INTEGER NOT NULL)""")
-    # Коды подтверждения
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tg_username TEXT UNIQUE NOT NULL,
+        nick TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'user',
+        created_at INTEGER NOT NULL)""")
     db.execute("""CREATE TABLE IF NOT EXISTS codes (
         tg_username TEXT PRIMARY KEY,
-        code        TEXT NOT NULL,
-        purpose     TEXT NOT NULL DEFAULT 'register',
-        expires_at  INTEGER NOT NULL)""")
-    # Ожидание завершения регистрации
+        code TEXT NOT NULL,
+        purpose TEXT NOT NULL DEFAULT 'register',
+        expires_at INTEGER NOT NULL)""")
     db.execute("""CREATE TABLE IF NOT EXISTS verified_pending (
-        tg_username TEXT PRIMARY KEY,
-        verified_at INTEGER NOT NULL)""")
-    # Приложения (одобренные)
+        tg_username TEXT PRIMARY KEY, verified_at INTEGER NOT NULL)""")
     db.execute("""CREATE TABLE IF NOT EXISTS apps (
-        id          INTEGER PRIMARY KEY AUTOINCREMENT,
-        name        TEXT NOT NULL,
-        developer   TEXT NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        developer TEXT NOT NULL,
         tg_username TEXT NOT NULL,
         description TEXT NOT NULL,
-        version     TEXT NOT NULL,
-        category    TEXT NOT NULL DEFAULT 'other',
-        apk_data    TEXT,
-        rating      REAL NOT NULL DEFAULT 0,
-        installs    INTEGER NOT NULL DEFAULT 0,
-        created_at  INTEGER NOT NULL)""")
-    # Заявки на публикацию (на рассмотрении)
-    db.execute("""CREATE TABLE IF NOT EXISTS submissions (
-        id          INTEGER PRIMARY KEY AUTOINCREMENT,
-        name        TEXT NOT NULL,
-        developer   TEXT NOT NULL,
-        tg_username TEXT NOT NULL,
-        description TEXT NOT NULL,
-        version     TEXT NOT NULL,
-        category    TEXT NOT NULL DEFAULT 'other',
-        apk_data    TEXT,
-        status      TEXT NOT NULL DEFAULT 'pending',
-        created_at  INTEGER NOT NULL)""")
-    # Отзывы
-    db.execute("""CREATE TABLE IF NOT EXISTS reviews (
-        id         INTEGER PRIMARY KEY AUTOINCREMENT,
-        app_id     INTEGER NOT NULL,
-        nick       TEXT NOT NULL,
-        stars      INTEGER NOT NULL,
-        text       TEXT NOT NULL,
+        version TEXT NOT NULL,
+        category TEXT NOT NULL DEFAULT 'other',
+        apk_data TEXT,
+        icon_data TEXT,
+        rating REAL NOT NULL DEFAULT 0,
+        installs INTEGER NOT NULL DEFAULT 0,
         created_at INTEGER NOT NULL)""")
-    db.commit(); db.close()
+    db.execute("""CREATE TABLE IF NOT EXISTS submissions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        developer TEXT NOT NULL,
+        tg_username TEXT NOT NULL,
+        description TEXT NOT NULL,
+        version TEXT NOT NULL,
+        category TEXT NOT NULL DEFAULT 'other',
+        apk_data TEXT,
+        icon_data TEXT,
+        status TEXT NOT NULL DEFAULT 'pending',
+        update_notes TEXT,
+        parent_app_id INTEGER,
+        created_at INTEGER NOT NULL)""")
+    db.execute("""CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        app_id INTEGER NOT NULL,
+        nick TEXT NOT NULL,
+        stars INTEGER NOT NULL,
+        text TEXT NOT NULL,
+        dev_reply TEXT,
+        created_at INTEGER NOT NULL,
+        UNIQUE(app_id, nick))""")
+    db.commit()
+    # Миграции для старых БД
+    for col, definition in [
+        ("icon_data", "TEXT"),
+        ("update_notes", "TEXT"),
+        ("parent_app_id", "INTEGER"),
+        ("dev_reply", "TEXT"),
+    ]:
+        try:
+            if col in ["icon_data"]:
+                db.execute(f"ALTER TABLE apps ADD COLUMN {col} {definition}")
+            if col in ["icon_data", "update_notes", "parent_app_id"]:
+                db.execute(f"ALTER TABLE submissions ADD COLUMN {col} {definition}")
+            if col == "dev_reply":
+                db.execute(f"ALTER TABLE reviews ADD COLUMN {col} {definition}")
+        except: pass
+    db.commit()
+    db.close()
 
 init_db()
 
-# ── Bot ─────────────────────────────────────────
+# ── Bot ──────────────────────────────────────────
 bot = telebot.TeleBot(BOT_TOKEN)
 
 def start_inline():
@@ -105,11 +120,22 @@ def cmd_start(message):
         db.execute("INSERT OR REPLACE INTO tg_users (username, chat_id) VALUES (?, ?)",
                    (message.from_user.username.lower(), str(message.chat.id)))
         db.commit(); db.close()
-    bot.send_message(message.chat.id,
-        "👋 Добро пожаловать в <b>Delivery Store</b>!\n\n"
-        "Магазин Telegram Mini Apps нового поколения.\n\n"
-        "👇 Нажми кнопку чтобы открыть магазин:",
-        parse_mode="HTML", reply_markup=start_inline())
+    try:
+        bot.send_photo(
+            message.chat.id,
+            photo=START_IMAGE,
+            caption="👋 Добро пожаловать в <b>Delivery Store</b>!\n\n"
+                    "Магазин Telegram Mini Apps нового поколения.\n\n"
+                    "👇 Нажми кнопку чтобы открыть магазин:",
+            parse_mode="HTML",
+            reply_markup=start_inline()
+        )
+    except:
+        bot.send_message(message.chat.id,
+            "👋 Добро пожаловать в <b>Delivery Store</b>!\n\n"
+            "Магазин Telegram Mini Apps нового поколения.\n\n"
+            "👇 Нажми кнопку чтобы открыть магазин:",
+            parse_mode="HTML", reply_markup=start_inline())
 
 @bot.message_handler(commands=["help"])
 def cmd_help(message):
@@ -117,7 +143,7 @@ def cmd_help(message):
         "ℹ️ <b>Помощь</b>\n\n• 📢 Наш канал — новости\n• 🛍 Магазин — открыть приложение\n\n/start /help",
         parse_mode="HTML", reply_markup=start_inline())
 
-# ── FastAPI ─────────────────────────────────────
+# ── FastAPI ──────────────────────────────────────
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
@@ -136,7 +162,7 @@ def on_startup():
     bot.set_webhook(url=f"{WEBHOOK_URL}/webhook")
     print(f"🤖 Webhook: {WEBHOOK_URL}/webhook")
 
-# ── Pydantic models ──────────────────────────────
+# ── Models ───────────────────────────────────────
 class TgReq(BaseModel):
     tg_username: str
 class VerifyReq(BaseModel):
@@ -148,20 +174,25 @@ class LoginReq(BaseModel):
 class ResetReq(BaseModel):
     tg_username: str; code: str; new_password: str
 class SubmitAppReq(BaseModel):
-    nick: str
-    name: str
-    description: str
-    version: str
-    category: str
-    apk_data: Optional[str] = None  # base64
+    nick: str; name: str; description: str; version: str; category: str
+    apk_data: Optional[str] = None
+    icon_data: Optional[str] = None
+    update_notes: Optional[str] = None
+    parent_app_id: Optional[int] = None
 class ReviewReq(BaseModel):
     app_id: int; nick: str; stars: int; text: str
+class ReviewReplyReq(BaseModel):
+    review_id: int; nick: str; reply: str
+class DeleteReviewReq(BaseModel):
+    review_id: int; nick: str
 class ApproveReq(BaseModel):
     submission_id: int
 class RejectReq(BaseModel):
     submission_id: int
 class SetRoleReq(BaseModel):
     nick: str; role: str
+class DeleteAppReq(BaseModel):
+    app_id: int; nick: str
 
 # ── Helpers ──────────────────────────────────────
 def bot_send(tg_username, text):
@@ -186,7 +217,7 @@ def get_user_by_nick(nick):
     db.close()
     return row
 
-# ── Auth endpoints ───────────────────────────────
+# ── Auth ─────────────────────────────────────────
 @app.post("/send-code")
 def send_code(req: TgReq):
     tg = req.tg_username.lower().replace("@","")
@@ -217,42 +248,20 @@ def verify_code(req: VerifyReq):
 def finish_register(req: FinishReq):
     tg = req.tg_username.lower().replace("@","")
     db = get_db()
-
     if not db.execute("SELECT 1 FROM verified_pending WHERE tg_username=?", (tg,)).fetchone():
-        db.close()
-        raise HTTPException(400, "not_verified")
-
+        db.close(); raise HTTPException(400, "not_verified")
     if db.execute("SELECT 1 FROM users WHERE nick=?", (req.nick,)).fetchone():
-        db.close()
-        raise HTTPException(400, "nick_taken")
-
-    if len(req.nick) < 3:
-        db.close()
-        raise HTTPException(422, "nick_too_short")
-
-    if len(req.password) < 6:
-        db.close()
-        raise HTTPException(422, "pass_too_short")
-
-    # Первый зарегистрированный пользователь становится admin
+        db.close(); raise HTTPException(400, "nick_taken")
+    if len(req.nick) < 3: db.close(); raise HTTPException(422, "nick_too_short")
+    if len(req.password) < 6: db.close(); raise HTTPException(422, "pass_too_short")
     count = db.execute("SELECT COUNT(*) as c FROM users").fetchone()["c"]
     role = "admin" if count == 0 else "user"
-
-    db.execute(
-        "INSERT INTO users (tg_username,nick,password,role,created_at) VALUES (?,?,?,?,?)",
-        (tg, req.nick, hash_pass(req.password), role, int(time.time()))
-    )
-
+    db.execute("INSERT INTO users (tg_username,nick,password,role,created_at) VALUES (?,?,?,?,?)",
+               (tg, req.nick, hash_pass(req.password), role, int(time.time())))
     db.execute("DELETE FROM verified_pending WHERE tg_username=?", (tg,))
-    db.commit()
-    db.close()
-
-    bot_send(
-        tg,
-        "✅ <b>Регистрация успешна!</b>\n\nДобро пожаловать в <b>Delivery Store</b>! 🚀"
-    )
-
-    return {"ok": True,"nick": req.nick,"tg_username": tg,"role": role}
+    db.commit(); db.close()
+    bot_send(tg, "✅ <b>Регистрация успешна!</b>\n\nДобро пожаловать в <b>Delivery Store</b>! 🚀")
+    return {"ok": True, "nick": req.nick, "tg_username": tg, "role": role}
 
 @app.post("/login")
 def login(req: LoginReq):
@@ -290,7 +299,7 @@ def reset_password(req: ResetReq):
     db.commit(); db.close()
     return {"ok": True}
 
-# ── Apps endpoints ───────────────────────────────
+# ── Apps ─────────────────────────────────────────
 @app.get("/apps")
 def get_apps():
     db = get_db()
@@ -307,18 +316,17 @@ def submit_app(req: SubmitAppReq):
         raise HTTPException(422, "missing_fields")
     db = get_db()
     db.execute(
-        "INSERT INTO submissions (name,developer,tg_username,description,version,category,apk_data,status,created_at) VALUES (?,?,?,?,?,?,?,?,?)",
-        (req.name, req.nick, user["tg_username"], req.description, req.version, req.category, req.apk_data, "pending", int(time.time()))
+        "INSERT INTO submissions (name,developer,tg_username,description,version,category,apk_data,icon_data,status,update_notes,parent_app_id,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        (req.name, req.nick, user["tg_username"], req.description, req.version, req.category,
+         req.apk_data, req.icon_data, "pending", req.update_notes, req.parent_app_id, int(time.time()))
     )
     db.commit(); db.close()
-    # Уведомляем админа
+    is_update = req.parent_app_id is not None
     try:
         bot.send_message(ADMIN_ID,
-            f"📬 <b>Новая заявка на публикацию</b>\n\n"
-            f"📦 Название: {req.name}\n"
-            f"👤 Разработчик: {req.nick}\n"
-            f"📝 Описание: {req.description[:100]}...\n"
-            f"🏷 Версия: {req.version}\n\n"
+            f"{'🔄' if is_update else '📬'} <b>{'Запрос на обновление' if is_update else 'Новая заявка на публикацию'}</b>\n\n"
+            f"📦 {req.name}\n👤 {req.nick}\n🏷 v{req.version}\n"
+            f"{'📝 Что нового: ' + req.update_notes if is_update and req.update_notes else ''}\n\n"
             f"Зайди в админ панель для одобрения.",
             parse_mode="HTML")
     except: pass
@@ -336,17 +344,26 @@ def approve_app(req: ApproveReq):
     db = get_db()
     sub = db.execute("SELECT * FROM submissions WHERE id=?", (req.submission_id,)).fetchone()
     if not sub: db.close(); raise HTTPException(404, "not_found")
-    db.execute(
-        "INSERT INTO apps (name,developer,tg_username,description,version,category,apk_data,rating,installs,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
-        (sub["name"], sub["developer"], sub["tg_username"], sub["description"], sub["version"], sub["category"], sub["apk_data"], 0, 0, int(time.time()))
-    )
+    is_update = sub["parent_app_id"] is not None
+    if is_update:
+        # Обновляем существующее приложение
+        db.execute(
+            "UPDATE apps SET name=?,description=?,version=?,category=?,apk_data=COALESCE(?,apk_data),icon_data=COALESCE(?,icon_data),update_notes=? WHERE id=?",
+            (sub["name"], sub["description"], sub["version"], sub["category"],
+             sub["apk_data"], sub["icon_data"], sub["update_notes"], sub["parent_app_id"])
+        )
+    else:
+        db.execute(
+            "INSERT INTO apps (name,developer,tg_username,description,version,category,apk_data,icon_data,rating,installs,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (sub["name"], sub["developer"], sub["tg_username"], sub["description"], sub["version"],
+             sub["category"], sub["apk_data"], sub["icon_data"], 0, 0, int(time.time()))
+        )
     db.execute("UPDATE submissions SET status='approved' WHERE id=?", (req.submission_id,))
     db.commit()
-    # Уведомляем разработчика
     try:
         bot_send(sub["tg_username"],
-            f"✅ <b>Ваше приложение одобрено!</b>\n\n"
-            f"📦 <b>{sub['name']}</b> теперь доступно в Delivery Store 🎉")
+            f"✅ <b>{'Обновление одобрено' if is_update else 'Приложение одобрено'}!</b>\n\n"
+            f"📦 <b>{sub['name']}</b> {'обновлено до v'+sub['version'] if is_update else 'теперь доступно в Delivery Store'} 🎉")
     except: pass
     db.close()
     return {"ok": True}
@@ -360,17 +377,30 @@ def reject_app(req: RejectReq):
     db.commit()
     try:
         bot_send(sub["tg_username"],
-            f"❌ <b>Заявка отклонена</b>\n\n"
-            f"Приложение <b>{sub['name']}</b> не прошло модерацию.\n"
-            f"Свяжитесь с администратором для уточнения причин.")
+            f"❌ <b>Заявка отклонена</b>\n\nПриложение <b>{sub['name']}</b> не прошло модерацию.")
     except: pass
     db.close()
+    return {"ok": True}
+
+@app.post("/apps/delete")
+def delete_app_by_dev(req: DeleteAppReq):
+    user = get_user_by_nick(req.nick)
+    if not user: raise HTTPException(400, "user_not_found")
+    db = get_db()
+    app_row = db.execute("SELECT * FROM apps WHERE id=?", (req.app_id,)).fetchone()
+    if not app_row: db.close(); raise HTTPException(404, "not_found")
+    if app_row["developer"] != req.nick and user["role"] != "admin":
+        db.close(); raise HTTPException(403, "forbidden")
+    db.execute("DELETE FROM apps WHERE id=?", (req.app_id,))
+    db.execute("DELETE FROM reviews WHERE app_id=?", (req.app_id,))
+    db.commit(); db.close()
     return {"ok": True}
 
 @app.delete("/apps/{app_id}")
 def delete_app(app_id: int):
     db = get_db()
     db.execute("DELETE FROM apps WHERE id=?", (app_id,))
+    db.execute("DELETE FROM reviews WHERE app_id=?", (app_id,))
     db.commit(); db.close()
     return {"ok": True}
 
@@ -386,15 +416,43 @@ def get_reviews(app_id: int):
 def add_review(req: ReviewReq):
     if not 1 <= req.stars <= 5: raise HTTPException(422, "invalid_stars")
     db = get_db()
+    existing = db.execute("SELECT id FROM reviews WHERE app_id=? AND nick=?", (req.app_id, req.nick)).fetchone()
+    if existing: db.close(); raise HTTPException(400, "already_reviewed")
     db.execute("INSERT INTO reviews (app_id,nick,stars,text,created_at) VALUES (?,?,?,?,?)",
                (req.app_id, req.nick, req.stars, req.text, int(time.time())))
-    # Пересчитываем рейтинг
-    rows = db.execute("SELECT AVG(stars) as avg FROM reviews WHERE app_id=?", (req.app_id,)).fetchone()
-    db.execute("UPDATE apps SET rating=? WHERE id=?", (round(rows["avg"], 1), req.app_id))
+    row = db.execute("SELECT AVG(stars) as avg FROM reviews WHERE app_id=?", (req.app_id,)).fetchone()
+    db.execute("UPDATE apps SET rating=? WHERE id=?", (round(row["avg"], 1), req.app_id))
     db.commit(); db.close()
     return {"ok": True}
 
-# ── Admin: users ─────────────────────────────────
+@app.post("/apps/review/reply")
+def reply_to_review(req: ReviewReplyReq):
+    user = get_user_by_nick(req.nick)
+    if not user: raise HTTPException(400, "user_not_found")
+    db = get_db()
+    review = db.execute("SELECT r.*,a.developer FROM reviews r JOIN apps a ON r.app_id=a.id WHERE r.id=?", (req.review_id,)).fetchone()
+    if not review: db.close(); raise HTTPException(404, "not_found")
+    if review["developer"] != req.nick and user["role"] != "admin":
+        db.close(); raise HTTPException(403, "forbidden")
+    db.execute("UPDATE reviews SET dev_reply=? WHERE id=?", (req.reply, req.review_id))
+    db.commit(); db.close()
+    return {"ok": True}
+
+@app.post("/apps/review/delete")
+def delete_review(req: DeleteReviewReq):
+    db = get_db()
+    review = db.execute("SELECT * FROM reviews WHERE id=?", (req.review_id,)).fetchone()
+    if not review: db.close(); raise HTTPException(404, "not_found")
+    if review["nick"] != req.nick:
+        db.close(); raise HTTPException(403, "forbidden")
+    db.execute("DELETE FROM reviews WHERE id=?", (req.review_id,))
+    row = db.execute("SELECT AVG(stars) as avg FROM reviews WHERE app_id=?", (review["app_id"],)).fetchone()
+    new_rating = round(row["avg"], 1) if row["avg"] else 0
+    db.execute("UPDATE apps SET rating=? WHERE id=?", (new_rating, review["app_id"]))
+    db.commit(); db.close()
+    return {"ok": True}
+
+# ── Admin ─────────────────────────────────────────
 @app.get("/admin/users")
 def admin_get_users():
     db = get_db()
