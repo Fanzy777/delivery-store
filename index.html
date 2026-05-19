@@ -17,12 +17,11 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;touch-action:manipulation;}
 body{background:var(--bg);color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased;user-select:none;}
-
 .hidden{display:none!important;}
 .page{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:var(--nav-h);padding-bottom:var(--bottom-h);}
 .page.active{display:block;}
 
-/* ── Auth ── */
+/* Auth */
 #auth-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;overflow-y:auto;padding:24px 20px 40px;}
 #auth-screen.hidden{display:none!important;}
 .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;margin-top:8px;}
@@ -38,7 +37,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);-webkit-fon
 .auth-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;}
 .auth-hint a{color:var(--accent);cursor:pointer;}
 
-/* ── Fields ── */
+/* Fields */
 .fl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
 .fi{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--white);font-family:var(--mono);font-size:14px;outline:none;transition:.2s;margin-bottom:13px;-webkit-appearance:none;}
 .fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,122,0,.15);}
@@ -46,23 +45,24 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);-webkit-fon
 textarea.fi{resize:none;min-height:80px;font-size:13px;}
 select.fi{cursor:pointer;}
 
-/* ── Buttons ── */
+/* Buttons */
 .btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
 .btn:active{opacity:.85;}.btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px;}
 .btn-sm{width:auto;padding:7px 12px;font-size:12px;border-radius:9px;}
 .btn-green{background:linear-gradient(135deg,#2ecc71,#27ae60);}
 .btn-red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.25);color:var(--red);}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--muted);}
 .btn .sp{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
 .btn.loading .bt{display:none;}.btn.loading .sp{display:block;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── Messages ── */
+/* Messages */
 .msg{font-size:12px;border-radius:9px;padding:9px 13px;margin-bottom:12px;display:none;line-height:1.4;}
 .msg.err{background:rgba(255,68,68,.12);color:var(--red);display:block;}
 .msg.ok{background:rgba(62,207,142,.12);color:var(--green);display:block;}
 
-/* ── App shell ── */
+/* App shell */
 #app-screen{position:fixed;inset:0;display:none;flex-direction:column;}
 #app-screen.active{display:flex;}
 .topbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;background:rgba(13,13,13,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;}
@@ -70,7 +70,8 @@ select.fi{cursor:pointer;}
 .topbar-menu span{display:block;width:20px;height:2px;background:var(--white);border-radius:2px;}
 .topbar-title{flex:1;font-size:16px;font-weight:800;}
 .topbar-title span{color:var(--accent);}
-.topbar-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:14px;cursor:pointer;}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;font-size:14px;cursor:pointer;overflow:hidden;}
+.topbar-avatar img{width:100%;height:100%;object-fit:cover;}
 .pages{position:fixed;top:var(--nav-h);bottom:var(--bottom-h);left:0;right:0;}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);z-index:100;background:rgba(13,13,13,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;align-items:center;}
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 0;cursor:pointer;border:none;background:none;}
@@ -78,13 +79,14 @@ select.fi{cursor:pointer;}
 .bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);}
 .bnav-btn.active .lbl{color:var(--accent);}
 
-/* ── Sidebar ── */
+/* Sidebar */
 .sidebar-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
 .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:300;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
 .sidebar.open{transform:translateX(0);}
 .sidebar-top{padding:20px;border-bottom:1px solid var(--border);}
-.sidebar-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:10px;}
+.sidebar-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:10px;overflow:hidden;}
+.sidebar-avatar img{width:100%;height:100%;object-fit:cover;}
 .sidebar-name{font-size:16px;font-weight:800;margin-bottom:2px;}
 .sidebar-tg{font-size:12px;color:var(--muted);margin-bottom:8px;}
 .role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
@@ -98,73 +100,89 @@ select.fi{cursor:pointer;}
 .sidebar-bottom{padding:16px 20px;border-top:1px solid var(--border);}
 .logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);color:var(--red);border-radius:10px;padding:12px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
 
-/* ── Common page styles ── */
+/* Common */
 .pad{padding:16px;}
 .sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
 .sec-title span{color:var(--accent);}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
 
-/* ── Hero ── */
+/* Hero */
 .hero{background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(255,85,0,.08));border:1px solid rgba(255,122,0,.25);border-radius:18px;padding:20px;margin-bottom:20px;}
 .hero h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
 .hero h2 span{color:var(--accent);}
 .hero p{color:var(--muted);font-size:13px;line-height:1.5;}
 
-/* ── Categories ── */
+/* Categories */
 .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none;}
 .cats::-webkit-scrollbar{display:none;}
 .cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 .cat.active{background:rgba(255,122,0,.15);border-color:var(--accent);color:var(--accent);}
 
-/* ── App cards ── */
+/* App cards */
 .apps-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
 .app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;}
 .app-card:active{background:var(--surface2);}
-.app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
+.app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
+.app-icon img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
 .app-info{flex:1;min-width:0;}
 .app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .app-info .dev{color:var(--muted);font-size:12px;margin-bottom:4px;}
 .app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);}
 .app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;}
 
-/* ── Empty state ── */
+/* Update badge */
+.update-badge{display:inline-block;background:rgba(62,207,142,.15);color:var(--green);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;margin-left:6px;}
+
+/* Empty */
 .empty{text-align:center;padding:48px 20px;}
 .empty .ei{font-size:48px;margin-bottom:12px;}
 .empty h3{font-size:16px;font-weight:800;margin-bottom:6px;}
 .empty p{color:var(--muted);font-size:13px;line-height:1.5;}
 
-/* ── Top ── */
+/* Top */
 .top-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;}
 .top-item:active{background:var(--surface2);}
 .top-num{font-size:18px;font-weight:800;color:var(--accent);width:24px;text-align:center;flex-shrink:0;}
-.top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
+.top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
+.top-icon img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
 .top-info{flex:1;min-width:0;}
 .top-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .top-info span{color:var(--muted);font-size:11px;}
 .top-rating{font-size:13px;font-weight:800;color:var(--accent);}
 
-/* ── App detail ── */
+/* App detail */
 .back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
 .app-detail-header{display:flex;gap:14px;margin-bottom:14px;}
-.app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
+.app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
+.app-detail-icon img{width:100%;height:100%;object-fit:cover;border-radius:18px;}
 .app-detail-meta h2{font-size:18px;font-weight:800;margin-bottom:2px;}
 .app-detail-meta .dev{color:var(--muted);font-size:12px;margin-bottom:6px;}
 .install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin:12px 0;}
 .detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;color:var(--muted);font-size:13px;line-height:1.7;}
+.update-notes-box{background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.2);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.update-notes-box .un-title{font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.update-notes-box .un-text{font-size:13px;color:var(--white);line-height:1.5;}
 
-/* ── Reviews ── */
+/* Reviews */
 .review{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
 .review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .review-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
 .review-name{font-size:12px;font-weight:700;flex:1;}
 .review-date{color:var(--muted);font-size:10px;}
+.review-del-btn{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:0 4px;flex-shrink:0;}
 .review-stars{color:var(--accent);font-size:11px;margin-bottom:4px;}
-.review-text{color:var(--muted);font-size:12px;line-height:1.5;}
+.review-text{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:8px;}
+.dev-reply-box{background:rgba(255,122,0,.06);border-left:2px solid var(--accent);padding:8px 10px;border-radius:0 8px 8px 0;margin-top:6px;}
+.dev-reply-label{font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.dev-reply-text{font-size:12px;color:var(--white);line-height:1.4;}
+.reply-form{margin-top:8px;}
+.reply-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--white);font-family:var(--mono);font-size:12px;outline:none;margin-bottom:6px;-webkit-appearance:none;}
+.reply-input:focus{border-color:var(--accent);}
 .star-select{display:flex;gap:6px;margin-bottom:12px;}
 .star-btn{font-size:22px;background:none;border:none;cursor:pointer;opacity:.3;transition:.2s;padding:0;}
 .star-btn.active{opacity:1;}
 
-/* ── Profile ── */
+/* Profile */
 .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px;}
 .profile-avatar-big{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;}
 .profile-nick{font-size:18px;font-weight:800;margin-bottom:4px;}
@@ -173,7 +191,7 @@ select.fi{cursor:pointer;}
 .pstat .val{font-size:18px;font-weight:800;color:var(--accent);}
 .pstat .lbl{font-size:10px;color:var(--muted);margin-top:2px;}
 
-/* ── Dev panel ── */
+/* Dev panel */
 .dev-section{margin-bottom:20px;}
 .sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
 .sub-item h4{font-size:13px;font-weight:700;margin-bottom:4px;}
@@ -182,21 +200,26 @@ select.fi{cursor:pointer;}
 .status-pending{background:rgba(255,179,0,.15);color:#ffb300;}
 .status-approved{background:rgba(62,207,142,.15);color:var(--green);}
 .status-rejected{background:rgba(255,68,68,.15);color:var(--red);}
-.file-upload{width:100%;background:rgba(255,255,255,.03);border:1.5px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-bottom:13px;transition:.2s;}
+.file-upload{width:100%;background:rgba(255,255,255,.03);border:1.5px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;margin-bottom:13px;transition:.2s;}
 .file-upload:active{border-color:var(--accent);}
-.file-upload .fu-icon{font-size:28px;margin-bottom:6px;}
+.file-upload .fu-icon{font-size:26px;margin-bottom:6px;}
 .file-upload .fu-text{font-size:12px;color:var(--muted);}
 .file-upload .fu-name{font-size:12px;color:var(--green);margin-top:4px;word-break:break-all;}
+.icon-preview{width:56px;height:56px;border-radius:14px;object-fit:cover;margin:0 auto 8px;display:block;border:1px solid var(--border);}
+.my-app-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
+.my-app-item h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.my-app-item p{color:var(--muted);font-size:12px;margin-bottom:10px;}
+.my-app-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
-/* ── Admin ── */
-.admin-login-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-top:8px;}
+/* Admin */
 .admin-section-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
 .admin-sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
 .admin-sub-item h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .admin-sub-item p{color:var(--muted);font-size:11px;margin-bottom:10px;line-height:1.4;}
 .admin-sub-actions{display:flex;gap:8px;}
 .admin-app-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;}
+.admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
+.admin-app-icon img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
 .admin-app-info{flex:1;min-width:0;}
 .admin-app-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
 .admin-app-info span{color:var(--muted);font-size:11px;}
@@ -210,7 +233,7 @@ select.fi{cursor:pointer;}
 </head>
 <body>
 
-<!-- ══ AUTH ══ -->
+<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-logo">
     <div class="auth-logo-icon">📦</div>
@@ -221,74 +244,58 @@ select.fi{cursor:pointer;}
     <button class="auth-tab" onclick="authTab('register')">Регистрация</button>
     <button class="auth-tab" onclick="authTab('reset')">Сброс</button>
   </div>
-
-  <!-- LOGIN -->
   <div class="tab-content active" id="tc-login">
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-sub">Войдите в аккаунт</div>
     <div class="msg" id="msg-login"></div>
-    <label class="fl">Ник</label>
-    <input class="fi" id="l-nick" placeholder="ваш никнейм"/>
-    <label class="fl">Пароль</label>
-    <input class="fi" id="l-pass" type="password" placeholder="••••••••"/>
+    <label class="fl">Ник</label><input class="fi" id="l-nick" placeholder="ваш никнейм"/>
+    <label class="fl">Пароль</label><input class="fi" id="l-pass" type="password" placeholder="••••••••"/>
     <button class="btn" id="btn-login" onclick="doLogin()"><span class="bt">Войти →</span><div class="sp"></div></button>
     <div class="auth-hint"><a onclick="authTab('reset')">Забыли пароль?</a></div>
   </div>
-
-  <!-- REGISTER -->
   <div class="tab-content" id="tc-register">
     <div class="auth-title">Регистрация</div>
     <div class="auth-sub">Сначала напишите <b>/start</b> боту в Telegram</div>
     <div class="msg" id="msg-reg"></div>
     <div id="reg-s1">
-      <label class="fl">Telegram username</label>
-      <input class="fi" id="r-tg" placeholder="username (без @)"/>
+      <label class="fl">Telegram username</label><input class="fi" id="r-tg" placeholder="username (без @)"/>
       <button class="btn" id="btn-reg1" onclick="regStep1()"><span class="bt">Получить код →</span><div class="sp"></div></button>
     </div>
     <div id="reg-s2" class="hidden">
-      <label class="fl">Код из Telegram</label>
-      <input class="fi" id="r-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
-      <label class="fl">Придумайте ник</label>
-      <input class="fi" id="r-nick" placeholder="мин. 3 символа"/>
-      <label class="fl">Пароль</label>
-      <input class="fi" id="r-pass" type="password" placeholder="мин. 6 символов"/>
+      <label class="fl">Код из Telegram</label><input class="fi" id="r-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="fl">Придумайте ник</label><input class="fi" id="r-nick" placeholder="мин. 3 символа"/>
+      <label class="fl">Пароль</label><input class="fi" id="r-pass" type="password" placeholder="мин. 6 символов"/>
       <button class="btn" id="btn-reg2" onclick="regStep2()"><span class="bt">Зарегистрироваться →</span><div class="sp"></div></button>
     </div>
   </div>
-
-  <!-- RESET -->
   <div class="tab-content" id="tc-reset">
     <div class="auth-title">Сброс пароля</div>
     <div class="auth-sub">Введите Telegram username</div>
     <div class="msg" id="msg-reset"></div>
     <div id="reset-s1">
-      <label class="fl">Telegram username</label>
-      <input class="fi" id="rs-tg" placeholder="username (без @)"/>
+      <label class="fl">Telegram username</label><input class="fi" id="rs-tg" placeholder="username (без @)"/>
       <button class="btn" id="btn-rs1" onclick="resetStep1()"><span class="bt">Получить код →</span><div class="sp"></div></button>
     </div>
     <div id="reset-s2" class="hidden">
-      <label class="fl">Код из Telegram</label>
-      <input class="fi" id="rs-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
-      <label class="fl">Новый пароль</label>
-      <input class="fi" id="rs-newpass" type="password" placeholder="мин. 6 символов"/>
+      <label class="fl">Код из Telegram</label><input class="fi" id="rs-code" placeholder="123456" maxlength="6" inputmode="numeric"/>
+      <label class="fl">Новый пароль</label><input class="fi" id="rs-newpass" type="password" placeholder="мин. 6 символов"/>
       <button class="btn" id="btn-rs2" onclick="resetStep2()"><span class="bt">Сохранить →</span><div class="sp"></div></button>
     </div>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="app-screen">
   <div class="topbar">
     <div class="topbar-menu" onclick="openSidebar()"><span></span><span></span><span></span></div>
     <div class="topbar-title">Delivery<span>Store</span></div>
-    <div class="topbar-avatar" id="top-avatar" onclick="openSidebar()">?</div>
+    <div class="topbar-avatar" id="top-avatar">?</div>
   </div>
-
   <div class="pages">
     <!-- HOME -->
     <div class="page active" id="page-home">
       <div class="pad">
-        <div class="hero"><h2>Магазин <span>Mini Apps</span></h2><p>Лучшие Telegram мини-приложения</p></div>
+        <div class="hero"><h2>Магазин <span>Delivery Store</span></h2><p>Лучшие Telegram мини-приложения</p></div>
         <div class="sec-title">🗂 <span>Категории</span></div>
         <div class="cats">
           <div class="cat active" onclick="filterCat(this,'all')">Все</div>
@@ -302,7 +309,6 @@ select.fi{cursor:pointer;}
         <div id="apps-list"></div>
       </div>
     </div>
-
     <!-- TOP -->
     <div class="page" id="page-top">
       <div class="pad">
@@ -310,7 +316,6 @@ select.fi{cursor:pointer;}
         <div id="top-list"></div>
       </div>
     </div>
-
     <!-- APP DETAIL -->
     <div class="page" id="page-app">
       <div class="pad">
@@ -318,7 +323,6 @@ select.fi{cursor:pointer;}
         <div id="app-detail"></div>
       </div>
     </div>
-
     <!-- PROFILE -->
     <div class="page" id="page-profile">
       <div class="pad">
@@ -336,22 +340,17 @@ select.fi{cursor:pointer;}
         <button class="btn btn-ghost" style="color:var(--red);border-color:rgba(255,68,68,.3);" onclick="logout()">Выйти из аккаунта</button>
       </div>
     </div>
-
     <!-- DEV PANEL -->
     <div class="page" id="page-dev">
       <div class="pad">
         <div class="sec-title">💻 <span>Панель разработчика</span></div>
-
-        <!-- Submit form -->
+        <!-- Форма публикации -->
         <div class="card dev-section">
           <div style="font-size:14px;font-weight:800;margin-bottom:14px;">📤 Опубликовать приложение</div>
           <div class="msg" id="msg-dev"></div>
-          <label class="fl">Название приложения</label>
-          <input class="fi" id="dev-name" placeholder="Моё крутое приложение"/>
-          <label class="fl">Описание</label>
-          <textarea class="fi" id="dev-desc" placeholder="Расскажите о вашем приложении..."></textarea>
-          <label class="fl">Версия</label>
-          <input class="fi" id="dev-ver" placeholder="1.0.0"/>
+          <label class="fl">Название</label><input class="fi" id="dev-name" placeholder="Название приложения"/>
+          <label class="fl">Описание</label><textarea class="fi" id="dev-desc" placeholder="Расскажите о приложении..."></textarea>
+          <label class="fl">Версия</label><input class="fi" id="dev-ver" placeholder="1.0.0"/>
           <label class="fl">Категория</label>
           <select class="fi" id="dev-cat">
             <option value="games">🎮 Игры</option>
@@ -360,6 +359,14 @@ select.fi{cursor:pointer;}
             <option value="finance">💰 Финансы</option>
             <option value="other">📦 Другое</option>
           </select>
+          <label class="fl">Иконка приложения</label>
+          <div class="file-upload" onclick="document.getElementById('dev-icon').click()">
+            <img id="icon-preview-img" class="icon-preview hidden"/>
+            <div class="fu-icon" id="icon-fu-icon">🖼</div>
+            <div class="fu-text">Нажмите чтобы загрузить иконку (PNG/JPG)</div>
+            <div class="fu-name" id="icon-name"></div>
+          </div>
+          <input type="file" id="dev-icon" accept="image/*" style="display:none" onchange="onIconSelect(this)"/>
           <label class="fl">APK файл</label>
           <div class="file-upload" onclick="document.getElementById('dev-apk').click()">
             <div class="fu-icon">📁</div>
@@ -369,34 +376,29 @@ select.fi{cursor:pointer;}
           <input type="file" id="dev-apk" accept=".apk" style="display:none" onchange="onApkSelect(this)"/>
           <button class="btn" id="btn-submit-app" onclick="submitApp()"><span class="bt">Отправить на рассмотрение →</span><div class="sp"></div></button>
         </div>
-
-        <!-- My submissions -->
+        <!-- Мои заявки -->
         <div class="dev-section">
           <div class="admin-section-title">Мои заявки</div>
           <div id="my-submissions"></div>
         </div>
+        <!-- Мои приложения -->
+        <div class="dev-section">
+          <div class="admin-section-title">Мои приложения</div>
+          <div id="my-apps"></div>
+        </div>
       </div>
     </div>
-
     <!-- ADMIN -->
     <div class="page" id="page-admin">
       <div class="pad">
         <div class="sec-title">⚙️ <span>Админ панель</span></div>
-        <div id="admin-login-block">
-          <div class="admin-login-card">
-            <div class="msg" id="msg-admin"></div>
-            <label class="fl">Пароль администратора</label>
-            <input class="fi" id="admin-pass" type="password" placeholder="••••••••"/>
-            <button class="btn" onclick="adminLogin()"><span class="bt">Войти →</span><div class="sp"></div></button>
-          </div>
-        </div>
-        <div id="admin-panel" class="hidden">
+        <div id="admin-panel">
           <div style="margin-bottom:20px;">
             <div class="admin-section-title">📬 Заявки на рассмотрении</div>
             <div id="admin-submissions"></div>
           </div>
           <div style="margin-bottom:20px;">
-            <div class="admin-section-title">📦 Опубликованные приложения</div>
+            <div class="admin-section-title">📦 Приложения</div>
             <div id="admin-apps-list"></div>
           </div>
           <div>
@@ -407,7 +409,6 @@ select.fi{cursor:pointer;}
       </div>
     </div>
   </div>
-
   <!-- Bottom nav -->
   <div class="bottom-nav">
     <button class="bnav-btn active" onclick="showPage('home',this)"><div class="icon">🏠</div><div class="lbl">Главная</div></button>
@@ -418,7 +419,7 @@ select.fi{cursor:pointer;}
   </div>
 </div>
 
-<!-- ══ SIDEBAR ══ -->
+<!-- SIDEBAR -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-top">
@@ -441,162 +442,120 @@ select.fi{cursor:pointer;}
 
 <script>
 const API = "https://web-production-9fdbe.up.railway.app";
-const ADMIN_PASSWORD = "123123";
 
 let currentUser = JSON.parse(localStorage.getItem("ds_user") || "null");
-let allApps = [];
-let currentFilter = "all";
-let currentAppId = null;
-let selectedStars = 0;
-let apkBase64 = null;
+let allApps = [], currentFilter = "all", currentAppId = null;
+let selectedStars = 0, apkBase64 = null, iconBase64 = null;
 let regTg = "", resetTg = "", prevPage = "home";
 
-// ── Init ────────────────────────────────────────
 window.onload = async () => {
   if(currentUser){ showApp(); await loadApps(); }
 };
 
-// ── Auth tabs ────────────────────────────────────
+// ── Auth ──────────────────────────────────────────
 function authTab(t){
-  document.querySelectorAll(".auth-tab").forEach((el,i)=>{
-    el.classList.toggle("active",["login","register","reset"][i]===t);
-  });
+  document.querySelectorAll(".auth-tab").forEach((el,i)=>el.classList.toggle("active",["login","register","reset"][i]===t));
   document.querySelectorAll(".tab-content").forEach(el=>el.classList.remove("active"));
   document.getElementById("tc-"+t).classList.add("active");
 }
 
-// ── Login ────────────────────────────────────────
 async function doLogin(){
-  const nick=v("l-nick"), pass=v("l-pass");
-  const msg=document.getElementById("msg-login");
+  const nick=v("l-nick"),pass=v("l-pass"),msg=document.getElementById("msg-login");
   clearMsg(msg);
   if(!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-login"); load(btn,1);
+  const btn=document.getElementById("btn-login");load(btn,1);
   try{
     const r=await post("/login",{nick,password:pass});
-    if(!r.ok){
-      const e={not_found:"Пользователь не найден",wrong_password:"Неверный пароль"};
-      showMsg(msg,e[r.detail]||"Ошибка входа","err");return;
-    }
+    if(!r.ok){showMsg(msg,{not_found:"Пользователь не найден",wrong_password:"Неверный пароль"}[r.detail]||"Ошибка","err");return;}
     currentUser={nick:r.nick,tg_username:r.tg_username,role:r.role};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
-    showApp(); await loadApps();
-  }catch{showMsg(msg,"Нет соединения с сервером","err");}
-  finally{load(btn,0);}
+    showApp();await loadApps();
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
-// ── Register ──────────────────────────────────────
 async function regStep1(){
-  const tg=v("r-tg").replace("@","");
-  const msg=document.getElementById("msg-reg");
-  clearMsg(msg);
-  if(!tg){showMsg(msg,"Введите username","err");return;}
-  regTg=tg;
-  const btn=document.getElementById("btn-reg1"); load(btn,1);
+  const tg=v("r-tg").replace("@",""),msg=document.getElementById("msg-reg");
+  clearMsg(msg);if(!tg){showMsg(msg,"Введите username","err");return;}
+  regTg=tg;const btn=document.getElementById("btn-reg1");load(btn,1);
   try{
     const r=await post("/send-code",{tg_username:tg});
-    if(!r.ok){
-      const e={already_registered:"Уже зарегистрирован",user_not_found:"Сначала напишите /start боту!"};
-      showMsg(msg,e[r.detail]||"Ошибка отправки","err");return;
-    }
+    if(!r.ok){showMsg(msg,{already_registered:"Уже зарегистрирован",user_not_found:"Сначала напишите /start боту!"}[r.detail]||"Ошибка","err");return;}
     showMsg(msg,"Код отправлен в Telegram!","ok");
     document.getElementById("reg-s1").classList.add("hidden");
     document.getElementById("reg-s2").classList.remove("hidden");
-  }catch{showMsg(msg,"Нет соединения с сервером","err");}
-  finally{load(btn,0);}
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
 async function regStep2(){
-  const code=v("r-code"),nick=v("r-nick"),pass=v("r-pass");
-  const msg=document.getElementById("msg-reg");
-  clearMsg(msg);
-  if(!code||!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-reg2"); load(btn,1);
+  const code=v("r-code"),nick=v("r-nick"),pass=v("r-pass"),msg=document.getElementById("msg-reg");
+  clearMsg(msg);if(!code||!nick||!pass){showMsg(msg,"Заполните все поля","err");return;}
+  const btn=document.getElementById("btn-reg2");load(btn,1);
   try{
     const r1=await post("/verify-code",{tg_username:regTg,code});
-    if(!r1.ok){
-      const e={wrong_code:"Неверный код",expired:"Код истёк",no_code:"Сначала запросите код"};
-      showMsg(msg,e[r1.detail]||"Ошибка кода","err");return;
-    }
+    if(!r1.ok){showMsg(msg,{wrong_code:"Неверный код",expired:"Код истёк",no_code:"Сначала запросите код"}[r1.detail]||"Ошибка","err");return;}
     const r2=await post("/finish-register",{tg_username:regTg,nick,password:pass});
-    if(!r2.ok){
-      const e={nick_taken:"Ник уже занят",not_verified:"Ошибка подтверждения",nick_too_short:"Ник слишком короткий",pass_too_short:"Пароль слишком короткий"};
-      showMsg(msg,e[r2.detail]||"Ошибка регистрации","err");return;
-    }
+    if(!r2.ok){showMsg(msg,{nick_taken:"Ник занят",not_verified:"Ошибка подтверждения",nick_too_short:"Ник слишком короткий",pass_too_short:"Пароль слишком короткий"}[r2.detail]||"Ошибка","err");return;}
     currentUser={nick:r2.nick,tg_username:regTg,role:r2.role};
     localStorage.setItem("ds_user",JSON.stringify(currentUser));
-    showApp(); await loadApps();
-  }catch{showMsg(msg,"Нет соединения с сервером","err");}
-  finally{load(btn,0);}
+    showApp();await loadApps();
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
-// ── Reset ─────────────────────────────────────────
 async function resetStep1(){
-  const tg=v("rs-tg").replace("@","");
-  const msg=document.getElementById("msg-reset");
-  clearMsg(msg); if(!tg){showMsg(msg,"Введите username","err");return;}
-  resetTg=tg;
-  const btn=document.getElementById("btn-rs1"); load(btn,1);
+  const tg=v("rs-tg").replace("@",""),msg=document.getElementById("msg-reset");
+  clearMsg(msg);if(!tg){showMsg(msg,"Введите username","err");return;}
+  resetTg=tg;const btn=document.getElementById("btn-rs1");load(btn,1);
   try{
     const r=await post("/send-reset-code",{tg_username:tg});
     if(!r.ok){showMsg(msg,"Пользователь не найден или не писал боту","err");return;}
     showMsg(msg,"Код отправлен!","ok");
     document.getElementById("reset-s1").classList.add("hidden");
     document.getElementById("reset-s2").classList.remove("hidden");
-  }catch{showMsg(msg,"Нет соединения","err");}
-  finally{load(btn,0);}
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
 async function resetStep2(){
-  const code=v("rs-code"),np=v("rs-newpass");
-  const msg=document.getElementById("msg-reset");
-  clearMsg(msg); if(!code||!np){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-rs2"); load(btn,1);
+  const code=v("rs-code"),np=v("rs-newpass"),msg=document.getElementById("msg-reset");
+  clearMsg(msg);if(!code||!np){showMsg(msg,"Заполните поля","err");return;}
+  const btn=document.getElementById("btn-rs2");load(btn,1);
   try{
     const r=await post("/reset-password",{tg_username:resetTg,code,new_password:np});
     if(!r.ok){showMsg(msg,"Неверный или истёкший код","err");return;}
     showMsg(msg,"Пароль изменён! Войдите.","ok");
     setTimeout(()=>authTab("login"),1500);
-  }catch{showMsg(msg,"Нет соединения","err");}
-  finally{load(btn,0);}
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
-// ── Show app ──────────────────────────────────────
+// ── App shell ─────────────────────────────────────
 function showApp(){
   document.getElementById("auth-screen").classList.add("hidden");
   document.getElementById("app-screen").classList.add("active");
   const letter=(currentUser.nick||"?")[0].toUpperCase();
-  ["top-avatar","sb-avatar","prof-av"].forEach(id=>document.getElementById(id).textContent=letter);
+  document.getElementById("top-avatar").textContent=letter;
+  document.getElementById("sb-avatar").textContent=letter;
+  document.getElementById("prof-av").textContent=letter;
   document.getElementById("sb-name").textContent=currentUser.nick;
   document.getElementById("prof-nick").textContent=currentUser.nick;
   document.getElementById("sb-tg").textContent="@"+currentUser.tg_username;
   document.getElementById("prof-tg").textContent="@"+currentUser.tg_username;
   updateRoleUI();
+  // Если admin — сразу загружаем данные панели
+  if(currentUser.role==="admin") loadAdminData();
 }
 
 function updateRoleUI(){
   const role=currentUser.role||"user";
-  const badges={
-    user:'<span class="role-badge role-user">👤 Пользователь</span>',
-    dev:'<span class="role-badge role-dev">💻 Разработчик</span>',
-    admin:'<span class="role-badge role-admin">⚡ Администратор</span>',
-  };
-  const badge=badges[role]||badges.user;
-  document.getElementById("prof-role-wrap").innerHTML=badge;
-  document.getElementById("sb-role-wrap").innerHTML=badge;
-  // Показываем нужные кнопки в nav
-  const isDev=role==="dev"||role==="admin";
-  const isAdmin=role==="admin";
+  const badges={user:'<span class="role-badge role-user">👤 Пользователь</span>',dev:'<span class="role-badge role-dev">💻 Разработчик</span>',admin:'<span class="role-badge role-admin">⚡ Администратор</span>'};
+  document.getElementById("prof-role-wrap").innerHTML=badges[role]||badges.user;
+  document.getElementById("sb-role-wrap").innerHTML=badges[role]||badges.user;
+  const isDev=role==="dev"||role==="admin",isAdmin=role==="admin";
   document.getElementById("bnav-dev").style.display=isDev?"flex":"none";
   document.getElementById("bnav-admin").style.display=isAdmin?"flex":"none";
   document.getElementById("snav-dev").style.display=isDev?"flex":"none";
   document.getElementById("snav-admin").style.display=isAdmin?"flex":"none";
 }
 
-function logout(){
-  localStorage.removeItem("ds_user");
-  location.reload();
-}
+function logout(){localStorage.removeItem("ds_user");location.reload();}
 
 // ── Pages ─────────────────────────────────────────
 function showPage(p,btn){
@@ -605,62 +564,42 @@ function showPage(p,btn){
   document.querySelectorAll(".bnav-btn").forEach(el=>el.classList.remove("active"));
   if(btn)btn.classList.add("active");
   prevPage=p;
-  if(p==="dev")loadMySubmissions();
+  if(p==="dev"){loadMySubmissions();loadMyApps();}
   if(p==="profile")loadProfileStats();
+  if(p==="admin")loadAdminData();
 }
 
 function goBack(){
-  const back=prevPage==="app"?"home":prevPage;
-  showPage(back,document.querySelectorAll(".bnav-btn")[0]);
+  showPage(prevPage==="app"?"home":prevPage,document.querySelectorAll(".bnav-btn")[0]);
 }
 
-// ── Sidebar ───────────────────────────────────────
-function openSidebar(){
-  document.getElementById("sidebar").classList.add("open");
-  document.getElementById("sidebar-overlay").classList.add("open");
-}
-function closeSidebar(){
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("sidebar-overlay").classList.remove("open");
-}
-function sidebarGo(p){
-  closeSidebar();
-  const idx=["home","top","profile"].indexOf(p);
-  const btn=idx>=0?document.querySelectorAll(".bnav-btn")[idx]:null;
-  showPage(p,btn);
-}
+function openSidebar(){document.getElementById("sidebar").classList.add("open");document.getElementById("sidebar-overlay").classList.add("open");}
+function closeSidebar(){document.getElementById("sidebar").classList.remove("open");document.getElementById("sidebar-overlay").classList.remove("open");}
+function sidebarGo(p){closeSidebar();showPage(p,document.querySelectorAll(".bnav-btn")[["home","top","profile"].indexOf(p)]);}
 
-// ── Load apps ─────────────────────────────────────
+// ── Apps ─────────────────────────────────────────
 async function loadApps(){
-  try{
-    const r=await fetch(API+"/apps");
-    const d=await r.json();
-    allApps=d.apps||[];
-    renderApps(allApps);
-    renderTop(allApps);
-  }catch{
-    allApps=[];
-    renderApps([]);
-    renderTop([]);
-  }
+  try{const r=await fetch(API+"/apps");const d=await r.json();allApps=d.apps||[];}
+  catch{allApps=[];}
+  renderApps(allApps);renderTop(allApps);
+}
+
+function iconEl(a,size="52px",radius="14px"){
+  if(a.icon_data) return `<img src="data:image/jpeg;base64,${a.icon_data}" style="width:${size};height:${size};border-radius:${radius};object-fit:cover;display:block;"/>`;
+  return `<span style="font-size:22px;font-weight:800">${a.name[0].toUpperCase()}</span>`;
 }
 
 function renderApps(apps){
-  const filtered=currentFilter==="all"?apps:apps.filter(a=>a.category===currentFilter);
-  if(!filtered.length){
-    document.getElementById("apps-list").innerHTML=`
-      <div class="empty">
-        <div class="ei">📭</div>
-        <h3>Приложений пока нет</h3>
-        <p>Будьте первым разработчиком!<br/>Опубликуйте своё приложение.</p>
-      </div>`;
+  const f=currentFilter==="all"?apps:apps.filter(a=>a.category===currentFilter);
+  if(!f.length){
+    document.getElementById("apps-list").innerHTML=`<div class="empty"><div class="ei">📭</div><h3>Приложений пока нет</h3><p>Будьте первым разработчиком!</p></div>`;
     return;
   }
-  document.getElementById("apps-list").innerHTML=filtered.map(a=>`
+  document.getElementById("apps-list").innerHTML=f.map(a=>`
     <div class="app-card" onclick="openApp(${a.id})">
-      <div class="app-icon">${a.name[0].toUpperCase()}</div>
+      <div class="app-icon">${iconEl(a)}</div>
       <div class="app-info">
-        <h3>${a.name}</h3>
+        <h3>${a.name}${a.update_notes?'<span class="update-badge">Обновлено</span>':''}</h3>
         <div class="dev">${a.developer}</div>
         <div class="rating">⭐ ${a.rating||"Нет оценок"} · 📥 ${a.installs}</div>
       </div>
@@ -669,14 +608,11 @@ function renderApps(apps){
 }
 
 function renderTop(apps){
-  if(!apps.length){
-    document.getElementById("top-list").innerHTML=`<div class="empty"><div class="ei">🏆</div><h3>Топ пока пуст</h3><p>Здесь появятся лучшие приложения</p></div>`;
-    return;
-  }
+  if(!apps.length){document.getElementById("top-list").innerHTML=`<div class="empty"><div class="ei">🏆</div><h3>Топ пока пуст</h3><p>Здесь появятся лучшие приложения</p></div>`;return;}
   document.getElementById("top-list").innerHTML=[...apps].sort((a,b)=>(b.rating||0)-(a.rating||0)).map((a,i)=>`
     <div class="top-item" onclick="openApp(${a.id})">
       <div class="top-num">${i+1}</div>
-      <div class="top-icon">${a.name[0].toUpperCase()}</div>
+      <div class="top-icon">${iconEl(a,"42px","12px")}</div>
       <div class="top-info"><h4>${a.name}</h4><span>${a.developer} · ${catLabel(a.category)}</span></div>
       <div class="top-rating">★ ${a.rating||"—"}</div>
     </div>`).join("");
@@ -684,29 +620,25 @@ function renderTop(apps){
 
 function filterCat(el,cat){
   document.querySelectorAll(".cat").forEach(c=>c.classList.remove("active"));
-  el.classList.add("active");
-  currentFilter=cat;
-  renderApps(allApps);
+  el.classList.add("active");currentFilter=cat;renderApps(allApps);
 }
 
-function catLabel(cat){
-  const m={games:"🎮 Игры",tools:"🛠 Инструменты",social:"💬 Социальные",finance:"💰 Финансы",other:"📦 Другое"};
-  return m[cat]||"📦 Другое";
-}
+function catLabel(cat){return{games:"🎮 Игры",tools:"🛠 Инструменты",social:"💬 Социальные",finance:"💰 Финансы",other:"📦 Другое"}[cat]||"📦 Другое";}
 
 // ── App detail ────────────────────────────────────
 async function openApp(id){
   currentAppId=id;
-  const a=allApps.find(x=>x.id===id); if(!a)return;
+  const a=allApps.find(x=>x.id===id);if(!a)return;
   prevPage="home";
-  // Загружаем отзывы
   let reviews=[];
   try{const r=await fetch(API+"/apps/"+id+"/reviews");const d=await r.json();reviews=d.reviews||[];}catch{}
-
+  const myReview=reviews.find(r=>r.nick===currentUser.nick);
   const avgRating=reviews.length?(reviews.reduce((s,r)=>s+r.stars,0)/reviews.length).toFixed(1):"—";
+  const isOwner=a.developer===currentUser.nick||currentUser.role==="admin";
+
   document.getElementById("app-detail").innerHTML=`
     <div class="app-detail-header">
-      <div class="app-detail-icon">${a.name[0].toUpperCase()}</div>
+      <div class="app-detail-icon">${iconEl(a,"72px","18px")}</div>
       <div class="app-detail-meta">
         <h2>${a.name}</h2>
         <div class="dev">${a.developer}</div>
@@ -719,30 +651,77 @@ async function openApp(id){
       </div>
     </div>
     ${a.apk_data?`<button class="install-btn" onclick="installApp(${a.id})">📥 Скачать APK</button>`:`<button class="install-btn" style="opacity:.5;cursor:default">APK не загружен</button>`}
+    ${a.update_notes?`<div class="update-notes-box"><div class="un-title">🆕 Что нового</div><div class="un-text">${a.update_notes}</div></div>`:""}
     <div class="detail-desc">${a.description}</div>
+    ${isOwner?`<div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="btn btn-sm btn-outline" onclick="showUpdateForm(${a.id})">🔄 Обновить</button>
+      <button class="btn btn-sm btn-red" onclick="devDeleteApp(${a.id})">🗑 Удалить</button>
+    </div>`:""}
+    <div id="update-form-${a.id}" class="hidden card" style="margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px;">🔄 Запрос на обновление</div>
+      <div class="msg" id="msg-update-${a.id}"></div>
+      <label class="fl">Новая версия</label><input class="fi" id="upd-ver-${a.id}" placeholder="1.1.0" style="margin-bottom:10px"/>
+      <label class="fl">Что нового</label><textarea class="fi" id="upd-notes-${a.id}" placeholder="Список изменений..." style="min-height:60px;margin-bottom:10px"></textarea>
+      <button class="btn btn-sm" onclick="submitUpdate(${a.id},'${a.name}','${a.developer}','${a.category}')"><span class="bt">Отправить →</span><div class="sp"></div></button>
+    </div>
     <div class="sec-title" style="margin-bottom:10px">💬 <span>Отзывы</span></div>
     ${reviews.map(r=>`
-      <div class="review">
+      <div class="review" id="review-${r.id}">
         <div class="review-header">
           <div class="review-avatar">${r.nick[0].toUpperCase()}</div>
           <div class="review-name">${r.nick}</div>
           <div class="review-date">${new Date(r.created_at*1000).toLocaleDateString('ru')}</div>
+          ${r.nick===currentUser.nick?`<button class="review-del-btn" onclick="deleteReview(${r.id},${id})" title="Удалить отзыв">🗑</button>`:""}
         </div>
         <div class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
         <div class="review-text">${r.text}</div>
+        ${r.dev_reply?`<div class="dev-reply-box"><div class="dev-reply-label">Ответ разработчика</div><div class="dev-reply-text">${r.dev_reply}</div></div>`:""}
+        ${isOwner&&!r.dev_reply?`<div class="reply-form">
+          <input class="reply-input" id="reply-input-${r.id}" placeholder="Ответить на отзыв..."/>
+          <button class="btn btn-sm btn-outline" onclick="submitReply(${r.id})">Ответить</button>
+        </div>`:""}
       </div>`).join("")}
     ${reviews.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px">Отзывов пока нет</div>':""}
-    <div class="card" style="margin-top:12px">
+    ${!myReview?`<div class="card" style="margin-top:12px">
       <div style="font-size:13px;font-weight:800;margin-bottom:10px">Оставить отзыв</div>
       <div class="msg" id="msg-review"></div>
-      <div class="star-select" id="star-select">
-        ${[1,2,3,4,5].map(i=>`<button class="star-btn" onclick="setStar(${i})">★</button>`).join("")}
-      </div>
+      <div class="star-select" id="star-select">${[1,2,3,4,5].map(i=>`<button class="star-btn" onclick="setStar(${i})">★</button>`).join("")}</div>
       <textarea class="fi" id="review-text" placeholder="Напишите отзыв..." style="min-height:70px"></textarea>
       <button class="btn btn-sm" onclick="submitReview(${a.id})"><span class="bt">Отправить</span><div class="sp"></div></button>
-    </div>`;
+    </div>`:`<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Вы уже оставили отзыв</div>`}`;
   selectedStars=0;
   showPage("app",null);
+}
+
+function showUpdateForm(appId){
+  const el=document.getElementById("update-form-"+appId);
+  el.classList.toggle("hidden");
+}
+
+async function submitUpdate(appId,name,developer,category){
+  const ver=document.getElementById("upd-ver-"+appId).value.trim();
+  const notes=document.getElementById("upd-notes-"+appId).value.trim();
+  const msg=document.getElementById("msg-update-"+appId);
+  clearMsg(msg);
+  if(!ver||!notes){showMsg(msg,"Заполните все поля","err");return;}
+  // Получаем актуальное описание из allApps
+  const a=allApps.find(x=>x.id===appId);
+  try{
+    const r=await post("/apps/submit",{
+      nick:currentUser.nick,name,description:a?a.description:"",
+      version:ver,category,update_notes:notes,parent_app_id:appId
+    });
+    if(!r.ok){showMsg(msg,"Ошибка","err");return;}
+    showMsg(msg,"Запрос отправлен! Ожидайте одобрения.","ok");
+  }catch{showMsg(msg,"Нет соединения","err");}
+}
+
+async function devDeleteApp(appId){
+  if(!confirm("Удалить приложение?"))return;
+  try{
+    await post("/apps/delete",{app_id:appId,nick:currentUser.nick});
+    await loadApps();goBack();
+  }catch{}
 }
 
 function setStar(n){
@@ -751,34 +730,64 @@ function setStar(n){
 }
 
 async function submitReview(appId){
-  const text=v("review-text");
-  const msg=document.getElementById("msg-review");
+  const text=v("review-text"),msg=document.getElementById("msg-review");
   clearMsg(msg);
   if(!selectedStars){showMsg(msg,"Выберите оценку","err");return;}
   if(!text){showMsg(msg,"Напишите отзыв","err");return;}
   try{
     const r=await post("/apps/review",{app_id:appId,nick:currentUser.nick,stars:selectedStars,text});
-    if(!r.ok){showMsg(msg,"Ошибка","err");return;}
-    showMsg(msg,"Отзыв добавлен!","ok");
-    await loadApps();
-    setTimeout(()=>openApp(appId),800);
+    if(!r.ok){
+      if(r.detail==="already_reviewed"){showMsg(msg,"Вы уже оставили отзыв","err");}
+      else showMsg(msg,"Ошибка","err");
+      return;
+    }
+    await loadApps();openApp(appId);
   }catch{showMsg(msg,"Нет соединения","err");}
 }
 
+async function deleteReview(reviewId,appId){
+  try{
+    await post("/apps/review/delete",{review_id:reviewId,nick:currentUser.nick});
+    await loadApps();openApp(appId);
+  }catch{}
+}
+
+async function submitReply(reviewId){
+  const text=document.getElementById("reply-input-"+reviewId)?.value.trim();
+  if(!text)return;
+  try{
+    await post("/apps/review/reply",{review_id:reviewId,nick:currentUser.nick,reply:text});
+    openApp(currentAppId);
+  }catch{}
+}
+
 function installApp(id){
-  const a=allApps.find(x=>x.id===id); if(!a||!a.apk_data)return;
+  const a=allApps.find(x=>x.id===id);if(!a||!a.apk_data)return;
   const link=document.createElement("a");
   link.href="data:application/vnd.android.package-archive;base64,"+a.apk_data;
-  link.download=a.name+".apk";
-  link.click();
+  link.download=a.name+".apk";link.click();
 }
 
 // ── Dev panel ─────────────────────────────────────
+function onIconSelect(input){
+  const file=input.files[0];if(!file)return;
+  document.getElementById("icon-name").textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    iconBase64=e.target.result.split(",")[1];
+    const img=document.getElementById("icon-preview-img");
+    img.src=e.target.result;
+    img.classList.remove("hidden");
+    document.getElementById("icon-fu-icon").style.display="none";
+  };
+  reader.readAsDataURL(file);
+}
+
 function onApkSelect(input){
-  const file=input.files[0]; if(!file)return;
+  const file=input.files[0];if(!file)return;
   document.getElementById("apk-name").textContent=file.name;
   const reader=new FileReader();
-  reader.onload=e=>{ apkBase64=e.target.result.split(",")[1]; };
+  reader.onload=e=>{apkBase64=e.target.result.split(",")[1];};
   reader.readAsDataURL(file);
 }
 
@@ -787,22 +796,19 @@ async function submitApp(){
   const msg=document.getElementById("msg-dev");
   clearMsg(msg);
   if(!name||!desc||!ver){showMsg(msg,"Заполните все поля","err");return;}
-  const btn=document.getElementById("btn-submit-app"); load(btn,1);
+  const btn=document.getElementById("btn-submit-app");load(btn,1);
   try{
-    const r=await post("/apps/submit",{nick:currentUser.nick,name,description:desc,version:ver,category:cat,apk_data:apkBase64});
-    if(!r.ok){
-      const e={not_developer:"У вас нет прав разработчика",missing_fields:"Заполните все поля"};
-      showMsg(msg,e[r.detail]||"Ошибка","err");return;
-    }
+    const r=await post("/apps/submit",{nick:currentUser.nick,name,description:desc,version:ver,category:cat,apk_data:apkBase64,icon_data:iconBase64});
+    if(!r.ok){showMsg(msg,{not_developer:"Нет прав разработчика",missing_fields:"Заполните все поля"}[r.detail]||"Ошибка","err");return;}
     showMsg(msg,"Заявка отправлена на рассмотрение!","ok");
-    document.getElementById("dev-name").value="";
-    document.getElementById("dev-desc").value="";
-    document.getElementById("dev-ver").value="";
+    ["dev-name","dev-desc","dev-ver"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("apk-name").textContent="";
-    apkBase64=null;
+    document.getElementById("icon-name").textContent="";
+    document.getElementById("icon-preview-img").classList.add("hidden");
+    document.getElementById("icon-fu-icon").style.display="";
+    apkBase64=null;iconBase64=null;
     loadMySubmissions();
-  }catch{showMsg(msg,"Нет соединения","err");}
-  finally{load(btn,0);}
+  }catch{showMsg(msg,"Нет соединения","err");}finally{load(btn,0);}
 }
 
 async function loadMySubmissions(){
@@ -812,44 +818,49 @@ async function loadMySubmissions(){
     const mine=(d.submissions||[]).filter(s=>s.developer===currentUser.nick);
     document.getElementById("my-submissions").innerHTML=mine.length?mine.map(s=>`
       <div class="sub-item">
-        <h4>${s.name} <span style="font-size:11px;color:var(--muted)">v${s.version}</span></h4>
-        <p>${s.description.slice(0,80)}...</p>
+        <h4>${s.name} <span style="font-size:11px;color:var(--muted)">v${s.version}</span>${s.parent_app_id?'<span class="update-badge">Обновление</span>':""}</h4>
+        <p>${(s.description||"").slice(0,80)}...</p>
         <span class="sub-status status-${s.status}">${{pending:"⏳ На рассмотрении",approved:"✅ Одобрено",rejected:"❌ Отклонено"}[s.status]}</span>
       </div>`).join("")
       :'<div style="color:var(--muted);font-size:13px;padding:8px">Заявок пока нет</div>';
   }catch{}
 }
 
+async function loadMyApps(){
+  try{
+    const r=await fetch(API+"/apps");
+    const d=await r.json();
+    const mine=(d.apps||[]).filter(a=>a.developer===currentUser.nick);
+    document.getElementById("my-apps").innerHTML=mine.length?mine.map(a=>`
+      <div class="my-app-item">
+        <h4>${a.name} <span style="font-size:11px;color:var(--muted)">v${a.version}</span></h4>
+        <p>⭐ ${a.rating||0} · 📥 ${a.installs} · ${catLabel(a.category)}</p>
+        <div class="my-app-actions">
+          <button class="btn btn-sm btn-outline" onclick="openApp(${a.id});showPage('app',null)">👁 Открыть</button>
+        </div>
+      </div>`).join("")
+      :'<div style="color:var(--muted);font-size:13px;padding:8px">Нет опубликованных приложений</div>';
+  }catch{}
+}
+
 async function loadProfileStats(){
   try{
-    const r=await fetch(API+"/apps/submissions");
+    const r=await fetch(API+"/apps");
     const d=await r.json();
-    const myApps=(d.submissions||[]).filter(s=>s.developer===currentUser.nick&&s.status==="approved").length;
-    document.getElementById("prof-apps").textContent=myApps;
+    document.getElementById("prof-apps").textContent=(d.apps||[]).filter(a=>a.developer===currentUser.nick).length;
   }catch{}
 }
 
 // ── Admin ─────────────────────────────────────────
-function adminLogin(){
-  const p=v("admin-pass");
-  const msg=document.getElementById("msg-admin");
-  clearMsg(msg);
-  if(p!==ADMIN_PASSWORD){showMsg(msg,"Неверный пароль","err");return;}
-  document.getElementById("admin-login-block").classList.add("hidden");
-  document.getElementById("admin-panel").classList.remove("hidden");
-  loadAdminData();
-}
-
 async function loadAdminData(){
-  // Заявки
   try{
     const r=await fetch(API+"/apps/submissions");
     const d=await r.json();
     const pending=(d.submissions||[]).filter(s=>s.status==="pending");
     document.getElementById("admin-submissions").innerHTML=pending.length?pending.map(s=>`
       <div class="admin-sub-item">
-        <h4>${s.name} <span style="font-weight:400;color:var(--muted)">v${s.version}</span></h4>
-        <p>👤 ${s.developer} · ${catLabel(s.category)}<br/>${s.description.slice(0,100)}...</p>
+        <h4>${s.name} <span style="font-weight:400;color:var(--muted)">v${s.version}</span>${s.parent_app_id?'<span class="update-badge">Обновление</span>':""}</h4>
+        <p>👤 ${s.developer} · ${catLabel(s.category)}<br/>${(s.description||"").slice(0,100)}...${s.update_notes?'<br/>🆕 '+s.update_notes:""}</p>
         <div class="admin-sub-actions">
           <button class="btn btn-sm btn-green" onclick="approveApp(${s.id})">✅ Одобрить</button>
           <button class="btn btn-sm btn-red" onclick="rejectApp(${s.id})">❌ Отклонить</button>
@@ -857,21 +868,17 @@ async function loadAdminData(){
       </div>`).join("")
       :'<div style="color:var(--muted);font-size:13px;padding:8px">Новых заявок нет</div>';
   }catch{}
-
-  // Приложения
   try{
     const r=await fetch(API+"/apps");
     const d=await r.json();
     document.getElementById("admin-apps-list").innerHTML=(d.apps||[]).length?(d.apps||[]).map(a=>`
       <div class="admin-app-item">
-        <div class="admin-app-icon">${a.name[0].toUpperCase()}</div>
+        <div class="admin-app-icon">${iconEl(a,"40px","10px")}</div>
         <div class="admin-app-info"><h4>${a.name}</h4><span>${a.developer} · ★${a.rating||0} · 📥${a.installs}</span></div>
-        <button class="btn btn-sm btn-red" onclick="deleteApp(${a.id})">🗑</button>
+        <button class="btn btn-sm btn-red" onclick="adminDeleteApp(${a.id})">🗑</button>
       </div>`).join("")
       :'<div style="color:var(--muted);font-size:13px;padding:8px">Нет приложений</div>';
   }catch{}
-
-  // Пользователи
   try{
     const r=await fetch(API+"/admin/users");
     const d=await r.json();
@@ -888,37 +895,22 @@ async function loadAdminData(){
   }catch{}
 }
 
-async function approveApp(id){
-  await post("/apps/approve",{submission_id:id});
-  await loadApps(); loadAdminData();
-}
-async function rejectApp(id){
-  await post("/apps/reject",{submission_id:id});
-  loadAdminData();
-}
-async function deleteApp(id){
-  await fetch(API+"/apps/"+id,{method:"DELETE"});
-  await loadApps(); loadAdminData();
-}
+async function approveApp(id){await post("/apps/approve",{submission_id:id});await loadApps();loadAdminData();}
+async function rejectApp(id){await post("/apps/reject",{submission_id:id});loadAdminData();}
+async function adminDeleteApp(id){await fetch(API+"/apps/"+id,{method:"DELETE"});await loadApps();loadAdminData();}
 async function setUserRole(nick,role){
   await post("/admin/set-role",{nick,role});
-  // Если поменяли роль текущему пользователю — обновляем
-  if(currentUser.nick===nick){
-    currentUser.role=role;
-    localStorage.setItem("ds_user",JSON.stringify(currentUser));
-    updateRoleUI();
-  }
+  if(currentUser.nick===nick){currentUser.role=role;localStorage.setItem("ds_user",JSON.stringify(currentUser));updateRoleUI();}
 }
 
 // ── Helpers ───────────────────────────────────────
-const v=id=>document.getElementById(id).value.trim();
+const v=id=>document.getElementById(id)?.value.trim()||"";
 function showMsg(el,t,type){el.textContent=t;el.className="msg "+type;}
 function clearMsg(el){el.className="msg";}
 function load(btn,on){btn.classList.toggle("loading",on);btn.disabled=!!on;}
 async function post(path,data){
   const r=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-  const d=await r.json();
-  return{...d,ok:r.ok,detail:d.detail};
+  const d=await r.json();return{...d,ok:r.ok,detail:d.detail};
 }
 </script>
 </body>
