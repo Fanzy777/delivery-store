@@ -81,21 +81,24 @@ def init_db():
         dev_reply TEXT,
         created_at INTEGER NOT NULL,
         UNIQUE(app_id, nick))""")
+    db.execute("""CREATE TABLE IF NOT EXISTS dev_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nick TEXT NOT NULL,
+        tg_username TEXT NOT NULL,
+        text TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at INTEGER NOT NULL)""")
     db.commit()
     # Миграции для старых БД
-    for col, definition in [
-        ("icon_data", "TEXT"),
-        ("update_notes", "TEXT"),
-        ("parent_app_id", "INTEGER"),
-        ("dev_reply", "TEXT"),
+    for tbl, col, definition in [
+        ("apps", "icon_data", "TEXT"),
+        ("submissions", "icon_data", "TEXT"),
+        ("submissions", "update_notes", "TEXT"),
+        ("submissions", "parent_app_id", "INTEGER"),
+        ("reviews", "dev_reply", "TEXT"),
     ]:
         try:
-            if col in ["icon_data"]:
-                db.execute(f"ALTER TABLE apps ADD COLUMN {col} {definition}")
-            if col in ["icon_data", "update_notes", "parent_app_id"]:
-                db.execute(f"ALTER TABLE submissions ADD COLUMN {col} {definition}")
-            if col == "dev_reply":
-                db.execute(f"ALTER TABLE reviews ADD COLUMN {col} {definition}")
+            db.execute(f"ALTER TABLE {tbl} ADD COLUMN {col} {definition}")
         except: pass
     db.commit()
     db.close()
@@ -193,6 +196,12 @@ class SetRoleReq(BaseModel):
     nick: str; role: str
 class DeleteAppReq(BaseModel):
     app_id: int; nick: str
+class NotifyDeleteReq(BaseModel):
+    app_id: int; nick: str; reason: str
+class DevRequestReq(BaseModel):
+    nick: str; text: str
+class DevRequestActionReq(BaseModel):
+    request_id: int; nick: str
 
 # ── Helpers ──────────────────────────────────────
 def bot_send(tg_username, text):
@@ -202,6 +211,12 @@ def bot_send(tg_username, text):
     if not row: raise HTTPException(400, "user_not_found")
     try: bot.send_message(int(row["chat_id"]), text, parse_mode="HTML")
     except: raise HTTPException(400, "send_error")
+
+def bot_send_safe(tg_username, text):
+    """Send without raising — used for notifications where failure is non-critical."""
+    try:
+        bot_send(tg_username, text)
+    except: pass
 
 def make_code(tg, purpose):
     code = str(random.randint(100000, 999999))
@@ -346,7 +361,6 @@ def approve_app(req: ApproveReq):
     if not sub: db.close(); raise HTTPException(404, "not_found")
     is_update = sub["parent_app_id"] is not None
     if is_update:
-        # Обновляем существующее приложение
         db.execute(
             "UPDATE apps SET name=?,description=?,version=?,category=?,apk_data=COALESCE(?,apk_data),icon_data=COALESCE(?,icon_data),update_notes=? WHERE id=?",
             (sub["name"], sub["description"], sub["version"], sub["category"],
@@ -360,11 +374,9 @@ def approve_app(req: ApproveReq):
         )
     db.execute("UPDATE submissions SET status='approved' WHERE id=?", (req.submission_id,))
     db.commit()
-    try:
-        bot_send(sub["tg_username"],
-            f"✅ <b>{'Обновление одобрено' if is_update else 'Приложение одобрено'}!</b>\n\n"
-            f"📦 <b>{sub['name']}</b> {'обновлено до v'+sub['version'] if is_update else 'теперь доступно в Delivery Store'} 🎉")
-    except: pass
+    bot_send_safe(sub["tg_username"],
+        f"✅ <b>{'Обновление одобрено' if is_update else 'Приложение одобрено'}!</b>\n\n"
+        f"📦 <b>{sub['name']}</b> {'обновлено до v'+sub['version'] if is_update else 'теперь доступно в Delivery Store'} 🎉")
     db.close()
     return {"ok": True}
 
@@ -375,10 +387,8 @@ def reject_app(req: RejectReq):
     if not sub: db.close(); raise HTTPException(404, "not_found")
     db.execute("UPDATE submissions SET status='rejected' WHERE id=?", (req.submission_id,))
     db.commit()
-    try:
-        bot_send(sub["tg_username"],
-            f"❌ <b>Заявка отклонена</b>\n\nПриложение <b>{sub['name']}</b> не прошло модерацию.")
-    except: pass
+    bot_send_safe(sub["tg_username"],
+        f"❌ <b>Заявка отклонена</b>\n\nПриложение <b>{sub['name']}</b> не прошло модерацию.")
     db.close()
     return {"ok": True}
 
@@ -402,6 +412,24 @@ def delete_app(app_id: int):
     db.execute("DELETE FROM apps WHERE id=?", (app_id,))
     db.execute("DELETE FROM reviews WHERE app_id=?", (app_id,))
     db.commit(); db.close()
+    return {"ok": True}
+
+@app.post("/admin/notify-delete")
+def admin_notify_delete(req: NotifyDeleteReq):
+    """Notify app developer about admin deletion with reason."""
+    admin = get_user_by_nick(req.nick)
+    if not admin or admin["role"] != "admin":
+        raise HTTPException(403, "forbidden")
+    db = get_db()
+    app_row = db.execute("SELECT * FROM apps WHERE id=?", (req.app_id,)).fetchone()
+    if not app_row: db.close(); raise HTTPException(404, "not_found")
+    tg = app_row["tg_username"]
+    app_name = app_row["name"]
+    db.close()
+    bot_send_safe(tg,
+        f"🗑 <b>Приложение удалено администратором</b>\n\n"
+        f"📦 <b>{app_name}</b>\n\n"
+        f"📋 Причина: {req.reason}")
     return {"ok": True}
 
 # ── Reviews ──────────────────────────────────────
@@ -450,6 +478,65 @@ def delete_review(req: DeleteReviewReq):
     new_rating = round(row["avg"], 1) if row["avg"] else 0
     db.execute("UPDATE apps SET rating=? WHERE id=?", (new_rating, review["app_id"]))
     db.commit(); db.close()
+    return {"ok": True}
+
+# ── Developer requests ────────────────────────────
+@app.post("/dev-request")
+def submit_dev_request(req: DevRequestReq):
+    user = get_user_by_nick(req.nick)
+    if not user: raise HTTPException(400, "user_not_found")
+    if user["role"] != "user": raise HTTPException(400, "already_dev")
+    db = get_db()
+    # Проверяем нет ли уже pending заявки
+    existing = db.execute("SELECT id FROM dev_requests WHERE nick=? AND status='pending'", (req.nick,)).fetchone()
+    if existing: db.close(); raise HTTPException(400, "already_pending")
+    db.execute("INSERT INTO dev_requests (nick,tg_username,text,status,created_at) VALUES (?,?,?,?,?)",
+               (req.nick, user["tg_username"], req.text, "pending", int(time.time())))
+    db.commit(); db.close()
+    try:
+        bot.send_message(ADMIN_ID,
+            f"👨‍💻 <b>Заявка на роль разработчика</b>\n\n"
+            f"👤 {req.nick}\n\n{req.text}\n\n"
+            f"Зайди в админ панель для одобрения.",
+            parse_mode="HTML")
+    except: pass
+    return {"ok": True}
+
+@app.get("/dev-requests")
+def get_dev_requests():
+    db = get_db()
+    rows = db.execute("SELECT * FROM dev_requests ORDER BY created_at DESC").fetchall()
+    db.close()
+    return {"requests": [dict(r) for r in rows]}
+
+@app.post("/dev-request/approve")
+def approve_dev_request(req: DevRequestActionReq):
+    db = get_db()
+    dr = db.execute("SELECT * FROM dev_requests WHERE id=?", (req.request_id,)).fetchone()
+    if not dr: db.close(); raise HTTPException(404, "not_found")
+    db.execute("UPDATE dev_requests SET status='approved' WHERE id=?", (req.request_id,))
+    db.execute("UPDATE users SET role='dev' WHERE nick=?", (dr["nick"],))
+    db.commit()
+    tg = dr["tg_username"]
+    db.close()
+    bot_send_safe(tg,
+        f"🎉 <b>Заявка одобрена!</b>\n\n"
+        f"Вы теперь <b>разработчик</b> в Delivery Store! 💻\n\n"
+        f"Войдите в приложение — вам открылась панель разработчика.")
+    return {"ok": True}
+
+@app.post("/dev-request/reject")
+def reject_dev_request(req: DevRequestActionReq):
+    db = get_db()
+    dr = db.execute("SELECT * FROM dev_requests WHERE id=?", (req.request_id,)).fetchone()
+    if not dr: db.close(); raise HTTPException(404, "not_found")
+    db.execute("UPDATE dev_requests SET status='rejected' WHERE id=?", (req.request_id,))
+    db.commit()
+    tg = dr["tg_username"]
+    db.close()
+    bot_send_safe(tg,
+        f"❌ <b>Заявка на роль разработчика отклонена.</b>\n\n"
+        f"Если считаете это ошибкой — свяжитесь с администратором.")
     return {"ok": True}
 
 # ── Admin ─────────────────────────────────────────
