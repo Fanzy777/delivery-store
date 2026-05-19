@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>Delivery Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --bg:#0d0d0d;--surface:#181818;--surface2:#222;--border:#2a2a2a;
   --accent:#ff7a00;--accent2:#ff5500;
   --white:#f0f0f0;--muted:#777;--red:#ff4444;--green:#3ecf8e;
-  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;--ui:'Inter',sans-serif;
   --nav-h:56px;--bottom-h:60px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);-webkit-fon
 .auth-hint a{color:var(--accent);cursor:pointer;}
 
 /* Fields */
-.fl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.fl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;font-family:var(--ui);}
 .fi{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--white);font-family:var(--mono);font-size:14px;outline:none;transition:.2s;margin-bottom:13px;-webkit-appearance:none;}
 .fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,122,0,.15);}
 .fi::placeholder{color:var(--muted);}
@@ -46,13 +46,14 @@ textarea.fi{resize:none;min-height:80px;font-size:13px;}
 select.fi{cursor:pointer;}
 
 /* Buttons */
-.btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
+.btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--ui);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;position:relative;}
 .btn:active{opacity:.85;}.btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px;}
-.btn-sm{width:auto;padding:7px 12px;font-size:12px;border-radius:9px;}
+.btn-sm{width:auto;padding:7px 12px;font-size:12px;border-radius:9px;font-family:var(--ui);}
 .btn-green{background:linear-gradient(135deg,#2ecc71,#27ae60);}
 .btn-red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.25);color:var(--red);}
 .btn-outline{background:none;border:1px solid var(--border);color:var(--muted);}
+.btn-dev-req{background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.25);color:var(--green);margin-top:8px;}
 .btn .sp{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
 .btn.loading .bt{display:none;}.btn.loading .sp{display:block;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -76,7 +77,7 @@ select.fi{cursor:pointer;}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-h);z-index:100;background:rgba(13,13,13,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;align-items:center;}
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 0;cursor:pointer;border:none;background:none;}
 .bnav-btn .icon{font-size:20px;}
-.bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);}
+.bnav-btn .lbl{font-size:10px;font-weight:700;color:var(--muted);font-family:var(--ui);}
 .bnav-btn.active .lbl{color:var(--accent);}
 
 /* Sidebar */
@@ -85,37 +86,40 @@ select.fi{cursor:pointer;}
 .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:300;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
 .sidebar.open{transform:translateX(0);}
 .sidebar-top{padding:20px;border-bottom:1px solid var(--border);}
-.sidebar-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:10px;overflow:hidden;}
+.sidebar-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;font-weight:800;margin-bottom:10px;overflow:hidden;cursor:pointer;}
 .sidebar-avatar img{width:100%;height:100%;object-fit:cover;}
-.sidebar-name{font-size:16px;font-weight:800;margin-bottom:2px;}
-.sidebar-tg{font-size:12px;color:var(--muted);margin-bottom:8px;}
-.role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.sidebar-name{font-size:16px;font-weight:800;margin-bottom:2px;font-family:var(--ui);}
+.sidebar-tg{font-size:12px;color:var(--muted);margin-bottom:8px;font-family:var(--ui);}
+.role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--ui);}
 .role-user{background:rgba(255,122,0,.12);color:var(--accent);}
 .role-dev{background:rgba(62,207,142,.12);color:var(--green);}
 .role-admin{background:rgba(255,68,68,.12);color:var(--red);}
 .sidebar-nav{padding:10px 0;flex:1;}
-.snav-item{display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;font-size:14px;font-weight:600;}
+.snav-item{display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--ui);}
 .snav-item:active{background:rgba(255,122,0,.08);}
 .snav-item .si{font-size:18px;width:24px;text-align:center;}
 .sidebar-bottom{padding:16px 20px;border-top:1px solid var(--border);}
-.logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);color:var(--red);border-radius:10px;padding:12px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
+.logout-btn{width:100%;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);color:var(--red);border-radius:10px;padding:12px;font-family:var(--ui);font-size:13px;font-weight:700;cursor:pointer;}
 
 /* Common */
 .pad{padding:16px;}
-.sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.sec-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-family:var(--font);}
 .sec-title span{color:var(--accent);}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
+
+/* Nick display */
+.nick-display{font-family:var(--ui);font-weight:700;}
 
 /* Hero */
 .hero{background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(255,85,0,.08));border:1px solid rgba(255,122,0,.25);border-radius:18px;padding:20px;margin-bottom:20px;}
 .hero h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
 .hero h2 span{color:var(--accent);}
-.hero p{color:var(--muted);font-size:13px;line-height:1.5;}
+.hero p{color:var(--muted);font-size:13px;line-height:1.5;font-family:var(--ui);}
 
 /* Categories */
 .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none;}
 .cats::-webkit-scrollbar{display:none;}
-.cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0;}
+.cat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0;font-family:var(--ui);}
 .cat.active{background:rgba(255,122,0,.15);border-color:var(--accent);color:var(--accent);}
 
 /* App cards */
@@ -125,110 +129,135 @@ select.fi{cursor:pointer;}
 .app-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
 .app-icon img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
 .app-info{flex:1;min-width:0;}
-.app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.app-info .dev{color:var(--muted);font-size:12px;margin-bottom:4px;}
-.app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);}
-.app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;}
+.app-info h3{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--ui);}
+.app-info .dev{color:var(--muted);font-size:12px;margin-bottom:4px;font-family:var(--ui);}
+.app-info .rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);font-family:var(--ui);}
+.app-tag{background:rgba(255,122,0,.1);color:var(--accent);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap;font-family:var(--ui);}
 
 /* Update badge */
-.update-badge{display:inline-block;background:rgba(62,207,142,.15);color:var(--green);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;margin-left:6px;}
+.update-badge{display:inline-block;background:rgba(62,207,142,.15);color:var(--green);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;margin-left:6px;font-family:var(--ui);}
 
 /* Empty */
 .empty{text-align:center;padding:48px 20px;}
 .empty .ei{font-size:48px;margin-bottom:12px;}
-.empty h3{font-size:16px;font-weight:800;margin-bottom:6px;}
-.empty p{color:var(--muted);font-size:13px;line-height:1.5;}
+.empty h3{font-size:16px;font-weight:800;margin-bottom:6px;font-family:var(--ui);}
+.empty p{color:var(--muted);font-size:13px;line-height:1.5;font-family:var(--ui);}
 
 /* Top */
 .top-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer;}
 .top-item:active{background:var(--surface2);}
-.top-num{font-size:18px;font-weight:800;color:var(--accent);width:24px;text-align:center;flex-shrink:0;}
+.top-num{font-size:18px;font-weight:800;color:var(--accent);width:24px;text-align:center;flex-shrink:0;font-family:var(--ui);}
 .top-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
 .top-icon img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
 .top-info{flex:1;min-width:0;}
-.top-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
-.top-info span{color:var(--muted);font-size:11px;}
-.top-rating{font-size:13px;font-weight:800;color:var(--accent);}
+.top-info h4{font-size:13px;font-weight:700;margin-bottom:2px;font-family:var(--ui);}
+.top-info span{color:var(--muted);font-size:11px;font-family:var(--ui);}
+.top-rating{font-size:13px;font-weight:800;color:var(--accent);font-family:var(--ui);}
 
 /* App detail */
-.back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--ui);font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:16px;}
 .app-detail-header{display:flex;gap:14px;margin-bottom:14px;}
 .app-detail-icon{width:72px;height:72px;border-radius:18px;display:grid;place-items:center;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
 .app-detail-icon img{width:100%;height:100%;object-fit:cover;border-radius:18px;}
-.app-detail-meta h2{font-size:18px;font-weight:800;margin-bottom:2px;}
-.app-detail-meta .dev{color:var(--muted);font-size:12px;margin-bottom:6px;}
-.install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin:12px 0;}
-.detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;color:var(--muted);font-size:13px;line-height:1.7;}
+.app-detail-meta h2{font-size:18px;font-weight:800;margin-bottom:2px;font-family:var(--ui);}
+.app-detail-meta .dev{color:var(--muted);font-size:12px;margin-bottom:6px;font-family:var(--ui);}
+.install-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:14px;color:#fff;font-family:var(--ui);font-size:14px;font-weight:700;cursor:pointer;margin:12px 0;}
+.detail-desc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;color:var(--muted);font-size:13px;line-height:1.7;font-family:var(--ui);}
 .update-notes-box{background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.2);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
-.update-notes-box .un-title{font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
-.update-notes-box .un-text{font-size:13px;color:var(--white);line-height:1.5;}
+.update-notes-box .un-title{font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-family:var(--ui);}
+.update-notes-box .un-text{font-size:13px;color:var(--white);line-height:1.5;font-family:var(--ui);}
 
 /* Reviews */
 .review{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
 .review-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.review-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
-.review-name{font-size:12px;font-weight:700;flex:1;}
-.review-date{color:var(--muted);font-size:10px;}
+.review-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ui);}
+.review-name{font-size:12px;font-weight:700;flex:1;font-family:var(--ui);}
+.review-date{color:var(--muted);font-size:10px;font-family:var(--ui);}
 .review-del-btn{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:0 4px;flex-shrink:0;}
-.review-stars{color:var(--accent);font-size:11px;margin-bottom:4px;}
-.review-text{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:8px;}
+.review-stars{color:var(--accent);font-size:13px;margin-bottom:4px;letter-spacing:1px;}
+.review-text{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:8px;font-family:var(--ui);}
 .dev-reply-box{background:rgba(255,122,0,.06);border-left:2px solid var(--accent);padding:8px 10px;border-radius:0 8px 8px 0;margin-top:6px;}
-.dev-reply-label{font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
-.dev-reply-text{font-size:12px;color:var(--white);line-height:1.4;}
+.dev-reply-label{font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-family:var(--ui);}
+.dev-reply-text{font-size:12px;color:var(--white);line-height:1.4;font-family:var(--ui);}
 .reply-form{margin-top:8px;}
 .reply-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--white);font-family:var(--mono);font-size:12px;outline:none;margin-bottom:6px;-webkit-appearance:none;}
 .reply-input:focus{border-color:var(--accent);}
-.star-select{display:flex;gap:6px;margin-bottom:12px;}
-.star-btn{font-size:22px;background:none;border:none;cursor:pointer;opacity:.3;transition:.2s;padding:0;}
-.star-btn.active{opacity:1;}
+
+/* Star select — fixed visible orange stars */
+.star-select{display:flex;gap:4px;margin-bottom:12px;}
+.star-btn{font-size:26px;background:none;border:none;cursor:pointer;color:#3a3a3a;transition:color .15s,transform .1s;padding:0;line-height:1;}
+.star-btn.active{color:var(--accent);}
+.star-btn:hover{transform:scale(1.15);}
 
 /* Profile */
 .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;text-align:center;margin-bottom:12px;}
-.profile-avatar-big{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;}
-.profile-nick{font-size:18px;font-weight:800;margin-bottom:4px;}
-.profile-tg{color:var(--muted);font-size:13px;margin-bottom:12px;}
+.profile-avatar-big{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:26px;font-weight:800;margin:0 auto 12px;font-family:var(--ui);}
+.profile-nick{font-size:18px;font-weight:800;margin-bottom:4px;font-family:var(--ui);}
+.profile-tg{color:var(--muted);font-size:13px;margin-bottom:12px;font-family:var(--ui);}
 .profile-stats{display:flex;justify-content:center;gap:28px;padding-top:14px;border-top:1px solid var(--border);}
-.pstat .val{font-size:18px;font-weight:800;color:var(--accent);}
-.pstat .lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+.pstat .val{font-size:18px;font-weight:800;color:var(--accent);font-family:var(--ui);}
+.pstat .lbl{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--ui);}
 
 /* Dev panel */
 .dev-section{margin-bottom:20px;}
 .sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
-.sub-item h4{font-size:13px;font-weight:700;margin-bottom:4px;}
-.sub-item p{color:var(--muted);font-size:12px;margin-bottom:8px;}
-.sub-status{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;}
+.sub-item h4{font-size:13px;font-weight:700;margin-bottom:4px;font-family:var(--ui);}
+.sub-item p{color:var(--muted);font-size:12px;margin-bottom:8px;font-family:var(--ui);}
+.sub-status{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;font-family:var(--ui);}
 .status-pending{background:rgba(255,179,0,.15);color:#ffb300;}
 .status-approved{background:rgba(62,207,142,.15);color:var(--green);}
 .status-rejected{background:rgba(255,68,68,.15);color:var(--red);}
 .file-upload{width:100%;background:rgba(255,255,255,.03);border:1.5px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;margin-bottom:13px;transition:.2s;}
 .file-upload:active{border-color:var(--accent);}
+.file-upload.required-missing{border-color:rgba(255,68,68,.5);background:rgba(255,68,68,.04);}
 .file-upload .fu-icon{font-size:26px;margin-bottom:6px;}
-.file-upload .fu-text{font-size:12px;color:var(--muted);}
-.file-upload .fu-name{font-size:12px;color:var(--green);margin-top:4px;word-break:break-all;}
+.file-upload .fu-text{font-size:12px;color:var(--muted);font-family:var(--ui);}
+.file-upload .fu-name{font-size:12px;color:var(--green);margin-top:4px;word-break:break-all;font-family:var(--ui);}
 .icon-preview{width:56px;height:56px;border-radius:14px;object-fit:cover;margin:0 auto 8px;display:block;border:1px solid var(--border);}
 .my-app-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
-.my-app-item h4{font-size:13px;font-weight:700;margin-bottom:4px;}
-.my-app-item p{color:var(--muted);font-size:12px;margin-bottom:10px;}
+.my-app-item h4{font-size:13px;font-weight:700;margin-bottom:4px;font-family:var(--ui);}
+.my-app-item p{color:var(--muted);font-size:12px;margin-bottom:10px;font-family:var(--ui);}
 .my-app-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
+/* Collapsible section */
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;margin-bottom:10px;}
+.collapsible-header .ch-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-family:var(--ui);}
+.collapsible-arrow{font-size:12px;color:var(--muted);transition:transform .25s;}
+.collapsible-arrow.open{transform:rotate(180deg);}
+.collapsible-body{overflow:hidden;transition:max-height .3s ease;}
+
 /* Admin */
-.admin-section-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.admin-section-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;font-family:var(--ui);}
 .admin-sub-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
-.admin-sub-item h4{font-size:13px;font-weight:700;margin-bottom:2px;}
-.admin-sub-item p{color:var(--muted);font-size:11px;margin-bottom:10px;line-height:1.4;}
+.admin-sub-item h4{font-size:13px;font-weight:700;margin-bottom:2px;font-family:var(--ui);}
+.admin-sub-item p{color:var(--muted);font-size:11px;margin-bottom:10px;line-height:1.4;font-family:var(--ui);}
 .admin-sub-actions{display:flex;gap:8px;}
 .admin-app-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
 .admin-app-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0;overflow:hidden;}
 .admin-app-icon img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
 .admin-app-info{flex:1;min-width:0;}
-.admin-app-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
-.admin-app-info span{color:var(--muted);font-size:11px;}
+.admin-app-info h4{font-size:13px;font-weight:700;margin-bottom:2px;font-family:var(--ui);}
+.admin-app-info span{color:var(--muted);font-size:11px;font-family:var(--ui);}
 .user-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.user-av{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.user-av{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0;font-family:var(--ui);}
 .user-info{flex:1;min-width:0;}
-.user-info h4{font-size:13px;font-weight:700;margin-bottom:2px;}
-.user-info span{color:var(--muted);font-size:11px;}
-.role-select{background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:11px;font-weight:700;border-radius:8px;padding:5px 8px;cursor:pointer;outline:none;}
+.user-info h4{font-size:13px;font-weight:700;margin-bottom:2px;font-family:var(--ui);}
+.user-info span{color:var(--muted);font-size:11px;font-family:var(--ui);}
+.role-select{background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:var(--ui);font-size:11px;font-weight:700;border-radius:8px;padding:5px 8px;cursor:pointer;outline:none;}
+
+/* Confirm modal */
+.modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;}
+.modal-overlay.hidden{display:none!important;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:480px;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:6px;font-family:var(--ui);}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;font-family:var(--ui);}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{margin:0;}
+
+/* Dev request section */
+.dev-req-form{margin-top:14px;}
+.dev-req-form .fi{margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -284,12 +313,28 @@ select.fi{cursor:pointer;}
   </div>
 </div>
 
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="confirm-title">Подтверждение</div>
+    <div class="modal-sub" id="confirm-sub">Вы уверены?</div>
+    <div id="confirm-reason-wrap" class="hidden">
+      <label class="fl">Причина удаления</label>
+      <input class="fi" id="confirm-reason" placeholder="Укажите причину..." style="margin-bottom:14px"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-red" id="confirm-yes" onclick="confirmYes()"><span class="bt">Да, удалить</span><div class="sp"></div></button>
+      <button class="btn btn-outline" onclick="confirmNo()">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="app-screen">
   <div class="topbar">
     <div class="topbar-menu" onclick="openSidebar()"><span></span><span></span><span></span></div>
     <div class="topbar-title">Delivery<span>Store</span></div>
-    <div class="topbar-avatar" id="top-avatar">?</div>
+    <div class="topbar-avatar" id="top-avatar" onclick="goToProfile()">?</div>
   </div>
   <div class="pages">
     <!-- HOME -->
@@ -329,13 +374,21 @@ select.fi{cursor:pointer;}
         <div class="sec-title">👤 <span>Профиль</span></div>
         <div class="profile-card">
           <div class="profile-avatar-big" id="prof-av">?</div>
-          <div class="profile-nick" id="prof-nick">—</div>
+          <div class="profile-nick nick-display" id="prof-nick">—</div>
           <div class="profile-tg" id="prof-tg">—</div>
           <div style="margin-bottom:14px" id="prof-role-wrap"><span class="role-badge role-user">👤 Пользователь</span></div>
-          <div class="profile-stats">
-            <div class="pstat"><div class="val" id="prof-apps">0</div><div class="lbl">Приложений</div></div>
-            <div class="pstat"><div class="val" id="prof-reviews">0</div><div class="lbl">Отзывов</div></div>
+          <div class="profile-stats" id="prof-stats">
+            <!-- rendered by loadProfileStats -->
           </div>
+        </div>
+        <!-- Стать разработчиком (только для user) -->
+        <div id="dev-req-block" class="hidden card">
+          <div style="font-size:14px;font-weight:800;margin-bottom:6px;font-family:var(--ui);">💻 Стать разработчиком</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-family:var(--ui);">Расскажите о себе и своих планах. Заявка будет рассмотрена администратором.</div>
+          <div class="msg" id="msg-dev-req"></div>
+          <label class="fl">О себе / планы</label>
+          <textarea class="fi" id="dev-req-text" placeholder="Что планируете публиковать?" style="min-height:70px;margin-bottom:10px"></textarea>
+          <button class="btn btn-dev-req" id="btn-dev-req" onclick="submitDevRequest()"><span class="bt">Отправить заявку →</span><div class="sp"></div></button>
         </div>
         <button class="btn btn-ghost" style="color:var(--red);border-color:rgba(255,68,68,.3);" onclick="logout()">Выйти из аккаунта</button>
       </div>
@@ -346,7 +399,7 @@ select.fi{cursor:pointer;}
         <div class="sec-title">💻 <span>Панель разработчика</span></div>
         <!-- Форма публикации -->
         <div class="card dev-section">
-          <div style="font-size:14px;font-weight:800;margin-bottom:14px;">📤 Опубликовать приложение</div>
+          <div style="font-size:14px;font-weight:800;margin-bottom:14px;font-family:var(--ui);">📤 Опубликовать приложение</div>
           <div class="msg" id="msg-dev"></div>
           <label class="fl">Название</label><input class="fi" id="dev-name" placeholder="Название приложения"/>
           <label class="fl">Описание</label><textarea class="fi" id="dev-desc" placeholder="Расскажите о приложении..."></textarea>
@@ -359,27 +412,32 @@ select.fi{cursor:pointer;}
             <option value="finance">💰 Финансы</option>
             <option value="other">📦 Другое</option>
           </select>
-          <label class="fl">Иконка приложения</label>
-          <div class="file-upload" onclick="document.getElementById('dev-icon').click()">
+          <label class="fl">Иконка приложения <span style="color:var(--red)">*</span></label>
+          <div class="file-upload" id="icon-upload-zone" onclick="document.getElementById('dev-icon').click()">
             <img id="icon-preview-img" class="icon-preview hidden"/>
             <div class="fu-icon" id="icon-fu-icon">🖼</div>
-            <div class="fu-text">Нажмите чтобы загрузить иконку (PNG/JPG)</div>
+            <div class="fu-text">Нажмите чтобы загрузить иконку (PNG/JPG) — обязательно</div>
             <div class="fu-name" id="icon-name"></div>
           </div>
           <input type="file" id="dev-icon" accept="image/*" style="display:none" onchange="onIconSelect(this)"/>
-          <label class="fl">APK файл</label>
-          <div class="file-upload" onclick="document.getElementById('dev-apk').click()">
+          <label class="fl">APK файл <span style="color:var(--red)">*</span></label>
+          <div class="file-upload" id="apk-upload-zone" onclick="document.getElementById('dev-apk').click()">
             <div class="fu-icon">📁</div>
-            <div class="fu-text">Нажмите чтобы выбрать APK файл</div>
+            <div class="fu-text">Нажмите чтобы выбрать APK файл — обязательно</div>
             <div class="fu-name" id="apk-name"></div>
           </div>
           <input type="file" id="dev-apk" accept=".apk" style="display:none" onchange="onApkSelect(this)"/>
           <button class="btn" id="btn-submit-app" onclick="submitApp()"><span class="bt">Отправить на рассмотрение →</span><div class="sp"></div></button>
         </div>
-        <!-- Мои заявки -->
+        <!-- Мои заявки — сворачиваемые -->
         <div class="dev-section">
-          <div class="admin-section-title">Мои заявки</div>
-          <div id="my-submissions"></div>
+          <div class="collapsible-header" onclick="toggleCollapsible('my-subs-body','arrow-subs')">
+            <span class="ch-title">Мои заявки</span>
+            <span class="collapsible-arrow open" id="arrow-subs">▼</span>
+          </div>
+          <div class="collapsible-body" id="my-subs-body" style="max-height:2000px;">
+            <div id="my-submissions"></div>
+          </div>
         </div>
         <!-- Мои приложения -->
         <div class="dev-section">
@@ -398,6 +456,10 @@ select.fi{cursor:pointer;}
             <div id="admin-submissions"></div>
           </div>
           <div style="margin-bottom:20px;">
+            <div class="admin-section-title">👨‍💻 Заявки на роль разработчика</div>
+            <div id="admin-dev-requests"></div>
+          </div>
+          <div style="margin-bottom:20px;">
             <div class="admin-section-title">📦 Приложения</div>
             <div id="admin-apps-list"></div>
           </div>
@@ -409,11 +471,10 @@ select.fi{cursor:pointer;}
       </div>
     </div>
   </div>
-  <!-- Bottom nav -->
+  <!-- Bottom nav — без кнопки профиля -->
   <div class="bottom-nav">
     <button class="bnav-btn active" onclick="showPage('home',this)"><div class="icon">🏠</div><div class="lbl">Главная</div></button>
     <button class="bnav-btn" onclick="showPage('top',this)"><div class="icon">🏆</div><div class="lbl">Топы</div></button>
-    <button class="bnav-btn" onclick="showPage('profile',this)"><div class="icon">👤</div><div class="lbl">Профиль</div></button>
     <button class="bnav-btn" id="bnav-dev" onclick="showPage('dev',this)" style="display:none"><div class="icon">💻</div><div class="lbl">Разработчик</div></button>
     <button class="bnav-btn" id="bnav-admin" onclick="showPage('admin',this)" style="display:none"><div class="icon">⚙️</div><div class="lbl">Админ</div></button>
   </div>
@@ -423,15 +484,14 @@ select.fi{cursor:pointer;}
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-top">
-    <div class="sidebar-avatar" id="sb-avatar">?</div>
-    <div class="sidebar-name" id="sb-name">—</div>
+    <div class="sidebar-avatar" id="sb-avatar" onclick="sidebarGo('profile')">?</div>
+    <div class="sidebar-name nick-display" id="sb-name">—</div>
     <div class="sidebar-tg" id="sb-tg">—</div>
     <div id="sb-role-wrap"><span class="role-badge role-user">👤 Пользователь</span></div>
   </div>
   <div class="sidebar-nav">
     <div class="snav-item" onclick="sidebarGo('home')"><span class="si">🏠</span><span>Главная</span></div>
     <div class="snav-item" onclick="sidebarGo('top')"><span class="si">🏆</span><span>Топы</span></div>
-    <div class="snav-item" onclick="sidebarGo('profile')"><span class="si">👤</span><span>Профиль</span></div>
     <div class="snav-item" id="snav-dev" style="display:none" onclick="sidebarGo('dev')"><span class="si">💻</span><span>Панель разработчика</span></div>
     <div class="snav-item" id="snav-admin" style="display:none" onclick="sidebarGo('admin')"><span class="si">⚙️</span><span>Админ панель</span></div>
   </div>
@@ -448,9 +508,60 @@ let allApps = [], currentFilter = "all", currentAppId = null;
 let selectedStars = 0, apkBase64 = null, iconBase64 = null;
 let regTg = "", resetTg = "", prevPage = "home";
 
+// Confirm modal state
+let confirmCallback = null;
+let confirmRequiresReason = false;
+
 window.onload = async () => {
   if(currentUser){ showApp(); await loadApps(); }
 };
+
+// ── Confirm modal ──────────────────────────────────
+function showConfirm(title, sub, requireReason, onYes){
+  document.getElementById("confirm-title").textContent = title;
+  document.getElementById("confirm-sub").textContent = sub;
+  const reasonWrap = document.getElementById("confirm-reason-wrap");
+  const reasonInput = document.getElementById("confirm-reason");
+  if(requireReason){
+    reasonWrap.classList.remove("hidden");
+    reasonInput.value = "";
+  } else {
+    reasonWrap.classList.add("hidden");
+  }
+  confirmRequiresReason = requireReason;
+  confirmCallback = onYes;
+  document.getElementById("confirm-modal").classList.remove("hidden");
+}
+function confirmNo(){
+  document.getElementById("confirm-modal").classList.add("hidden");
+  confirmCallback = null;
+}
+function confirmYes(){
+  if(confirmRequiresReason){
+    const reason = document.getElementById("confirm-reason").value.trim();
+    if(!reason){ document.getElementById("confirm-reason").style.borderColor="var(--red)"; return; }
+    document.getElementById("confirm-modal").classList.add("hidden");
+    if(confirmCallback) confirmCallback(reason);
+  } else {
+    document.getElementById("confirm-modal").classList.add("hidden");
+    if(confirmCallback) confirmCallback();
+  }
+  confirmCallback = null;
+}
+
+// ── Collapsible ────────────────────────────────────
+function toggleCollapsible(bodyId, arrowId){
+  const body = document.getElementById(bodyId);
+  const arrow = document.getElementById(arrowId);
+  const isOpen = arrow.classList.contains("open");
+  if(isOpen){
+    body.style.maxHeight = "0";
+    arrow.classList.remove("open");
+  } else {
+    body.style.maxHeight = "2000px";
+    arrow.classList.add("open");
+  }
+}
 
 // ── Auth ──────────────────────────────────────────
 function authTab(t){
@@ -539,7 +650,6 @@ function showApp(){
   document.getElementById("sb-tg").textContent="@"+currentUser.tg_username;
   document.getElementById("prof-tg").textContent="@"+currentUser.tg_username;
   updateRoleUI();
-  // Если admin — сразу загружаем данные панели
   if(currentUser.role==="admin") loadAdminData();
 }
 
@@ -553,6 +663,14 @@ function updateRoleUI(){
   document.getElementById("bnav-admin").style.display=isAdmin?"flex":"none";
   document.getElementById("snav-dev").style.display=isDev?"flex":"none";
   document.getElementById("snav-admin").style.display=isAdmin?"flex":"none";
+  // Кнопка «Стать разработчиком» только для обычного юзера
+  const devReqBlock = document.getElementById("dev-req-block");
+  if(devReqBlock) devReqBlock.classList.toggle("hidden", role !== "user");
+}
+
+function goToProfile(){
+  showPage('profile', null);
+  document.querySelectorAll(".bnav-btn").forEach(el=>el.classList.remove("active"));
 }
 
 function logout(){localStorage.removeItem("ds_user");location.reload();}
@@ -565,7 +683,7 @@ function showPage(p,btn){
   if(btn)btn.classList.add("active");
   prevPage=p;
   if(p==="dev"){loadMySubmissions();loadMyApps();}
-  if(p==="profile")loadProfileStats();
+  if(p==="profile"){loadProfileStats();updateRoleUI();}
   if(p==="admin")loadAdminData();
 }
 
@@ -575,7 +693,13 @@ function goBack(){
 
 function openSidebar(){document.getElementById("sidebar").classList.add("open");document.getElementById("sidebar-overlay").classList.add("open");}
 function closeSidebar(){document.getElementById("sidebar").classList.remove("open");document.getElementById("sidebar-overlay").classList.remove("open");}
-function sidebarGo(p){closeSidebar();showPage(p,document.querySelectorAll(".bnav-btn")[["home","top","profile"].indexOf(p)]);}
+function sidebarGo(p){
+  closeSidebar();
+  showPage(p, null);
+  document.querySelectorAll(".bnav-btn").forEach(el=>el.classList.remove("active"));
+  const idx=["home","top"].indexOf(p);
+  if(idx>=0) document.querySelectorAll(".bnav-btn")[idx].classList.add("active");
+}
 
 // ── Apps ─────────────────────────────────────────
 async function loadApps(){
@@ -586,7 +710,7 @@ async function loadApps(){
 
 function iconEl(a,size="52px",radius="14px"){
   if(a.icon_data) return `<img src="data:image/jpeg;base64,${a.icon_data}" style="width:${size};height:${size};border-radius:${radius};object-fit:cover;display:block;"/>`;
-  return `<span style="font-size:22px;font-weight:800">${a.name[0].toUpperCase()}</span>`;
+  return `<span style="font-size:22px;font-weight:800;font-family:var(--ui)">${a.name[0].toUpperCase()}</span>`;
 }
 
 function renderApps(apps){
@@ -635,6 +759,7 @@ async function openApp(id){
   const myReview=reviews.find(r=>r.nick===currentUser.nick);
   const avgRating=reviews.length?(reviews.reduce((s,r)=>s+r.stars,0)/reviews.length).toFixed(1):"—";
   const isOwner=a.developer===currentUser.nick||currentUser.role==="admin";
+  const isAdmin=currentUser.role==="admin";
 
   document.getElementById("app-detail").innerHTML=`
     <div class="app-detail-header">
@@ -642,12 +767,12 @@ async function openApp(id){
       <div class="app-detail-meta">
         <h2>${a.name}</h2>
         <div class="dev">${a.developer}</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:13px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-family:var(--ui)">
           <span style="color:var(--accent)">⭐ ${avgRating}</span>
           <span style="color:var(--muted)">(${reviews.length} отзывов)</span>
           <span style="color:var(--muted)">· 📥 ${a.installs}</span>
         </div>
-        <div style="color:var(--muted);font-size:11px;margin-top:4px;">v${a.version}</div>
+        <div style="color:var(--muted);font-size:11px;margin-top:4px;font-family:var(--ui)">v${a.version}</div>
       </div>
     </div>
     ${a.apk_data?`<button class="install-btn" onclick="installApp(${a.id})">📥 Скачать APK</button>`:`<button class="install-btn" style="opacity:.5;cursor:default">APK не загружен</button>`}
@@ -655,10 +780,10 @@ async function openApp(id){
     <div class="detail-desc">${a.description}</div>
     ${isOwner?`<div style="display:flex;gap:8px;margin-bottom:14px;">
       <button class="btn btn-sm btn-outline" onclick="showUpdateForm(${a.id})">🔄 Обновить</button>
-      <button class="btn btn-sm btn-red" onclick="devDeleteApp(${a.id})">🗑 Удалить</button>
+      <button class="btn btn-sm btn-red" onclick="${isAdmin?`adminDeleteAppConfirm(${a.id},'${a.developer}')`:`devDeleteAppConfirm(${a.id})`}">🗑 Удалить</button>
     </div>`:""}
     <div id="update-form-${a.id}" class="hidden card" style="margin-bottom:14px;">
-      <div style="font-size:13px;font-weight:800;margin-bottom:10px;">🔄 Запрос на обновление</div>
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px;font-family:var(--ui)">🔄 Запрос на обновление</div>
       <div class="msg" id="msg-update-${a.id}"></div>
       <label class="fl">Новая версия</label><input class="fi" id="upd-ver-${a.id}" placeholder="1.1.0" style="margin-bottom:10px"/>
       <label class="fl">Что нового</label><textarea class="fi" id="upd-notes-${a.id}" placeholder="Список изменений..." style="min-height:60px;margin-bottom:10px"></textarea>
@@ -681,14 +806,14 @@ async function openApp(id){
           <button class="btn btn-sm btn-outline" onclick="submitReply(${r.id})">Ответить</button>
         </div>`:""}
       </div>`).join("")}
-    ${reviews.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px">Отзывов пока нет</div>':""}
+    ${reviews.length===0?'<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px;font-family:var(--ui)">Отзывов пока нет</div>':""}
     ${!myReview?`<div class="card" style="margin-top:12px">
-      <div style="font-size:13px;font-weight:800;margin-bottom:10px">Оставить отзыв</div>
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px;font-family:var(--ui)">Оставить отзыв</div>
       <div class="msg" id="msg-review"></div>
       <div class="star-select" id="star-select">${[1,2,3,4,5].map(i=>`<button class="star-btn" onclick="setStar(${i})">★</button>`).join("")}</div>
       <textarea class="fi" id="review-text" placeholder="Напишите отзыв..." style="min-height:70px"></textarea>
       <button class="btn btn-sm" onclick="submitReview(${a.id})"><span class="bt">Отправить</span><div class="sp"></div></button>
-    </div>`:`<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Вы уже оставили отзыв</div>`}`;
+    </div>`:`<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px;font-family:var(--ui)">Вы уже оставили отзыв</div>`}`;
   selectedStars=0;
   showPage("app",null);
 }
@@ -704,7 +829,6 @@ async function submitUpdate(appId,name,developer,category){
   const msg=document.getElementById("msg-update-"+appId);
   clearMsg(msg);
   if(!ver||!notes){showMsg(msg,"Заполните все поля","err");return;}
-  // Получаем актуальное описание из allApps
   const a=allApps.find(x=>x.id===appId);
   try{
     const r=await post("/apps/submit",{
@@ -716,12 +840,26 @@ async function submitUpdate(appId,name,developer,category){
   }catch{showMsg(msg,"Нет соединения","err");}
 }
 
-async function devDeleteApp(appId){
-  if(!confirm("Удалить приложение?"))return;
-  try{
-    await post("/apps/delete",{app_id:appId,nick:currentUser.nick});
-    await loadApps();goBack();
-  }catch{}
+// Dev deletes their own app (without reason)
+function devDeleteAppConfirm(appId){
+  showConfirm("Удалить приложение?","Это действие нельзя отменить.",false,async()=>{
+    try{
+      await post("/apps/delete",{app_id:appId,nick:currentUser.nick});
+      await loadApps();goBack();
+    }catch{}
+  });
+}
+
+// Admin deletes app — with reason sent to developer
+function adminDeleteAppConfirm(appId, developerNick){
+  showConfirm("Удалить приложение?","Укажите причину — она будет отправлена разработчику.",true,async(reason)=>{
+    try{
+      // Notify developer via backend before delete
+      await post("/admin/notify-delete",{app_id:appId,nick:currentUser.nick,reason});
+      await fetch(API+"/apps/"+appId,{method:"DELETE"});
+      await loadApps();goBack();
+    }catch{}
+  });
 }
 
 function setStar(n){
@@ -779,13 +917,23 @@ function onIconSelect(input){
     img.src=e.target.result;
     img.classList.remove("hidden");
     document.getElementById("icon-fu-icon").style.display="none";
+    document.getElementById("icon-upload-zone").classList.remove("required-missing");
   };
   reader.readAsDataURL(file);
 }
 
 function onApkSelect(input){
   const file=input.files[0];if(!file)return;
+  // Проверка расширения .apk
+  if(!file.name.toLowerCase().endsWith(".apk")){
+    document.getElementById("apk-name").textContent="❌ Только .apk файлы!";
+    document.getElementById("apk-upload-zone").classList.add("required-missing");
+    apkBase64=null;
+    input.value="";
+    return;
+  }
   document.getElementById("apk-name").textContent=file.name;
+  document.getElementById("apk-upload-zone").classList.remove("required-missing");
   const reader=new FileReader();
   reader.onload=e=>{apkBase64=e.target.result.split(",")[1];};
   reader.readAsDataURL(file);
@@ -796,6 +944,16 @@ async function submitApp(){
   const msg=document.getElementById("msg-dev");
   clearMsg(msg);
   if(!name||!desc||!ver){showMsg(msg,"Заполните все поля","err");return;}
+  if(!iconBase64){
+    showMsg(msg,"Загрузите иконку приложения","err");
+    document.getElementById("icon-upload-zone").classList.add("required-missing");
+    return;
+  }
+  if(!apkBase64){
+    showMsg(msg,"Загрузите APK файл","err");
+    document.getElementById("apk-upload-zone").classList.add("required-missing");
+    return;
+  }
   const btn=document.getElementById("btn-submit-app");load(btn,1);
   try{
     const r=await post("/apps/submit",{nick:currentUser.nick,name,description:desc,version:ver,category:cat,apk_data:apkBase64,icon_data:iconBase64});
@@ -822,7 +980,7 @@ async function loadMySubmissions(){
         <p>${(s.description||"").slice(0,80)}...</p>
         <span class="sub-status status-${s.status}">${{pending:"⏳ На рассмотрении",approved:"✅ Одобрено",rejected:"❌ Отклонено"}[s.status]}</span>
       </div>`).join("")
-      :'<div style="color:var(--muted);font-size:13px;padding:8px">Заявок пока нет</div>';
+      :'<div style="color:var(--muted);font-size:13px;padding:8px;font-family:var(--ui)">Заявок пока нет</div>';
   }catch{}
 }
 
@@ -839,16 +997,56 @@ async function loadMyApps(){
           <button class="btn btn-sm btn-outline" onclick="openApp(${a.id});showPage('app',null)">👁 Открыть</button>
         </div>
       </div>`).join("")
-      :'<div style="color:var(--muted);font-size:13px;padding:8px">Нет опубликованных приложений</div>';
+      :'<div style="color:var(--muted);font-size:13px;padding:8px;font-family:var(--ui)">Нет опубликованных приложений</div>';
   }catch{}
 }
 
 async function loadProfileStats(){
+  const role = currentUser.role || "user";
+  const isDev = role === "dev" || role === "admin";
   try{
-    const r=await fetch(API+"/apps");
-    const d=await r.json();
-    document.getElementById("prof-apps").textContent=(d.apps||[]).filter(a=>a.developer===currentUser.nick).length;
+    const appsData = await fetch(API+"/apps").then(r=>r.json());
+    const myAppsCount = (appsData.apps||[]).filter(a=>a.developer===currentUser.nick).length;
+
+    // Count reviews by this user across all apps
+    let reviewCount = 0;
+    if(!isDev){
+      // For non-devs, count reviews they've left
+      for(const app of (appsData.apps||[])){
+        try{
+          const rd = await fetch(API+"/apps/"+app.id+"/reviews").then(r=>r.json());
+          reviewCount += (rd.reviews||[]).filter(r=>r.nick===currentUser.nick).length;
+        }catch{}
+      }
+    }
+
+    const statsEl = document.getElementById("prof-stats");
+    if(isDev){
+      statsEl.innerHTML=`
+        <div class="pstat"><div class="val">${myAppsCount}</div><div class="lbl">Приложений</div></div>`;
+    } else {
+      statsEl.innerHTML=`
+        <div class="pstat"><div class="val">${reviewCount}</div><div class="lbl">Отзывов</div></div>`;
+    }
+    if(isDev) document.getElementById("prof-apps") && (document.getElementById("prof-apps").textContent=myAppsCount);
   }catch{}
+}
+
+// ── Developer request ─────────────────────────────
+async function submitDevRequest(){
+  const text = v("dev-req-text");
+  const msg = document.getElementById("msg-dev-req");
+  clearMsg(msg);
+  if(!text){showMsg(msg,"Напишите о себе","err");return;}
+  const btn = document.getElementById("btn-dev-req");
+  load(btn,1);
+  try{
+    const r = await post("/dev-request",{nick:currentUser.nick,text});
+    if(!r.ok){showMsg(msg,"Ошибка при отправке","err");return;}
+    showMsg(msg,"Заявка отправлена! Ожидайте решения администратора.","ok");
+    document.getElementById("dev-req-text").value="";
+  }catch{showMsg(msg,"Нет соединения","err");}
+  finally{load(btn,0);}
 }
 
 // ── Admin ─────────────────────────────────────────
@@ -866,8 +1064,26 @@ async function loadAdminData(){
           <button class="btn btn-sm btn-red" onclick="rejectApp(${s.id})">❌ Отклонить</button>
         </div>
       </div>`).join("")
-      :'<div style="color:var(--muted);font-size:13px;padding:8px">Новых заявок нет</div>';
+      :'<div style="color:var(--muted);font-size:13px;padding:8px;font-family:var(--ui)">Новых заявок нет</div>';
   }catch{}
+
+  // Dev requests
+  try{
+    const r=await fetch(API+"/dev-requests");
+    const d=await r.json();
+    const pending=(d.requests||[]).filter(x=>x.status==="pending");
+    document.getElementById("admin-dev-requests").innerHTML=pending.length?pending.map(req=>`
+      <div class="admin-sub-item">
+        <h4>👤 ${req.nick}</h4>
+        <p>${req.text}</p>
+        <div class="admin-sub-actions">
+          <button class="btn btn-sm btn-green" onclick="approveDevRequest(${req.id},'${req.nick}')">✅ Одобрить</button>
+          <button class="btn btn-sm btn-red" onclick="rejectDevRequest(${req.id},'${req.nick}')">❌ Отклонить</button>
+        </div>
+      </div>`).join("")
+      :'<div style="color:var(--muted);font-size:13px;padding:8px;font-family:var(--ui)">Заявок нет</div>';
+  }catch{}
+
   try{
     const r=await fetch(API+"/apps");
     const d=await r.json();
@@ -875,9 +1091,9 @@ async function loadAdminData(){
       <div class="admin-app-item">
         <div class="admin-app-icon">${iconEl(a,"40px","10px")}</div>
         <div class="admin-app-info"><h4>${a.name}</h4><span>${a.developer} · ★${a.rating||0} · 📥${a.installs}</span></div>
-        <button class="btn btn-sm btn-red" onclick="adminDeleteApp(${a.id})">🗑</button>
+        <button class="btn btn-sm btn-red" onclick="adminDeleteFromPanel(${a.id},'${a.developer}')">🗑</button>
       </div>`).join("")
-      :'<div style="color:var(--muted);font-size:13px;padding:8px">Нет приложений</div>';
+      :'<div style="color:var(--muted);font-size:13px;padding:8px;font-family:var(--ui)">Нет приложений</div>';
   }catch{}
   try{
     const r=await fetch(API+"/admin/users");
@@ -895,9 +1111,33 @@ async function loadAdminData(){
   }catch{}
 }
 
+// Admin deletes from panel (with reason)
+function adminDeleteFromPanel(appId, developerNick){
+  showConfirm("Удалить приложение?","Укажите причину — она будет отправлена разработчику.",true,async(reason)=>{
+    try{
+      await post("/admin/notify-delete",{app_id:appId,nick:currentUser.nick,reason});
+      await fetch(API+"/apps/"+appId,{method:"DELETE"});
+      await loadApps();loadAdminData();
+    }catch{}
+  });
+}
+
 async function approveApp(id){await post("/apps/approve",{submission_id:id});await loadApps();loadAdminData();}
 async function rejectApp(id){await post("/apps/reject",{submission_id:id});loadAdminData();}
-async function adminDeleteApp(id){await fetch(API+"/apps/"+id,{method:"DELETE"});await loadApps();loadAdminData();}
+
+async function approveDevRequest(id, nick){
+  try{
+    await post("/dev-request/approve",{request_id:id,nick});
+    loadAdminData();
+  }catch{}
+}
+async function rejectDevRequest(id, nick){
+  try{
+    await post("/dev-request/reject",{request_id:id,nick});
+    loadAdminData();
+  }catch{}
+}
+
 async function setUserRole(nick,role){
   await post("/admin/set-role",{nick,role});
   if(currentUser.nick===nick){currentUser.role=role;localStorage.setItem("ds_user",JSON.stringify(currentUser));updateRoleUI();}
